@@ -1,0 +1,36 @@
+{
+  "name": "informes",
+  "version": "0.1.0",
+  "description": "Aplicación para control y rastrabilidad de los informes de turno.",
+  "main": "server.js",
+  "keywords": [],
+  "author": "Cristian Castillo",
+  "license": "ISC",
+  "dependencies": {
+    "backbone": "^1.3.3",
+    "browserify": "^14.5.0",
+    "empty-element": "^1.0.0",
+    "express": "^4.14.0",
+    "jquery": "^3.1.1",
+    "materialize-css": "^0.97.7",
+    "page": "^1.7.1",
+    "pug": "^2.0.0-beta6",
+    "title": "^1.0.0",
+    "underscore": "^1.8.3",
+    "yo-yo": "^1.3.0"
+  },
+  "devDependencies": {
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.0",
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.3.2",
+    "handlebars": "^4.0.11",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.9.0"
+  },
+  "scripts": {
+    "build": "gulp",
+    "start": "node server.js | gulp watch"
+  }
+}
