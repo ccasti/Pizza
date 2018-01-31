@@ -154,7 +154,13 @@ module.exports = function (menuss) {
 					    	<div class="collapsible-body">
 					    	</div>
 					    </li>
-					  </ul>
+					</ul>
+					<div class="row">
+						<div class="col s12 center-align">
+					        <p class="menu-text hide-on-small-only blue-text text-darken-2 ">Instrucciones específicas para continuar con la compra, se pueden incluir<a href="#!" class="indigo-text text-darken-4"> enlaces </a>para apoyar la lógica de la aplicación</p>
+					        <p class="menu-text hide-on-med-and-up blue-text text-darken-2 ">Instruccciones resumidas más un<a href="#!" class="indigo-text text-darken-4"> enlace</a></p>
+			    		</div>
+			    	</div>
 				</div>		
 			</div>
 		</div>

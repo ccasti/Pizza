@@ -13,21 +13,21 @@ page('/', header, function (ctx, next) {
 			pizzaname: 'Pizza Primera',
 			url: 'pizza.png',
 			pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 1024,
+			likes: 47,
 			liked: true
 		},
 		{
 			pizzaname: 'Pizza Segunda',
 			url: 'pizza2.png',
 			pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 1024,
+			likes: 124,
 			liked: true
 		},
 		{
 			pizzaname: 'Pizza Tercera',
 			url: 'pizza3.png',
 			pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 1024,
+			likes: 10,
 			liked: true
 		}
 	];

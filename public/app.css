@@ -6483,7 +6483,7 @@ body {
 .card-content p {
   padding: 1rem 0; }
 
-.card-content .likes {
+.likes {
   line-height: 2rem;
   margin-left: 1rem; }
 
@@ -6494,6 +6494,12 @@ body {
 .vegetal {
   max-width: 3rem;
   border-radius: 50%; }
+
+.icon-nav {
+  padding: 0 1rem !important; }
+
+.icon-white {
+  color: white; }
 
 @media only screen and (min-width: 601px) and (max-width: 992px) {
   .menu-store {

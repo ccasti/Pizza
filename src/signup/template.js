@@ -9,6 +9,7 @@ var signupForm = yo`<div class="col s10 push-s1 m6 push-m3">
                 <div class="section">
                     <input type="email" name="email" placeholder="Correo electrónico" />
                     <input type="text" name="usuario" placeholder="Nombre de usuario" />
+                    <input type="text" name="direccion" placeholder="Dirección" />
                     <input type="password" name="password" placeholder="Contraseña" />
                     <input type="password" name="check_password" placeholder="Repetir Contraseña" />
                     <button class="btn btn-emp waves-effect waves-light" type="submit">Regístrate</button>

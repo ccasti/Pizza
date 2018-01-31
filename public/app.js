@@ -2726,25 +2726,29 @@ $(document).ready(function () {
 var el = yo`<nav class="header">
 	<div class="nav-wrapper blue lighten-2">
 	  	<a href="#!" class="brand-logo inline">Logo</a>
-	   	<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+	  	<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
 	   	<ul class="right hide-on-med-and-down">
-	  		<li><a href="#!">Pedir en Línea</a></li>
-		   	<li><a href="#!">Nuestra Masa</a></li>
+	  		<li><a href="#!">Nuestra Masa</a></li>
 		    <li><a href="#!">Base de Salsa</a></li>
 		    <li><a href="#!">Tamaño Pizza</a></li>
 		    <li><a href="#!">Más...</a></li>
 		</ul>
-		<div class="col s2 m6 right-align">
-			<a href="#" class="btn btn-large btn-flat dropdown-button" data-activates="drop-user">
-				<i class="small material-icons">perm_identity</i>
+		<div class="col s2 m8 right-align">
+			<a href="#" class="icon-nav btn btn-large btn-flat dropdown-button" data-activates="drop-car">
+				<i class="small material-icons icon-white">shopping_cart</i>
+			</a>
+			<ul id="drop-car" class="dropdown-content">	
+				<li><a href="#">Pedir</a></li>
+			</ul>
+			<a href="#" class="icon-nav btn btn-large btn-flat dropdown-button" data-activates="drop-user">
+				<i class="small material-icons icon-white">perm_identity</i>
 			</a>
 			<ul id="drop-user" class="dropdown-content">
 				<li><a href="#">Salir</a></li>
 			</ul>
 		</div>
 		<ul class="side-nav" id="mobile-demo">
-		  	<li><a href="#!">Pedir en Línea</a></li>
-		    <li><a href="sass.html">Nuestra Masa</a></li>
+		  	<li><a href="sass.html">Nuestra Masa</a></li>
 		    <li><a href="badges.html">Base de Salsa</a></li>
 		    <li><a href="collapsible.html">Tamaño Pizza</a></li>
 		    <li><a href="mobile.html">Más...</a></li>
@@ -2773,19 +2777,19 @@ page('/', header, function (ctx, next) {
 		pizzaname: 'Pizza Primera',
 		url: 'pizza.png',
 		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-		likes: 1024,
+		likes: 47,
 		liked: true
 	}, {
 		pizzaname: 'Pizza Segunda',
 		url: 'pizza2.png',
 		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-		likes: 1024,
+		likes: 124,
 		liked: true
 	}, {
 		pizzaname: 'Pizza Tercera',
 		url: 'pizza3.png',
 		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-		likes: 1024,
+		likes: 10,
 		liked: true
 	}];
 
@@ -2803,7 +2807,7 @@ module.exports = function (menus) {
 	var el = yo`<div class="content">
 		<div class="container">
 			<div class="row">
-				<div class="col s10 push-s1 m12">
+				<div class="col s12">
 					<div class="row top">
 						<div class="col s12 center-align">
 					        <p class="menu-text hide-on-small-only blue-text text-darken-2">Texto de bienvenida o descriptivo, destacando características específicas o la funcionalidad de seguimiento en línea</p>
@@ -2811,9 +2815,7 @@ module.exports = function (menus) {
 			    		</div>
 			    	</div>
 			    	<div class="row">
-			    		<div class="col ">
-			    		</div>
-						<div class="col s12 m8 push-m2 l6 push-l3">
+			    		<div class="col s12 m8 push-m2 l6 push-l3">
 							<div class="carousel carousel-slider">
 								${menus.map(function (pic) {
 		return menu(pic);
@@ -2823,8 +2825,8 @@ module.exports = function (menus) {
 					</div>
 					<div class="row">
 						<div class="col s12 center-align">
-					        <p class="menu-text hide-on-small-only blue-text text-darken-2">También puedes prepararla</p>
-					        <p class="menu-text hide-on-med-and-up blue-text text-darken-2">Preparala</p>
+					        <p class="menu-text hide-on-small-only blue-text text-darken-2">Siendo esta la pantalla de inicio podrá apoyarse en imágenes y formas que resalten las caracteríticas más importantes</p>
+					        <p class="menu-text hide-on-med-and-up blue-text text-darken-2">Preparadas con la mejor base y salsa...</p>
 					</div>
 			    	</div>
 				</div>			
@@ -2883,7 +2885,11 @@ module.exports = function (pic) {
 		<div class="card-reveal">
 		    <span class="card-title blue-text text-darken-2">${pic.pizzaname}<i class="material-icons right">close</i></span>
 		    <p>${pic.pizzacontent}</p>
-		  	<a class="waves-effect waves-light btn"><i class="material-icons left">shopping_cart</i>Pedir en Línea</a>
+		    <a class="waves-effect waves-light btn"><i class="material-icons left">shopping_cart</i>Pedir en Línea</a>
+		    <p class="center-align bottom">
+				<a class="left" href="#"><i class="material-icons">favorite_border</i></a>
+				<span class="left likes">${pic.likes} me gusta</span>
+			</p>
 		</div>
 	</div>`;
 };
@@ -2948,6 +2954,7 @@ var signupForm = yo`<div class="col s10 push-s1 m6 push-m3">
                 <div class="section">
                     <input type="email" name="email" placeholder="Correo electrónico" />
                     <input type="text" name="usuario" placeholder="Nombre de usuario" />
+                    <input type="text" name="direccion" placeholder="Dirección" />
                     <input type="password" name="password" placeholder="Contraseña" />
                     <input type="password" name="check_password" placeholder="Repetir Contraseña" />
                     <button class="btn btn-emp waves-effect waves-light" type="submit">Regístrate</button>
@@ -3197,7 +3204,13 @@ module.exports = function (menuss) {
 					    	<div class="collapsible-body">
 					    	</div>
 					    </li>
-					  </ul>
+					</ul>
+					<div class="row">
+						<div class="col s12 center-align">
+					        <p class="menu-text hide-on-small-only blue-text text-darken-2 ">Instrucciones específicas para continuar con la compra, se pueden incluir<a href="#!" class="indigo-text text-darken-4"> enlaces </a>para apoyar la lógica de la aplicación</p>
+					        <p class="menu-text hide-on-med-and-up blue-text text-darken-2 ">Instruccciones resumidas más un<a href="#!" class="indigo-text text-darken-4"> enlace</a></p>
+			    		</div>
+			    	</div>
 				</div>		
 			</div>
 		</div>
