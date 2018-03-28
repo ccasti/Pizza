@@ -1,0 +1,37 @@
+.pizza-card-content {
+	max-width: 40%;
+	margin: 0 0 2rem 0 !important;
+}
+
+@media #{$small-and-down} {
+	.pizza-card-content {
+		max-width: 100%;
+	}
+}
+
+.pizza-text {
+	max-width: 100%;
+	font-size: 0.8rem !important;
+	color: $color-brand;
+}
+
+.pizza-content-text {
+	font-size: 1rem;
+	padding: 1.5rem 0 !important;
+	text-align: justify;
+}
+
+.likes-content {
+	margin: 0 0 2rem 0 !important;
+	padding: 0 !important;
+}
+
+.card .card-content {
+    padding: 0.8rem !important;
+}
+
+.likes {
+	line-height: 2rem;
+	margin-left: 1rem;
+	font-size: 0.8rem;
+}

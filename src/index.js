@@ -2,10 +2,8 @@
 var page = require('page');
 
 require('./homepage');
-require('./store');
-require('./app');
-require('./signup');
-require('./signin');
-require('./footer');
+require('./clients/signup');
+require('./clients/signin');
+require('./layout/footer');
 
 page();

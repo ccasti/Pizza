@@ -1,0 +1,54 @@
+.fondo{
+	background: $color-secondary;
+}
+
+.base {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.pic-ini {
+	max-width: 100%;
+}
+.principal {
+	background: $color-brand;
+	padding: 1.5rem;
+}
+.principal2 {
+	margin: 0 !important;
+}
+
+.seccion {
+	background: $color-secondary;
+}
+
+.pack-text {
+	font-size: 1rem;
+	margin: 2rem;
+}
+
+.pic-pack {
+	max-width: 60%;
+	border-radius: 30%;
+	margin: 0 auto;
+}
+
+.menu-text {
+	font-size: 1.5rem;
+	margin: 0 auto;
+}
+
+.ajuste-menu-store {
+	display: flex;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	flex-direction: row;
+}
+
+.padding1 {
+	padding: 1rem;
+}
+
+.paddingl {
+	padding: 1rem 0 0 2rem !important;
+}

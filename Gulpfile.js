@@ -6,9 +6,9 @@ var browserify = require('browserify');
 var source = require('vinyl-source-stream');//para que no procesado en el bundle pueda entenderlo gulp
 var watchify = require('watchify');
 
-gulp.task('styl', function () {
-	gulp
-		.src('index.scss')//'src/**/*.scss'
+gulp.task('sass', function () {
+	return gulp
+		.src('index.scss')
 		.pipe(sass())
 		.pipe(rename('app.css'))
 		.pipe(gulp.dest('public'));
@@ -53,4 +53,4 @@ gulp.task('watch', function () {
 	return compile(true);
 });
 
-gulp.task('default', ['styl', 'assets', 'build']);
+gulp.task('default', ['sass', 'assets', 'build']);

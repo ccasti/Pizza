@@ -14,10 +14,6 @@ app.get('/store', function (req, res) {
 	res.render('index', { title: 'Tienda en línea' });
 })
 
-app.get('/app', function (req, res) {
-	res.render('index', { title: 'Administración' });
-})
-
 app.get('/signup', function (req, res) {
 	res.render('index', { title: 'Signup' });
 })

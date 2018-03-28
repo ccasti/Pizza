@@ -1,1297 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-
-},{}],2:[function(require,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],3:[function(require,module,exports){
-/* global HTMLElement */
-
-'use strict'
-
-module.exports = function emptyElement (element) {
-  if (!(element instanceof HTMLElement)) {
-    throw new TypeError('Expected an element')
-  }
-
-  var node
-  while ((node = element.lastChild)) element.removeChild(node)
-  return element
-}
-
-},{}],4:[function(require,module,exports){
-(function (process){
-  /* globals require, module */
-
-  'use strict';
-
-  /**
-   * Module dependencies.
-   */
-
-  var pathtoRegexp = require('path-to-regexp');
-
-  /**
-   * Module exports.
-   */
-
-  module.exports = page;
-
-  /**
-   * Detect click event
-   */
-  var clickEvent = ('undefined' !== typeof document) && document.ontouchstart ? 'touchstart' : 'click';
-
-  /**
-   * To work properly with the URL
-   * history.location generated polyfill in https://github.com/devote/HTML5-History-API
-   */
-
-  var location = ('undefined' !== typeof window) && (window.history.location || window.location);
-
-  /**
-   * Perform initial dispatch.
-   */
-
-  var dispatch = true;
-
-
-  /**
-   * Decode URL components (query string, pathname, hash).
-   * Accommodates both regular percent encoding and x-www-form-urlencoded format.
-   */
-  var decodeURLComponents = true;
-
-  /**
-   * Base path.
-   */
-
-  var base = '';
-
-  /**
-   * Running flag.
-   */
-
-  var running;
-
-  /**
-   * HashBang option
-   */
-
-  var hashbang = false;
-
-  /**
-   * Previous context, for capturing
-   * page exit events.
-   */
-
-  var prevContext;
-
-  /**
-   * Register `path` with callback `fn()`,
-   * or route `path`, or redirection,
-   * or `page.start()`.
-   *
-   *   page(fn);
-   *   page('*', fn);
-   *   page('/user/:id', load, user);
-   *   page('/user/' + user.id, { some: 'thing' });
-   *   page('/user/' + user.id);
-   *   page('/from', '/to')
-   *   page();
-   *
-   * @param {string|!Function|!Object} path
-   * @param {Function=} fn
-   * @api public
-   */
-
-  function page(path, fn) {
-    // <callback>
-    if ('function' === typeof path) {
-      return page('*', path);
-    }
-
-    // route <path> to <callback ...>
-    if ('function' === typeof fn) {
-      var route = new Route(/** @type {string} */ (path));
-      for (var i = 1; i < arguments.length; ++i) {
-        page.callbacks.push(route.middleware(arguments[i]));
-      }
-      // show <path> with [state]
-    } else if ('string' === typeof path) {
-      page['string' === typeof fn ? 'redirect' : 'show'](path, fn);
-      // start [options]
-    } else {
-      page.start(path);
-    }
-  }
-
-  /**
-   * Callback functions.
-   */
-
-  page.callbacks = [];
-  page.exits = [];
-
-  /**
-   * Current path being processed
-   * @type {string}
-   */
-  page.current = '';
-
-  /**
-   * Number of pages navigated to.
-   * @type {number}
-   *
-   *     page.len == 0;
-   *     page('/login');
-   *     page.len == 1;
-   */
-
-  page.len = 0;
-
-  /**
-   * Get or set basepath to `path`.
-   *
-   * @param {string} path
-   * @api public
-   */
-
-  page.base = function(path) {
-    if (0 === arguments.length) return base;
-    base = path;
-  };
-
-  /**
-   * Bind with the given `options`.
-   *
-   * Options:
-   *
-   *    - `click` bind to click events [true]
-   *    - `popstate` bind to popstate [true]
-   *    - `dispatch` perform initial dispatch [true]
-   *
-   * @param {Object} options
-   * @api public
-   */
-
-  page.start = function(options) {
-    options = options || {};
-    if (running) return;
-    running = true;
-    if (false === options.dispatch) dispatch = false;
-    if (false === options.decodeURLComponents) decodeURLComponents = false;
-    if (false !== options.popstate) window.addEventListener('popstate', onpopstate, false);
-    if (false !== options.click) {
-      document.addEventListener(clickEvent, onclick, false);
-    }
-    if (true === options.hashbang) hashbang = true;
-    if (!dispatch) return;
-    var url = (hashbang && ~location.hash.indexOf('#!')) ? location.hash.substr(2) + location.search : location.pathname + location.search + location.hash;
-    page.replace(url, null, true, dispatch);
-  };
-
-  /**
-   * Unbind click and popstate event handlers.
-   *
-   * @api public
-   */
-
-  page.stop = function() {
-    if (!running) return;
-    page.current = '';
-    page.len = 0;
-    running = false;
-    document.removeEventListener(clickEvent, onclick, false);
-    window.removeEventListener('popstate', onpopstate, false);
-  };
-
-  /**
-   * Show `path` with optional `state` object.
-   *
-   * @param {string} path
-   * @param {Object=} state
-   * @param {boolean=} dispatch
-   * @param {boolean=} push
-   * @return {!Context}
-   * @api public
-   */
-
-  page.show = function(path, state, dispatch, push) {
-    var ctx = new Context(path, state);
-    page.current = ctx.path;
-    if (false !== dispatch) page.dispatch(ctx);
-    if (false !== ctx.handled && false !== push) ctx.pushState();
-    return ctx;
-  };
-
-  /**
-   * Goes back in the history
-   * Back should always let the current route push state and then go back.
-   *
-   * @param {string} path - fallback path to go back if no more history exists, if undefined defaults to page.base
-   * @param {Object=} state
-   * @api public
-   */
-
-  page.back = function(path, state) {
-    if (page.len > 0) {
-      // this may need more testing to see if all browsers
-      // wait for the next tick to go back in history
-      history.back();
-      page.len--;
-    } else if (path) {
-      setTimeout(function() {
-        page.show(path, state);
-      });
-    }else{
-      setTimeout(function() {
-        page.show(base, state);
-      });
-    }
-  };
-
-
-  /**
-   * Register route to redirect from one path to other
-   * or just redirect to another route
-   *
-   * @param {string} from - if param 'to' is undefined redirects to 'from'
-   * @param {string=} to
-   * @api public
-   */
-  page.redirect = function(from, to) {
-    // Define route from a path to another
-    if ('string' === typeof from && 'string' === typeof to) {
-      page(from, function(e) {
-        setTimeout(function() {
-          page.replace(/** @type {!string} */ (to));
-        }, 0);
-      });
-    }
-
-    // Wait for the push state and replace it with another
-    if ('string' === typeof from && 'undefined' === typeof to) {
-      setTimeout(function() {
-        page.replace(from);
-      }, 0);
-    }
-  };
-
-  /**
-   * Replace `path` with optional `state` object.
-   *
-   * @param {string} path
-   * @param {Object=} state
-   * @param {boolean=} init
-   * @param {boolean=} dispatch
-   * @return {!Context}
-   * @api public
-   */
-
-
-  page.replace = function(path, state, init, dispatch) {
-    var ctx = new Context(path, state);
-    page.current = ctx.path;
-    ctx.init = init;
-    ctx.save(); // save before dispatching, which may redirect
-    if (false !== dispatch) page.dispatch(ctx);
-    return ctx;
-  };
-
-  /**
-   * Dispatch the given `ctx`.
-   *
-   * @param {Context} ctx
-   * @api private
-   */
-  page.dispatch = function(ctx) {
-    var prev = prevContext,
-      i = 0,
-      j = 0;
-
-    prevContext = ctx;
-
-    function nextExit() {
-      var fn = page.exits[j++];
-      if (!fn) return nextEnter();
-      fn(prev, nextExit);
-    }
-
-    function nextEnter() {
-      var fn = page.callbacks[i++];
-
-      if (ctx.path !== page.current) {
-        ctx.handled = false;
-        return;
-      }
-      if (!fn) return unhandled(ctx);
-      fn(ctx, nextEnter);
-    }
-
-    if (prev) {
-      nextExit();
-    } else {
-      nextEnter();
-    }
-  };
-
-  /**
-   * Unhandled `ctx`. When it's not the initial
-   * popstate then redirect. If you wish to handle
-   * 404s on your own use `page('*', callback)`.
-   *
-   * @param {Context} ctx
-   * @api private
-   */
-  function unhandled(ctx) {
-    if (ctx.handled) return;
-    var current;
-
-    if (hashbang) {
-      current = base + location.hash.replace('#!', '');
-    } else {
-      current = location.pathname + location.search;
-    }
-
-    if (current === ctx.canonicalPath) return;
-    page.stop();
-    ctx.handled = false;
-    location.href = ctx.canonicalPath;
-  }
-
-  /**
-   * Register an exit route on `path` with
-   * callback `fn()`, which will be called
-   * on the previous context when a new
-   * page is visited.
-   */
-  page.exit = function(path, fn) {
-    if (typeof path === 'function') {
-      return page.exit('*', path);
-    }
-
-    var route = new Route(path);
-    for (var i = 1; i < arguments.length; ++i) {
-      page.exits.push(route.middleware(arguments[i]));
-    }
-  };
-
-  /**
-   * Remove URL encoding from the given `str`.
-   * Accommodates whitespace in both x-www-form-urlencoded
-   * and regular percent-encoded form.
-   *
-   * @param {string} val - URL component to decode
-   */
-  function decodeURLEncodedURIComponent(val) {
-    if (typeof val !== 'string') { return val; }
-    return decodeURLComponents ? decodeURIComponent(val.replace(/\+/g, ' ')) : val;
-  }
-
-  /**
-   * Initialize a new "request" `Context`
-   * with the given `path` and optional initial `state`.
-   *
-   * @constructor
-   * @param {string} path
-   * @param {Object=} state
-   * @api public
-   */
-
-  function Context(path, state) {
-    if ('/' === path[0] && 0 !== path.indexOf(base)) path = base + (hashbang ? '#!' : '') + path;
-    var i = path.indexOf('?');
-
-    this.canonicalPath = path;
-    this.path = path.replace(base, '') || '/';
-    if (hashbang) this.path = this.path.replace('#!', '') || '/';
-
-    this.title = document.title;
-    this.state = state || {};
-    this.state.path = path;
-    this.querystring = ~i ? decodeURLEncodedURIComponent(path.slice(i + 1)) : '';
-    this.pathname = decodeURLEncodedURIComponent(~i ? path.slice(0, i) : path);
-    this.params = {};
-
-    // fragment
-    this.hash = '';
-    if (!hashbang) {
-      if (!~this.path.indexOf('#')) return;
-      var parts = this.path.split('#');
-      this.path = parts[0];
-      this.hash = decodeURLEncodedURIComponent(parts[1]) || '';
-      this.querystring = this.querystring.split('#')[0];
-    }
-  }
-
-  /**
-   * Expose `Context`.
-   */
-
-  page.Context = Context;
-
-  /**
-   * Push state.
-   *
-   * @api private
-   */
-
-  Context.prototype.pushState = function() {
-    page.len++;
-    history.pushState(this.state, this.title, hashbang && this.path !== '/' ? '#!' + this.path : this.canonicalPath);
-  };
-
-  /**
-   * Save the context state.
-   *
-   * @api public
-   */
-
-  Context.prototype.save = function() {
-    history.replaceState(this.state, this.title, hashbang && this.path !== '/' ? '#!' + this.path : this.canonicalPath);
-  };
-
-  /**
-   * Initialize `Route` with the given HTTP `path`,
-   * and an array of `callbacks` and `options`.
-   *
-   * Options:
-   *
-   *   - `sensitive`    enable case-sensitive routes
-   *   - `strict`       enable strict matching for trailing slashes
-   *
-   * @constructor
-   * @param {string} path
-   * @param {Object=} options
-   * @api private
-   */
-
-  function Route(path, options) {
-    options = options || {};
-    this.path = (path === '*') ? '(.*)' : path;
-    this.method = 'GET';
-    this.regexp = pathtoRegexp(this.path,
-      this.keys = [],
-      options);
-  }
-
-  /**
-   * Expose `Route`.
-   */
-
-  page.Route = Route;
-
-  /**
-   * Return route middleware with
-   * the given callback `fn()`.
-   *
-   * @param {Function} fn
-   * @return {Function}
-   * @api public
-   */
-
-  Route.prototype.middleware = function(fn) {
-    var self = this;
-    return function(ctx, next) {
-      if (self.match(ctx.path, ctx.params)) return fn(ctx, next);
-      next();
-    };
-  };
-
-  /**
-   * Check if this route matches `path`, if so
-   * populate `params`.
-   *
-   * @param {string} path
-   * @param {Object} params
-   * @return {boolean}
-   * @api private
-   */
-
-  Route.prototype.match = function(path, params) {
-    var keys = this.keys,
-      qsIndex = path.indexOf('?'),
-      pathname = ~qsIndex ? path.slice(0, qsIndex) : path,
-      m = this.regexp.exec(decodeURIComponent(pathname));
-
-    if (!m) return false;
-
-    for (var i = 1, len = m.length; i < len; ++i) {
-      var key = keys[i - 1];
-      var val = decodeURLEncodedURIComponent(m[i]);
-      if (val !== undefined || !(hasOwnProperty.call(params, key.name))) {
-        params[key.name] = val;
-      }
-    }
-
-    return true;
-  };
-
-
-  /**
-   * Handle "populate" events.
-   */
-
-  var onpopstate = (function () {
-    var loaded = false;
-    if ('undefined' === typeof window) {
-      return;
-    }
-    if (document.readyState === 'complete') {
-      loaded = true;
-    } else {
-      window.addEventListener('load', function() {
-        setTimeout(function() {
-          loaded = true;
-        }, 0);
-      });
-    }
-    return function onpopstate(e) {
-      if (!loaded) return;
-      if (e.state) {
-        var path = e.state.path;
-        page.replace(path, e.state);
-      } else {
-        page.show(location.pathname + location.hash, undefined, undefined, false);
-      }
-    };
-  })();
-  /**
-   * Handle "click" events.
-   */
-
-  function onclick(e) {
-
-    if (1 !== which(e)) return;
-
-    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
-    if (e.defaultPrevented) return;
-
-
-
-    // ensure link
-    // use shadow dom when available
-    var el = e.path ? e.path[0] : e.target;
-    while (el && 'A' !== el.nodeName) el = el.parentNode;
-    if (!el || 'A' !== el.nodeName) return;
-
-
-
-    // Ignore if tag has
-    // 1. "download" attribute
-    // 2. rel="external" attribute
-    if (el.hasAttribute('download') || el.getAttribute('rel') === 'external') return;
-
-    // ensure non-hash for the same path
-    var link = el.getAttribute('href');
-    if (!hashbang && el.pathname === location.pathname && (el.hash || '#' === link)) return;
-
-
-
-    // Check for mailto: in the href
-    if (link && link.indexOf('mailto:') > -1) return;
-
-    // check target
-    if (el.target) return;
-
-    // x-origin
-    if (!sameOrigin(el.href)) return;
-
-
-
-    // rebuild path
-    var path = el.pathname + el.search + (el.hash || '');
-
-    // strip leading "/[drive letter]:" on NW.js on Windows
-    if (typeof process !== 'undefined' && path.match(/^\/[a-zA-Z]:\//)) {
-      path = path.replace(/^\/[a-zA-Z]:\//, '/');
-    }
-
-    // same page
-    var orig = path;
-
-    if (path.indexOf(base) === 0) {
-      path = path.substr(base.length);
-    }
-
-    if (hashbang) path = path.replace('#!', '');
-
-    if (base && orig === path) return;
-
-    e.preventDefault();
-    page.show(orig);
-  }
-
-  /**
-   * Event button.
-   */
-
-  function which(e) {
-    e = e || window.event;
-    return null === e.which ? e.button : e.which;
-  }
-
-  /**
-   * Check if `href` is the same origin.
-   */
-
-  function sameOrigin(href) {
-    var origin = location.protocol + '//' + location.hostname;
-    if (location.port) origin += ':' + location.port;
-    return (href && (0 === href.indexOf(origin)));
-  }
-
-  page.sameOrigin = sameOrigin;
-
-}).call(this,require('_process'))
-},{"_process":2,"path-to-regexp":5}],5:[function(require,module,exports){
-var isarray = require('isarray')
-
-/**
- * Expose `pathToRegexp`.
- */
-module.exports = pathToRegexp
-module.exports.parse = parse
-module.exports.compile = compile
-module.exports.tokensToFunction = tokensToFunction
-module.exports.tokensToRegExp = tokensToRegExp
-
-/**
- * The main path matching regexp utility.
- *
- * @type {RegExp}
- */
-var PATH_REGEXP = new RegExp([
-  // Match escaped characters that would otherwise appear in future matches.
-  // This allows the user to escape special characters that won't transform.
-  '(\\\\.)',
-  // Match Express-style parameters and un-named parameters with a prefix
-  // and optional suffixes. Matches appear as:
-  //
-  // "/:test(\\d+)?" => ["/", "test", "\d+", undefined, "?", undefined]
-  // "/route(\\d+)"  => [undefined, undefined, undefined, "\d+", undefined, undefined]
-  // "/*"            => ["/", undefined, undefined, undefined, undefined, "*"]
-  '([\\/.])?(?:(?:\\:(\\w+)(?:\\(((?:\\\\.|[^()])+)\\))?|\\(((?:\\\\.|[^()])+)\\))([+*?])?|(\\*))'
-].join('|'), 'g')
-
-/**
- * Parse a string for the raw tokens.
- *
- * @param  {String} str
- * @return {Array}
- */
-function parse (str) {
-  var tokens = []
-  var key = 0
-  var index = 0
-  var path = ''
-  var res
-
-  while ((res = PATH_REGEXP.exec(str)) != null) {
-    var m = res[0]
-    var escaped = res[1]
-    var offset = res.index
-    path += str.slice(index, offset)
-    index = offset + m.length
-
-    // Ignore already escaped sequences.
-    if (escaped) {
-      path += escaped[1]
-      continue
-    }
-
-    // Push the current path onto the tokens.
-    if (path) {
-      tokens.push(path)
-      path = ''
-    }
-
-    var prefix = res[2]
-    var name = res[3]
-    var capture = res[4]
-    var group = res[5]
-    var suffix = res[6]
-    var asterisk = res[7]
-
-    var repeat = suffix === '+' || suffix === '*'
-    var optional = suffix === '?' || suffix === '*'
-    var delimiter = prefix || '/'
-    var pattern = capture || group || (asterisk ? '.*' : '[^' + delimiter + ']+?')
-
-    tokens.push({
-      name: name || key++,
-      prefix: prefix || '',
-      delimiter: delimiter,
-      optional: optional,
-      repeat: repeat,
-      pattern: escapeGroup(pattern)
-    })
-  }
-
-  // Match any characters still remaining.
-  if (index < str.length) {
-    path += str.substr(index)
-  }
-
-  // If the path exists, push it onto the end.
-  if (path) {
-    tokens.push(path)
-  }
-
-  return tokens
-}
-
-/**
- * Compile a string to a template function for the path.
- *
- * @param  {String}   str
- * @return {Function}
- */
-function compile (str) {
-  return tokensToFunction(parse(str))
-}
-
-/**
- * Expose a method for transforming tokens into the path function.
- */
-function tokensToFunction (tokens) {
-  // Compile all the tokens into regexps.
-  var matches = new Array(tokens.length)
-
-  // Compile all the patterns before compilation.
-  for (var i = 0; i < tokens.length; i++) {
-    if (typeof tokens[i] === 'object') {
-      matches[i] = new RegExp('^' + tokens[i].pattern + '$')
-    }
-  }
-
-  return function (obj) {
-    var path = ''
-    var data = obj || {}
-
-    for (var i = 0; i < tokens.length; i++) {
-      var token = tokens[i]
-
-      if (typeof token === 'string') {
-        path += token
-
-        continue
-      }
-
-      var value = data[token.name]
-      var segment
-
-      if (value == null) {
-        if (token.optional) {
-          continue
-        } else {
-          throw new TypeError('Expected "' + token.name + '" to be defined')
-        }
-      }
-
-      if (isarray(value)) {
-        if (!token.repeat) {
-          throw new TypeError('Expected "' + token.name + '" to not repeat, but received "' + value + '"')
-        }
-
-        if (value.length === 0) {
-          if (token.optional) {
-            continue
-          } else {
-            throw new TypeError('Expected "' + token.name + '" to not be empty')
-          }
-        }
-
-        for (var j = 0; j < value.length; j++) {
-          segment = encodeURIComponent(value[j])
-
-          if (!matches[i].test(segment)) {
-            throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
-          }
-
-          path += (j === 0 ? token.prefix : token.delimiter) + segment
-        }
-
-        continue
-      }
-
-      segment = encodeURIComponent(value)
-
-      if (!matches[i].test(segment)) {
-        throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
-      }
-
-      path += token.prefix + segment
-    }
-
-    return path
-  }
-}
-
-/**
- * Escape a regular expression string.
- *
- * @param  {String} str
- * @return {String}
- */
-function escapeString (str) {
-  return str.replace(/([.+*?=^!:${}()[\]|\/])/g, '\\$1')
-}
-
-/**
- * Escape the capturing group by escaping special characters and meaning.
- *
- * @param  {String} group
- * @return {String}
- */
-function escapeGroup (group) {
-  return group.replace(/([=!:$\/()])/g, '\\$1')
-}
-
-/**
- * Attach the keys as a property of the regexp.
- *
- * @param  {RegExp} re
- * @param  {Array}  keys
- * @return {RegExp}
- */
-function attachKeys (re, keys) {
-  re.keys = keys
-  return re
-}
-
-/**
- * Get the flags for a regexp from the options.
- *
- * @param  {Object} options
- * @return {String}
- */
-function flags (options) {
-  return options.sensitive ? '' : 'i'
-}
-
-/**
- * Pull out keys from a regexp.
- *
- * @param  {RegExp} path
- * @param  {Array}  keys
- * @return {RegExp}
- */
-function regexpToRegexp (path, keys) {
-  // Use a negative lookahead to match only capturing groups.
-  var groups = path.source.match(/\((?!\?)/g)
-
-  if (groups) {
-    for (var i = 0; i < groups.length; i++) {
-      keys.push({
-        name: i,
-        prefix: null,
-        delimiter: null,
-        optional: false,
-        repeat: false,
-        pattern: null
-      })
-    }
-  }
-
-  return attachKeys(path, keys)
-}
-
-/**
- * Transform an array into a regexp.
- *
- * @param  {Array}  path
- * @param  {Array}  keys
- * @param  {Object} options
- * @return {RegExp}
- */
-function arrayToRegexp (path, keys, options) {
-  var parts = []
-
-  for (var i = 0; i < path.length; i++) {
-    parts.push(pathToRegexp(path[i], keys, options).source)
-  }
-
-  var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options))
-
-  return attachKeys(regexp, keys)
-}
-
-/**
- * Create a path regexp from string input.
- *
- * @param  {String} path
- * @param  {Array}  keys
- * @param  {Object} options
- * @return {RegExp}
- */
-function stringToRegexp (path, keys, options) {
-  var tokens = parse(path)
-  var re = tokensToRegExp(tokens, options)
-
-  // Attach keys back to the regexp.
-  for (var i = 0; i < tokens.length; i++) {
-    if (typeof tokens[i] !== 'string') {
-      keys.push(tokens[i])
-    }
-  }
-
-  return attachKeys(re, keys)
-}
-
-/**
- * Expose a function for taking tokens and returning a RegExp.
- *
- * @param  {Array}  tokens
- * @param  {Array}  keys
- * @param  {Object} options
- * @return {RegExp}
- */
-function tokensToRegExp (tokens, options) {
-  options = options || {}
-
-  var strict = options.strict
-  var end = options.end !== false
-  var route = ''
-  var lastToken = tokens[tokens.length - 1]
-  var endsWithSlash = typeof lastToken === 'string' && /\/$/.test(lastToken)
-
-  // Iterate over the tokens and create our regexp string.
-  for (var i = 0; i < tokens.length; i++) {
-    var token = tokens[i]
-
-    if (typeof token === 'string') {
-      route += escapeString(token)
-    } else {
-      var prefix = escapeString(token.prefix)
-      var capture = token.pattern
-
-      if (token.repeat) {
-        capture += '(?:' + prefix + capture + ')*'
-      }
-
-      if (token.optional) {
-        if (prefix) {
-          capture = '(?:' + prefix + '(' + capture + '))?'
-        } else {
-          capture = '(' + capture + ')?'
-        }
-      } else {
-        capture = prefix + '(' + capture + ')'
-      }
-
-      route += capture
-    }
-  }
-
-  // In non-strict mode we allow a slash at the end of match. If the path to
-  // match already ends with a slash, we remove it for consistency. The slash
-  // is valid at the end of a path match, not in the middle. This is important
-  // in non-ending mode, where "/test/" shouldn't match "/test//route".
-  if (!strict) {
-    route = (endsWithSlash ? route.slice(0, -2) : route) + '(?:\\/(?=$))?'
-  }
-
-  if (end) {
-    route += '$'
-  } else {
-    // In non-ending mode, we need the capturing groups to match as much as
-    // possible by using a positive lookahead to the end or next path segment.
-    route += strict && endsWithSlash ? '' : '(?=\\/|$)'
-  }
-
-  return new RegExp('^' + route, flags(options))
-}
-
-/**
- * Normalize the given path string, returning a regular expression.
- *
- * An empty array can be passed in for the keys, which will hold the
- * placeholder key descriptions. For example, using `/user/:id`, `keys` will
- * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
- *
- * @param  {(String|RegExp|Array)} path
- * @param  {Array}                 [keys]
- * @param  {Object}                [options]
- * @return {RegExp}
- */
-function pathToRegexp (path, keys, options) {
-  keys = keys || []
-
-  if (!isarray(keys)) {
-    options = keys
-    keys = []
-  } else if (!options) {
-    options = {}
-  }
-
-  if (path instanceof RegExp) {
-    return regexpToRegexp(path, keys, options)
-  }
-
-  if (isarray(path)) {
-    return arrayToRegexp(path, keys, options)
-  }
-
-  return stringToRegexp(path, keys, options)
-}
-
-},{"isarray":6}],6:[function(require,module,exports){
-module.exports = Array.isArray || function (arr) {
-  return Object.prototype.toString.call(arr) == '[object Array]';
-};
-
-},{}],7:[function(require,module,exports){
-
-var orig = document.title;
-
-exports = module.exports = set;
-
-function set(str) {
-  var i = 1;
-  var args = arguments;
-  document.title = str.replace(/%[os]/g, function(_){
-    switch (_) {
-      case '%o':
-        return orig;
-      case '%s':
-        return args[i++];
-    }
-  });
-}
-
-exports.reset = function(){
-  set(orig);
-};
-
-},{}],8:[function(require,module,exports){
-var bel = require('bel') // turns template tag into DOM elements
-var morphdom = require('morphdom') // efficiently diffs + morphs two DOM elements
-var defaultEvents = require('./update-events.js') // default events to be copied when dom elements update
-
-module.exports = bel
-
-// TODO move this + defaultEvents to a new module once we receive more feedback
-module.exports.update = function (fromNode, toNode, opts) {
-  if (!opts) opts = {}
-  if (opts.events !== false) {
-    if (!opts.onBeforeElUpdated) opts.onBeforeElUpdated = copier
-  }
-
-  return morphdom(fromNode, toNode, opts)
-
-  // morphdom only copies attributes. we decided we also wanted to copy events
-  // that can be set via attributes
-  function copier (f, t) {
-    // copy events:
-    var events = opts.events || defaultEvents
-    for (var i = 0; i < events.length; i++) {
-      var ev = events[i]
-      if (t[ev]) { // if new element has a whitelisted attribute
-        f[ev] = t[ev] // update existing element
-      } else if (f[ev]) { // if existing element has it and new one doesnt
-        f[ev] = undefined // remove it from existing element
-      }
-    }
-    var oldValue = f.value
-    var newValue = t.value
-    // copy values for form elements
-    if ((f.nodeName === 'INPUT' && f.type !== 'file') || f.nodeName === 'SELECT') {
-      if (!newValue && !t.hasAttribute('value')) {
-        t.value = f.value
-      } else if (newValue !== oldValue) {
-        f.value = newValue
-      }
-    } else if (f.nodeName === 'TEXTAREA') {
-      if (t.getAttribute('value') === null) f.value = t.value
-    }
-  }
-}
-
-},{"./update-events.js":17,"bel":9,"morphdom":16}],9:[function(require,module,exports){
+(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 var document = require('global/document')
 var hyperx = require('hyperx')
 var onload = require('on-load')
@@ -1446,7 +153,24 @@ module.exports = hyperx(belCreateElement, {comments: true})
 module.exports.default = module.exports
 module.exports.createElement = belCreateElement
 
-},{"global/document":10,"hyperx":12,"on-load":14}],10:[function(require,module,exports){
+},{"global/document":4,"hyperx":7,"on-load":10}],2:[function(require,module,exports){
+
+},{}],3:[function(require,module,exports){
+/* global HTMLElement */
+
+'use strict'
+
+module.exports = function emptyElement (element) {
+  if (!(element instanceof HTMLElement)) {
+    throw new TypeError('Expected an element')
+  }
+
+  var node
+  while ((node = element.lastChild)) element.removeChild(node)
+  return element
+}
+
+},{}],4:[function(require,module,exports){
 (function (global){
 var topLevel = typeof global !== 'undefined' ? global :
     typeof window !== 'undefined' ? window : {}
@@ -1467,7 +191,7 @@ if (typeof document !== 'undefined') {
 module.exports = doccy;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"min-document":1}],11:[function(require,module,exports){
+},{"min-document":2}],5:[function(require,module,exports){
 (function (global){
 var win;
 
@@ -1484,7 +208,28 @@ if (typeof window !== "undefined") {
 module.exports = win;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],12:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
+module.exports = attributeToProperty
+
+var transform = {
+  'class': 'className',
+  'for': 'htmlFor',
+  'http-equiv': 'httpEquiv'
+}
+
+function attributeToProperty (h) {
+  return function (tagName, attrs, children) {
+    for (var attr in attrs) {
+      if (attr in transform) {
+        attrs[transform[attr]] = attrs[attr]
+        delete attrs[attr]
+      }
+    }
+    return h(tagName, attrs, children)
+  }
+}
+
+},{}],7:[function(require,module,exports){
 var attrToProp = require('hyperscript-attribute-to-property')
 
 var VAR = 0, TEXT = 1, OPEN = 2, CLOSE = 3, ATTR = 4
@@ -1517,7 +262,16 @@ module.exports = function (h, opts) {
         if (xstate === ATTR_VALUE_SQ) xstate = ATTR_VALUE
         if (xstate === ATTR_VALUE_W) xstate = ATTR_VALUE
         if (xstate === ATTR) xstate = ATTR_KEY
-        p.push([ VAR, xstate, arg ])
+        if (xstate === OPEN) {
+          if (reg === '/') {
+            p.push([ OPEN, '/', arg ])
+            reg = ''
+          } else {
+            p.push([ OPEN, arg ])
+          }
+        } else {
+          p.push([ VAR, xstate, arg ])
+        }
         parts.push.apply(parts, p)
       } else parts.push.apply(parts, parse(strings[i]))
     }
@@ -1635,7 +389,7 @@ module.exports = function (h, opts) {
           reg = ''
           state = OPEN
         } else if (c === '>' && !quot(state) && state !== COMMENT) {
-          if (state === OPEN) {
+          if (state === OPEN && reg.length) {
             res.push([OPEN,reg])
           } else if (state === ATTR_KEY) {
             res.push([ATTR_KEY,reg])
@@ -1659,8 +413,12 @@ module.exports = function (h, opts) {
           state = COMMENT
         } else if (state === TEXT || state === COMMENT) {
           reg += c
+        } else if (state === OPEN && c === '/' && reg.length) {
+          // no-op, self closing tag without a space <br/>
         } else if (state === OPEN && /\s/.test(c)) {
-          res.push([OPEN, reg])
+          if (reg.length) {
+            res.push([OPEN, reg])
+          }
           reg = ''
           state = ATTR
         } else if (state === OPEN) {
@@ -1767,156 +525,7 @@ var closeRE = RegExp('^(' + [
 ].join('|') + ')(?:[\.#][a-zA-Z0-9\u007F-\uFFFF_:-]+)*$')
 function selfClosing (tag) { return closeRE.test(tag) }
 
-},{"hyperscript-attribute-to-property":13}],13:[function(require,module,exports){
-module.exports = attributeToProperty
-
-var transform = {
-  'class': 'className',
-  'for': 'htmlFor',
-  'http-equiv': 'httpEquiv'
-}
-
-function attributeToProperty (h) {
-  return function (tagName, attrs, children) {
-    for (var attr in attrs) {
-      if (attr in transform) {
-        attrs[transform[attr]] = attrs[attr]
-        delete attrs[attr]
-      }
-    }
-    return h(tagName, attrs, children)
-  }
-}
-
-},{}],14:[function(require,module,exports){
-/* global MutationObserver */
-var document = require('global/document')
-var window = require('global/window')
-var assert = require('assert')
-var watch = Object.create(null)
-var KEY_ID = 'onloadid' + (new Date() % 9e6).toString(36)
-var KEY_ATTR = 'data-' + KEY_ID
-var INDEX = 0
-
-if (window && window.MutationObserver) {
-  var observer = new MutationObserver(function (mutations) {
-    if (Object.keys(watch).length < 1) return
-    for (var i = 0; i < mutations.length; i++) {
-      if (mutations[i].attributeName === KEY_ATTR) {
-        eachAttr(mutations[i], turnon, turnoff)
-        continue
-      }
-      eachMutation(mutations[i].removedNodes, turnoff)
-      eachMutation(mutations[i].addedNodes, turnon)
-    }
-  })
-  if (document.body) {
-    beginObserve(observer)
-  } else {
-    document.addEventListener('DOMContentLoaded', function (event) {
-      beginObserve(observer)
-    })
-  }
-}
-
-function beginObserve (observer) {
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    attributeOldValue: true,
-    attributeFilter: [KEY_ATTR]
-  })
-}
-
-module.exports = function onload (el, on, off, caller) {
-  assert(document.body, 'on-load: will not work prior to DOMContentLoaded')
-  on = on || function () {}
-  off = off || function () {}
-  el.setAttribute(KEY_ATTR, 'o' + INDEX)
-  watch['o' + INDEX] = [on, off, 0, caller || onload.caller]
-  INDEX += 1
-  return el
-}
-
-module.exports.KEY_ATTR = KEY_ATTR
-module.exports.KEY_ID = KEY_ID
-
-function turnon (index, el) {
-  if (watch[index][0] && watch[index][2] === 0) {
-    watch[index][0](el)
-    watch[index][2] = 1
-  }
-}
-
-function turnoff (index, el) {
-  if (watch[index][1] && watch[index][2] === 1) {
-    watch[index][1](el)
-    watch[index][2] = 0
-  }
-}
-
-function eachAttr (mutation, on, off) {
-  var newValue = mutation.target.getAttribute(KEY_ATTR)
-  if (sameOrigin(mutation.oldValue, newValue)) {
-    watch[newValue] = watch[mutation.oldValue]
-    return
-  }
-  if (watch[mutation.oldValue]) {
-    off(mutation.oldValue, mutation.target)
-  }
-  if (watch[newValue]) {
-    on(newValue, mutation.target)
-  }
-}
-
-function sameOrigin (oldValue, newValue) {
-  if (!oldValue || !newValue) return false
-  return watch[oldValue][3] === watch[newValue][3]
-}
-
-function eachMutation (nodes, fn) {
-  var keys = Object.keys(watch)
-  for (var i = 0; i < nodes.length; i++) {
-    if (nodes[i] && nodes[i].getAttribute && nodes[i].getAttribute(KEY_ATTR)) {
-      var onloadid = nodes[i].getAttribute(KEY_ATTR)
-      keys.forEach(function (k) {
-        if (onloadid === k) {
-          fn(k, nodes[i])
-        }
-      })
-    }
-    if (nodes[i].childNodes.length > 0) {
-      eachMutation(nodes[i].childNodes, fn)
-    }
-  }
-}
-
-},{"assert":15,"global/document":10,"global/window":11}],15:[function(require,module,exports){
-assert.notEqual = notEqual
-assert.notOk = notOk
-assert.equal = equal
-assert.ok = assert
-
-module.exports = assert
-
-function equal (a, b, m) {
-  assert(a == b, m) // eslint-disable-line eqeqeq
-}
-
-function notEqual (a, b, m) {
-  assert(a != b, m) // eslint-disable-line eqeqeq
-}
-
-function notOk (t, m) {
-  assert(!t, m)
-}
-
-function assert (t, m) {
-  if (!t) throw new Error(m || 'AssertionError')
-}
-
-},{}],16:[function(require,module,exports){
+},{"hyperscript-attribute-to-property":6}],8:[function(require,module,exports){
 'use strict';
 
 var range; // Create a range object for efficently rendering strings to elements.
@@ -2600,7 +1209,1524 @@ var morphdom = morphdomFactory(morphAttrs);
 
 module.exports = morphdom;
 
-},{}],17:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
+assert.notEqual = notEqual
+assert.notOk = notOk
+assert.equal = equal
+assert.ok = assert
+
+module.exports = assert
+
+function equal (a, b, m) {
+  assert(a == b, m) // eslint-disable-line eqeqeq
+}
+
+function notEqual (a, b, m) {
+  assert(a != b, m) // eslint-disable-line eqeqeq
+}
+
+function notOk (t, m) {
+  assert(!t, m)
+}
+
+function assert (t, m) {
+  if (!t) throw new Error(m || 'AssertionError')
+}
+
+},{}],10:[function(require,module,exports){
+/* global MutationObserver */
+var document = require('global/document')
+var window = require('global/window')
+var assert = require('assert')
+var watch = Object.create(null)
+var KEY_ID = 'onloadid' + (new Date() % 9e6).toString(36)
+var KEY_ATTR = 'data-' + KEY_ID
+var INDEX = 0
+
+if (window && window.MutationObserver) {
+  var observer = new MutationObserver(function (mutations) {
+    if (Object.keys(watch).length < 1) return
+    for (var i = 0; i < mutations.length; i++) {
+      if (mutations[i].attributeName === KEY_ATTR) {
+        eachAttr(mutations[i], turnon, turnoff)
+        continue
+      }
+      eachMutation(mutations[i].removedNodes, turnoff)
+      eachMutation(mutations[i].addedNodes, turnon)
+    }
+  })
+  if (document.body) {
+    beginObserve(observer)
+  } else {
+    document.addEventListener('DOMContentLoaded', function (event) {
+      beginObserve(observer)
+    })
+  }
+}
+
+function beginObserve (observer) {
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeOldValue: true,
+    attributeFilter: [KEY_ATTR]
+  })
+}
+
+module.exports = function onload (el, on, off, caller) {
+  assert(document.body, 'on-load: will not work prior to DOMContentLoaded')
+  on = on || function () {}
+  off = off || function () {}
+  el.setAttribute(KEY_ATTR, 'o' + INDEX)
+  watch['o' + INDEX] = [on, off, 0, caller || onload.caller]
+  INDEX += 1
+  return el
+}
+
+module.exports.KEY_ATTR = KEY_ATTR
+module.exports.KEY_ID = KEY_ID
+
+function turnon (index, el) {
+  if (watch[index][0] && watch[index][2] === 0) {
+    watch[index][0](el)
+    watch[index][2] = 1
+  }
+}
+
+function turnoff (index, el) {
+  if (watch[index][1] && watch[index][2] === 1) {
+    watch[index][1](el)
+    watch[index][2] = 0
+  }
+}
+
+function eachAttr (mutation, on, off) {
+  var newValue = mutation.target.getAttribute(KEY_ATTR)
+  if (sameOrigin(mutation.oldValue, newValue)) {
+    watch[newValue] = watch[mutation.oldValue]
+    return
+  }
+  if (watch[mutation.oldValue]) {
+    off(mutation.oldValue, mutation.target)
+  }
+  if (watch[newValue]) {
+    on(newValue, mutation.target)
+  }
+}
+
+function sameOrigin (oldValue, newValue) {
+  if (!oldValue || !newValue) return false
+  return watch[oldValue][3] === watch[newValue][3]
+}
+
+function eachMutation (nodes, fn) {
+  var keys = Object.keys(watch)
+  for (var i = 0; i < nodes.length; i++) {
+    if (nodes[i] && nodes[i].getAttribute && nodes[i].getAttribute(KEY_ATTR)) {
+      var onloadid = nodes[i].getAttribute(KEY_ATTR)
+      keys.forEach(function (k) {
+        if (onloadid === k) {
+          fn(k, nodes[i])
+        }
+      })
+    }
+    if (nodes[i].childNodes.length > 0) {
+      eachMutation(nodes[i].childNodes, fn)
+    }
+  }
+}
+
+},{"assert":9,"global/document":4,"global/window":5}],11:[function(require,module,exports){
+(function (process){
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.page = factory());
+}(this, (function () { 'use strict';
+
+var isarray = Array.isArray || function (arr) {
+  return Object.prototype.toString.call(arr) == '[object Array]';
+};
+
+/**
+ * Expose `pathToRegexp`.
+ */
+var pathToRegexp_1 = pathToRegexp;
+var parse_1 = parse;
+var compile_1 = compile;
+var tokensToFunction_1 = tokensToFunction;
+var tokensToRegExp_1 = tokensToRegExp;
+
+/**
+ * The main path matching regexp utility.
+ *
+ * @type {RegExp}
+ */
+var PATH_REGEXP = new RegExp([
+  // Match escaped characters that would otherwise appear in future matches.
+  // This allows the user to escape special characters that won't transform.
+  '(\\\\.)',
+  // Match Express-style parameters and un-named parameters with a prefix
+  // and optional suffixes. Matches appear as:
+  //
+  // "/:test(\\d+)?" => ["/", "test", "\d+", undefined, "?", undefined]
+  // "/route(\\d+)"  => [undefined, undefined, undefined, "\d+", undefined, undefined]
+  // "/*"            => ["/", undefined, undefined, undefined, undefined, "*"]
+  '([\\/.])?(?:(?:\\:(\\w+)(?:\\(((?:\\\\.|[^()])+)\\))?|\\(((?:\\\\.|[^()])+)\\))([+*?])?|(\\*))'
+].join('|'), 'g');
+
+/**
+ * Parse a string for the raw tokens.
+ *
+ * @param  {String} str
+ * @return {Array}
+ */
+function parse (str) {
+  var tokens = [];
+  var key = 0;
+  var index = 0;
+  var path = '';
+  var res;
+
+  while ((res = PATH_REGEXP.exec(str)) != null) {
+    var m = res[0];
+    var escaped = res[1];
+    var offset = res.index;
+    path += str.slice(index, offset);
+    index = offset + m.length;
+
+    // Ignore already escaped sequences.
+    if (escaped) {
+      path += escaped[1];
+      continue
+    }
+
+    // Push the current path onto the tokens.
+    if (path) {
+      tokens.push(path);
+      path = '';
+    }
+
+    var prefix = res[2];
+    var name = res[3];
+    var capture = res[4];
+    var group = res[5];
+    var suffix = res[6];
+    var asterisk = res[7];
+
+    var repeat = suffix === '+' || suffix === '*';
+    var optional = suffix === '?' || suffix === '*';
+    var delimiter = prefix || '/';
+    var pattern = capture || group || (asterisk ? '.*' : '[^' + delimiter + ']+?');
+
+    tokens.push({
+      name: name || key++,
+      prefix: prefix || '',
+      delimiter: delimiter,
+      optional: optional,
+      repeat: repeat,
+      pattern: escapeGroup(pattern)
+    });
+  }
+
+  // Match any characters still remaining.
+  if (index < str.length) {
+    path += str.substr(index);
+  }
+
+  // If the path exists, push it onto the end.
+  if (path) {
+    tokens.push(path);
+  }
+
+  return tokens
+}
+
+/**
+ * Compile a string to a template function for the path.
+ *
+ * @param  {String}   str
+ * @return {Function}
+ */
+function compile (str) {
+  return tokensToFunction(parse(str))
+}
+
+/**
+ * Expose a method for transforming tokens into the path function.
+ */
+function tokensToFunction (tokens) {
+  // Compile all the tokens into regexps.
+  var matches = new Array(tokens.length);
+
+  // Compile all the patterns before compilation.
+  for (var i = 0; i < tokens.length; i++) {
+    if (typeof tokens[i] === 'object') {
+      matches[i] = new RegExp('^' + tokens[i].pattern + '$');
+    }
+  }
+
+  return function (obj) {
+    var path = '';
+    var data = obj || {};
+
+    for (var i = 0; i < tokens.length; i++) {
+      var token = tokens[i];
+
+      if (typeof token === 'string') {
+        path += token;
+
+        continue
+      }
+
+      var value = data[token.name];
+      var segment;
+
+      if (value == null) {
+        if (token.optional) {
+          continue
+        } else {
+          throw new TypeError('Expected "' + token.name + '" to be defined')
+        }
+      }
+
+      if (isarray(value)) {
+        if (!token.repeat) {
+          throw new TypeError('Expected "' + token.name + '" to not repeat, but received "' + value + '"')
+        }
+
+        if (value.length === 0) {
+          if (token.optional) {
+            continue
+          } else {
+            throw new TypeError('Expected "' + token.name + '" to not be empty')
+          }
+        }
+
+        for (var j = 0; j < value.length; j++) {
+          segment = encodeURIComponent(value[j]);
+
+          if (!matches[i].test(segment)) {
+            throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
+          }
+
+          path += (j === 0 ? token.prefix : token.delimiter) + segment;
+        }
+
+        continue
+      }
+
+      segment = encodeURIComponent(value);
+
+      if (!matches[i].test(segment)) {
+        throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
+      }
+
+      path += token.prefix + segment;
+    }
+
+    return path
+  }
+}
+
+/**
+ * Escape a regular expression string.
+ *
+ * @param  {String} str
+ * @return {String}
+ */
+function escapeString (str) {
+  return str.replace(/([.+*?=^!:${}()[\]|\/])/g, '\\$1')
+}
+
+/**
+ * Escape the capturing group by escaping special characters and meaning.
+ *
+ * @param  {String} group
+ * @return {String}
+ */
+function escapeGroup (group) {
+  return group.replace(/([=!:$\/()])/g, '\\$1')
+}
+
+/**
+ * Attach the keys as a property of the regexp.
+ *
+ * @param  {RegExp} re
+ * @param  {Array}  keys
+ * @return {RegExp}
+ */
+function attachKeys (re, keys) {
+  re.keys = keys;
+  return re
+}
+
+/**
+ * Get the flags for a regexp from the options.
+ *
+ * @param  {Object} options
+ * @return {String}
+ */
+function flags (options) {
+  return options.sensitive ? '' : 'i'
+}
+
+/**
+ * Pull out keys from a regexp.
+ *
+ * @param  {RegExp} path
+ * @param  {Array}  keys
+ * @return {RegExp}
+ */
+function regexpToRegexp (path, keys) {
+  // Use a negative lookahead to match only capturing groups.
+  var groups = path.source.match(/\((?!\?)/g);
+
+  if (groups) {
+    for (var i = 0; i < groups.length; i++) {
+      keys.push({
+        name: i,
+        prefix: null,
+        delimiter: null,
+        optional: false,
+        repeat: false,
+        pattern: null
+      });
+    }
+  }
+
+  return attachKeys(path, keys)
+}
+
+/**
+ * Transform an array into a regexp.
+ *
+ * @param  {Array}  path
+ * @param  {Array}  keys
+ * @param  {Object} options
+ * @return {RegExp}
+ */
+function arrayToRegexp (path, keys, options) {
+  var parts = [];
+
+  for (var i = 0; i < path.length; i++) {
+    parts.push(pathToRegexp(path[i], keys, options).source);
+  }
+
+  var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options));
+
+  return attachKeys(regexp, keys)
+}
+
+/**
+ * Create a path regexp from string input.
+ *
+ * @param  {String} path
+ * @param  {Array}  keys
+ * @param  {Object} options
+ * @return {RegExp}
+ */
+function stringToRegexp (path, keys, options) {
+  var tokens = parse(path);
+  var re = tokensToRegExp(tokens, options);
+
+  // Attach keys back to the regexp.
+  for (var i = 0; i < tokens.length; i++) {
+    if (typeof tokens[i] !== 'string') {
+      keys.push(tokens[i]);
+    }
+  }
+
+  return attachKeys(re, keys)
+}
+
+/**
+ * Expose a function for taking tokens and returning a RegExp.
+ *
+ * @param  {Array}  tokens
+ * @param  {Array}  keys
+ * @param  {Object} options
+ * @return {RegExp}
+ */
+function tokensToRegExp (tokens, options) {
+  options = options || {};
+
+  var strict = options.strict;
+  var end = options.end !== false;
+  var route = '';
+  var lastToken = tokens[tokens.length - 1];
+  var endsWithSlash = typeof lastToken === 'string' && /\/$/.test(lastToken);
+
+  // Iterate over the tokens and create our regexp string.
+  for (var i = 0; i < tokens.length; i++) {
+    var token = tokens[i];
+
+    if (typeof token === 'string') {
+      route += escapeString(token);
+    } else {
+      var prefix = escapeString(token.prefix);
+      var capture = token.pattern;
+
+      if (token.repeat) {
+        capture += '(?:' + prefix + capture + ')*';
+      }
+
+      if (token.optional) {
+        if (prefix) {
+          capture = '(?:' + prefix + '(' + capture + '))?';
+        } else {
+          capture = '(' + capture + ')?';
+        }
+      } else {
+        capture = prefix + '(' + capture + ')';
+      }
+
+      route += capture;
+    }
+  }
+
+  // In non-strict mode we allow a slash at the end of match. If the path to
+  // match already ends with a slash, we remove it for consistency. The slash
+  // is valid at the end of a path match, not in the middle. This is important
+  // in non-ending mode, where "/test/" shouldn't match "/test//route".
+  if (!strict) {
+    route = (endsWithSlash ? route.slice(0, -2) : route) + '(?:\\/(?=$))?';
+  }
+
+  if (end) {
+    route += '$';
+  } else {
+    // In non-ending mode, we need the capturing groups to match as much as
+    // possible by using a positive lookahead to the end or next path segment.
+    route += strict && endsWithSlash ? '' : '(?=\\/|$)';
+  }
+
+  return new RegExp('^' + route, flags(options))
+}
+
+/**
+ * Normalize the given path string, returning a regular expression.
+ *
+ * An empty array can be passed in for the keys, which will hold the
+ * placeholder key descriptions. For example, using `/user/:id`, `keys` will
+ * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
+ *
+ * @param  {(String|RegExp|Array)} path
+ * @param  {Array}                 [keys]
+ * @param  {Object}                [options]
+ * @return {RegExp}
+ */
+function pathToRegexp (path, keys, options) {
+  keys = keys || [];
+
+  if (!isarray(keys)) {
+    options = keys;
+    keys = [];
+  } else if (!options) {
+    options = {};
+  }
+
+  if (path instanceof RegExp) {
+    return regexpToRegexp(path, keys, options)
+  }
+
+  if (isarray(path)) {
+    return arrayToRegexp(path, keys, options)
+  }
+
+  return stringToRegexp(path, keys, options)
+}
+
+pathToRegexp_1.parse = parse_1;
+pathToRegexp_1.compile = compile_1;
+pathToRegexp_1.tokensToFunction = tokensToFunction_1;
+pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
+
+/**
+   * Module dependencies.
+   */
+
+  
+
+  /**
+   * Module exports.
+   */
+
+  var page_js = page;
+  page.default = page;
+  page.Context = Context;
+  page.Route = Route;
+  page.sameOrigin = sameOrigin;
+
+  /**
+   * Short-cuts for global-object checks
+   */
+
+  var hasDocument = ('undefined' !== typeof document);
+  var hasWindow = ('undefined' !== typeof window);
+  var hasHistory = ('undefined' !== typeof history);
+  var hasProcess = typeof process !== 'undefined';
+
+  /**
+   * Detect click event
+   */
+  var clickEvent = hasDocument && document.ontouchstart ? 'touchstart' : 'click';
+
+  /**
+   * To work properly with the URL
+   * history.location generated polyfill in https://github.com/devote/HTML5-History-API
+   */
+
+  var isLocation = hasWindow && !!(window.history.location || window.location);
+
+  /**
+   * Perform initial dispatch.
+   */
+
+  var dispatch = true;
+
+
+  /**
+   * Decode URL components (query string, pathname, hash).
+   * Accommodates both regular percent encoding and x-www-form-urlencoded format.
+   */
+  var decodeURLComponents = true;
+
+  /**
+   * Base path.
+   */
+
+  var base = '';
+
+  /**
+   * Strict path matching.
+   */
+
+  var strict = false;
+
+  /**
+   * Running flag.
+   */
+
+  var running;
+
+  /**
+   * HashBang option
+   */
+
+  var hashbang = false;
+
+  /**
+   * Previous context, for capturing
+   * page exit events.
+   */
+
+  var prevContext;
+
+  /**
+   * The window for which this `page` is running
+   */
+  var pageWindow;
+
+  /**
+   * Register `path` with callback `fn()`,
+   * or route `path`, or redirection,
+   * or `page.start()`.
+   *
+   *   page(fn);
+   *   page('*', fn);
+   *   page('/user/:id', load, user);
+   *   page('/user/' + user.id, { some: 'thing' });
+   *   page('/user/' + user.id);
+   *   page('/from', '/to')
+   *   page();
+   *
+   * @param {string|!Function|!Object} path
+   * @param {Function=} fn
+   * @api public
+   */
+
+  function page(path, fn) {
+    // <callback>
+    if ('function' === typeof path) {
+      return page('*', path);
+    }
+
+    // route <path> to <callback ...>
+    if ('function' === typeof fn) {
+      var route = new Route(/** @type {string} */ (path));
+      for (var i = 1; i < arguments.length; ++i) {
+        page.callbacks.push(route.middleware(arguments[i]));
+      }
+      // show <path> with [state]
+    } else if ('string' === typeof path) {
+      page['string' === typeof fn ? 'redirect' : 'show'](path, fn);
+      // start [options]
+    } else {
+      page.start(path);
+    }
+  }
+
+  /**
+   * Callback functions.
+   */
+
+  page.callbacks = [];
+  page.exits = [];
+
+  /**
+   * Current path being processed
+   * @type {string}
+   */
+  page.current = '';
+
+  /**
+   * Number of pages navigated to.
+   * @type {number}
+   *
+   *     page.len == 0;
+   *     page('/login');
+   *     page.len == 1;
+   */
+
+  page.len = 0;
+
+  /**
+   * Get or set basepath to `path`.
+   *
+   * @param {string} path
+   * @api public
+   */
+
+  page.base = function(path) {
+    if (0 === arguments.length) return base;
+    base = path;
+  };
+
+  /**
+   * Get or set strict path matching to `enable`
+   *
+   * @param {boolean} enable
+   * @api public
+   */
+
+  page.strict = function(enable) {
+    if (0 === arguments.length) return strict;
+    strict = enable;
+  };
+
+  /**
+   * Bind with the given `options`.
+   *
+   * Options:
+   *
+   *    - `click` bind to click events [true]
+   *    - `popstate` bind to popstate [true]
+   *    - `dispatch` perform initial dispatch [true]
+   *
+   * @param {Object} options
+   * @api public
+   */
+
+  page.start = function(options) {
+    options = options || {};
+    if (running) return;
+    running = true;
+    pageWindow = options.window || (hasWindow && window);
+    if (false === options.dispatch) dispatch = false;
+    if (false === options.decodeURLComponents) decodeURLComponents = false;
+    if (false !== options.popstate && hasWindow) pageWindow.addEventListener('popstate', onpopstate, false);
+    if (false !== options.click && hasDocument) {
+      pageWindow.document.addEventListener(clickEvent, onclick, false);
+    }
+    hashbang = !!options.hashbang;
+    if(hashbang && hasWindow && !hasHistory) {
+      pageWindow.addEventListener('hashchange', onpopstate, false);
+    }
+    if (!dispatch) return;
+
+    var url;
+    if(isLocation) {
+      var loc = pageWindow.location;
+
+      if(hashbang && ~loc.hash.indexOf('#!')) {
+        url = loc.hash.substr(2) + loc.search;
+      } else if (hashbang) {
+        url = loc.search + loc.hash;
+      } else {
+        url = loc.pathname + loc.search + loc.hash;
+      }
+    }
+
+    page.replace(url, null, true, dispatch);
+  };
+
+  /**
+   * Unbind click and popstate event handlers.
+   *
+   * @api public
+   */
+
+  page.stop = function() {
+    if (!running) return;
+    page.current = '';
+    page.len = 0;
+    running = false;
+    hasDocument && pageWindow.document.removeEventListener(clickEvent, onclick, false);
+    hasWindow && pageWindow.removeEventListener('popstate', onpopstate, false);
+    hasWindow && pageWindow.removeEventListener('hashchange', onpopstate, false);
+  };
+
+  /**
+   * Show `path` with optional `state` object.
+   *
+   * @param {string} path
+   * @param {Object=} state
+   * @param {boolean=} dispatch
+   * @param {boolean=} push
+   * @return {!Context}
+   * @api public
+   */
+
+  page.show = function(path, state, dispatch, push) {
+    var ctx = new Context(path, state),
+      prev = prevContext;
+    prevContext = ctx;
+    page.current = ctx.path;
+    if (false !== dispatch) page.dispatch(ctx, prev);
+    if (false !== ctx.handled && false !== push) ctx.pushState();
+    return ctx;
+  };
+
+  /**
+   * Goes back in the history
+   * Back should always let the current route push state and then go back.
+   *
+   * @param {string} path - fallback path to go back if no more history exists, if undefined defaults to page.base
+   * @param {Object=} state
+   * @api public
+   */
+
+  page.back = function(path, state) {
+    if (page.len > 0) {
+      // this may need more testing to see if all browsers
+      // wait for the next tick to go back in history
+      hasHistory && pageWindow.history.back();
+      page.len--;
+    } else if (path) {
+      setTimeout(function() {
+        page.show(path, state);
+      });
+    }else{
+      setTimeout(function() {
+        page.show(getBase(), state);
+      });
+    }
+  };
+
+
+  /**
+   * Register route to redirect from one path to other
+   * or just redirect to another route
+   *
+   * @param {string} from - if param 'to' is undefined redirects to 'from'
+   * @param {string=} to
+   * @api public
+   */
+  page.redirect = function(from, to) {
+    // Define route from a path to another
+    if ('string' === typeof from && 'string' === typeof to) {
+      page(from, function(e) {
+        setTimeout(function() {
+          page.replace(/** @type {!string} */ (to));
+        }, 0);
+      });
+    }
+
+    // Wait for the push state and replace it with another
+    if ('string' === typeof from && 'undefined' === typeof to) {
+      setTimeout(function() {
+        page.replace(from);
+      }, 0);
+    }
+  };
+
+  /**
+   * Replace `path` with optional `state` object.
+   *
+   * @param {string} path
+   * @param {Object=} state
+   * @param {boolean=} init
+   * @param {boolean=} dispatch
+   * @return {!Context}
+   * @api public
+   */
+
+
+  page.replace = function(path, state, init, dispatch) {
+    var ctx = new Context(path, state),
+      prev = prevContext;
+    prevContext = ctx;
+    page.current = ctx.path;
+    ctx.init = init;
+    ctx.save(); // save before dispatching, which may redirect
+    if (false !== dispatch) page.dispatch(ctx, prev);
+    return ctx;
+  };
+
+  /**
+   * Dispatch the given `ctx`.
+   *
+   * @param {Context} ctx
+   * @api private
+   */
+
+  page.dispatch = function(ctx, prev) {
+    var i = 0,
+      j = 0;
+
+    function nextExit() {
+      var fn = page.exits[j++];
+      if (!fn) return nextEnter();
+      fn(prev, nextExit);
+    }
+
+    function nextEnter() {
+      var fn = page.callbacks[i++];
+
+      if (ctx.path !== page.current) {
+        ctx.handled = false;
+        return;
+      }
+      if (!fn) return unhandled(ctx);
+      fn(ctx, nextEnter);
+    }
+
+    if (prev) {
+      nextExit();
+    } else {
+      nextEnter();
+    }
+  };
+
+  /**
+   * Unhandled `ctx`. When it's not the initial
+   * popstate then redirect. If you wish to handle
+   * 404s on your own use `page('*', callback)`.
+   *
+   * @param {Context} ctx
+   * @api private
+   */
+  function unhandled(ctx) {
+    if (ctx.handled) return;
+    var current;
+
+    if (hashbang) {
+      current = isLocation && getBase() + pageWindow.location.hash.replace('#!', '');
+    } else {
+      current = isLocation && pageWindow.location.pathname + pageWindow.location.search;
+    }
+
+    if (current === ctx.canonicalPath) return;
+    page.stop();
+    ctx.handled = false;
+    isLocation && (pageWindow.location.href = ctx.canonicalPath);
+  }
+
+  /**
+   * Register an exit route on `path` with
+   * callback `fn()`, which will be called
+   * on the previous context when a new
+   * page is visited.
+   */
+  page.exit = function(path, fn) {
+    if (typeof path === 'function') {
+      return page.exit('*', path);
+    }
+
+    var route = new Route(path);
+    for (var i = 1; i < arguments.length; ++i) {
+      page.exits.push(route.middleware(arguments[i]));
+    }
+  };
+
+  /**
+   * Remove URL encoding from the given `str`.
+   * Accommodates whitespace in both x-www-form-urlencoded
+   * and regular percent-encoded form.
+   *
+   * @param {string} val - URL component to decode
+   */
+  function decodeURLEncodedURIComponent(val) {
+    if (typeof val !== 'string') { return val; }
+    return decodeURLComponents ? decodeURIComponent(val.replace(/\+/g, ' ')) : val;
+  }
+
+  /**
+   * Initialize a new "request" `Context`
+   * with the given `path` and optional initial `state`.
+   *
+   * @constructor
+   * @param {string} path
+   * @param {Object=} state
+   * @api public
+   */
+
+  function Context(path, state) {
+    var pageBase = getBase();
+    if ('/' === path[0] && 0 !== path.indexOf(pageBase)) path = pageBase + (hashbang ? '#!' : '') + path;
+    var i = path.indexOf('?');
+
+    this.canonicalPath = path;
+    this.path = path.replace(pageBase, '') || '/';
+    if (hashbang) this.path = this.path.replace('#!', '') || '/';
+
+    this.title = (hasDocument && pageWindow.document.title);
+    this.state = state || {};
+    this.state.path = path;
+    this.querystring = ~i ? decodeURLEncodedURIComponent(path.slice(i + 1)) : '';
+    this.pathname = decodeURLEncodedURIComponent(~i ? path.slice(0, i) : path);
+    this.params = {};
+
+    // fragment
+    this.hash = '';
+    if (!hashbang) {
+      if (!~this.path.indexOf('#')) return;
+      var parts = this.path.split('#');
+      this.path = this.pathname = parts[0];
+      this.hash = decodeURLEncodedURIComponent(parts[1]) || '';
+      this.querystring = this.querystring.split('#')[0];
+    }
+  }
+
+  /**
+   * Expose `Context`.
+   */
+
+  page.Context = Context;
+
+  /**
+   * Push state.
+   *
+   * @api private
+   */
+
+  Context.prototype.pushState = function() {
+    page.len++;
+    if (hasHistory) {
+        pageWindow.history.pushState(this.state, this.title,
+          hashbang && this.path !== '/' ? '#!' + this.path : this.canonicalPath);
+    }
+  };
+
+  /**
+   * Save the context state.
+   *
+   * @api public
+   */
+
+  Context.prototype.save = function() {
+    if (hasHistory && pageWindow.location.protocol !== 'file:') {
+        pageWindow.history.replaceState(this.state, this.title,
+          hashbang && this.path !== '/' ? '#!' + this.path : this.canonicalPath);
+    }
+  };
+
+  /**
+   * Initialize `Route` with the given HTTP `path`,
+   * and an array of `callbacks` and `options`.
+   *
+   * Options:
+   *
+   *   - `sensitive`    enable case-sensitive routes
+   *   - `strict`       enable strict matching for trailing slashes
+   *
+   * @constructor
+   * @param {string} path
+   * @param {Object=} options
+   * @api private
+   */
+
+  function Route(path, options) {
+    options = options || {};
+    options.strict = options.strict || strict;
+    this.path = (path === '*') ? '(.*)' : path;
+    this.method = 'GET';
+    this.regexp = pathToRegexp_1(this.path,
+      this.keys = [],
+      options);
+  }
+
+  /**
+   * Expose `Route`.
+   */
+
+  page.Route = Route;
+
+  /**
+   * Return route middleware with
+   * the given callback `fn()`.
+   *
+   * @param {Function} fn
+   * @return {Function}
+   * @api public
+   */
+
+  Route.prototype.middleware = function(fn) {
+    var self = this;
+    return function(ctx, next) {
+      if (self.match(ctx.path, ctx.params)) return fn(ctx, next);
+      next();
+    };
+  };
+
+  /**
+   * Check if this route matches `path`, if so
+   * populate `params`.
+   *
+   * @param {string} path
+   * @param {Object} params
+   * @return {boolean}
+   * @api private
+   */
+
+  Route.prototype.match = function(path, params) {
+    var keys = this.keys,
+      qsIndex = path.indexOf('?'),
+      pathname = ~qsIndex ? path.slice(0, qsIndex) : path,
+      m = this.regexp.exec(decodeURIComponent(pathname));
+
+    if (!m) return false;
+
+    for (var i = 1, len = m.length; i < len; ++i) {
+      var key = keys[i - 1];
+      var val = decodeURLEncodedURIComponent(m[i]);
+      if (val !== undefined || !(hasOwnProperty.call(params, key.name))) {
+        params[key.name] = val;
+      }
+    }
+
+    return true;
+  };
+
+
+  /**
+   * Handle "populate" events.
+   */
+
+  var onpopstate = (function () {
+    var loaded = false;
+    if ( ! hasWindow ) {
+      return;
+    }
+    if (hasDocument && document.readyState === 'complete') {
+      loaded = true;
+    } else {
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          loaded = true;
+        }, 0);
+      });
+    }
+    return function onpopstate(e) {
+      if (!loaded) return;
+      if (e.state) {
+        var path = e.state.path;
+        page.replace(path, e.state);
+      } else if (isLocation) {
+        var loc = pageWindow.location;
+        page.show(loc.pathname + loc.hash, undefined, undefined, false);
+      }
+    };
+  })();
+  /**
+   * Handle "click" events.
+   */
+
+  /* jshint +W054 */
+  function onclick(e) {
+    if (1 !== which(e)) return;
+
+    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+    if (e.defaultPrevented) return;
+
+    // ensure link
+    // use shadow dom when available
+    var el = e.path ? e.path[0] : e.target;
+
+    // continue ensure link
+    // el.nodeName for svg links are 'a' instead of 'A'
+    while (el && 'A' !== el.nodeName.toUpperCase()) el = el.parentNode;
+    if (!el || 'A' !== el.nodeName.toUpperCase()) return;
+
+    // check if link is inside an svg
+    // in this case, both href and target are always inside an object
+    var svg = (typeof el.href === 'object') && el.href.constructor.name === 'SVGAnimatedString';
+
+    // Ignore if tag has
+    // 1. "download" attribute
+    // 2. rel="external" attribute
+    if (el.hasAttribute('download') || el.getAttribute('rel') === 'external') return;
+
+    // ensure non-hash for the same path
+    var link = el.getAttribute('href');
+    if(!hashbang && samePath(el) && (el.hash || '#' === link)) return;
+
+    // Check for mailto: in the href
+    if (link && link.indexOf('mailto:') > -1) return;
+
+    // check target
+    // svg target is an object and its desired value is in .baseVal property
+    if (svg ? el.target.baseVal : el.target) return;
+
+    // x-origin
+    // note: svg links that are not relative don't call click events (and skip page.js)
+    // consequently, all svg links tested inside page.js are relative and in the same origin
+    if (!svg && !sameOrigin(el.href)) return;
+
+    // rebuild path
+    // There aren't .pathname and .search properties in svg links, so we use href
+    // Also, svg href is an object and its desired value is in .baseVal property
+    var path = svg ? el.href.baseVal : (el.pathname + el.search + (el.hash || ''));
+
+    path = path[0] !== '/' ? '/' + path : path;
+
+    // strip leading "/[drive letter]:" on NW.js on Windows
+    if (hasProcess && path.match(/^\/[a-zA-Z]:\//)) {
+      path = path.replace(/^\/[a-zA-Z]:\//, '/');
+    }
+
+    // same page
+    var orig = path;
+    var pageBase = getBase();
+
+    if (path.indexOf(pageBase) === 0) {
+      path = path.substr(base.length);
+    }
+
+    if (hashbang) path = path.replace('#!', '');
+
+    if (pageBase && orig === path) return;
+
+    e.preventDefault();
+    page.show(orig);
+  }
+
+  /**
+   * Event button.
+   */
+
+  function which(e) {
+    e = e || (hasWindow && window.event);
+    return null == e.which ? e.button : e.which;
+  }
+
+  /**
+   * Convert to a URL object
+   */
+  function toURL(href) {
+    if(typeof URL === 'function' && isLocation) {
+      return new URL(href, location.toString());
+    } else if (hasDocument) {
+      var anc = document.createElement('a');
+      anc.href = href;
+      return anc;
+    }
+  }
+
+  /**
+   * Check if `href` is the same origin.
+   */
+
+  function sameOrigin(href) {
+    if(!href || !isLocation) return false;
+    var url = toURL(href);
+
+    var loc = pageWindow.location;
+    return loc.protocol === url.protocol &&
+      loc.hostname === url.hostname &&
+      loc.port === url.port;
+  }
+
+  function samePath(url) {
+    if(!isLocation) return false;
+    var loc = pageWindow.location;
+    return url.pathname === loc.pathname &&
+      url.search === loc.search;
+  }
+
+  /**
+   * Gets the `base`, which depends on whether we are using History or
+   * hashbang routing.
+   */
+  function getBase() {
+    if(!!base) return base;
+    var loc = hasWindow && pageWindow.location;
+    return (hasWindow && hashbang && loc.protocol === 'file:') ? loc.pathname : base;
+  }
+
+  page.sameOrigin = sameOrigin;
+
+return page_js;
+
+})));
+
+}).call(this,require('_process'))
+},{"_process":12}],12:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],13:[function(require,module,exports){
+
+var orig = document.title;
+
+exports = module.exports = set;
+
+function set(str) {
+  var i = 1;
+  var args = arguments;
+  document.title = str.replace(/%[os]/g, function(_){
+    switch (_) {
+      case '%o':
+        return orig;
+      case '%s':
+        return args[i++];
+    }
+  });
+}
+
+exports.reset = function(){
+  set(orig);
+};
+
+},{}],14:[function(require,module,exports){
+var bel = require('bel') // turns template tag into DOM elements
+var morphdom = require('morphdom') // efficiently diffs + morphs two DOM elements
+var defaultEvents = require('./update-events.js') // default events to be copied when dom elements update
+
+module.exports = bel
+
+// TODO move this + defaultEvents to a new module once we receive more feedback
+module.exports.update = function (fromNode, toNode, opts) {
+  if (!opts) opts = {}
+  if (opts.events !== false) {
+    if (!opts.onBeforeElUpdated) opts.onBeforeElUpdated = copier
+  }
+
+  return morphdom(fromNode, toNode, opts)
+
+  // morphdom only copies attributes. we decided we also wanted to copy events
+  // that can be set via attributes
+  function copier (f, t) {
+    // copy events:
+    var events = opts.events || defaultEvents
+    for (var i = 0; i < events.length; i++) {
+      var ev = events[i]
+      if (t[ev]) { // if new element has a whitelisted attribute
+        f[ev] = t[ev] // update existing element
+      } else if (f[ev]) { // if existing element has it and new one doesnt
+        f[ev] = undefined // remove it from existing element
+      }
+    }
+    var oldValue = f.value
+    var newValue = t.value
+    // copy values for form elements
+    if ((f.nodeName === 'INPUT' && f.type !== 'file') || f.nodeName === 'SELECT') {
+      if (!newValue && !t.hasAttribute('value')) {
+        t.value = f.value
+      } else if (newValue !== oldValue) {
+        f.value = newValue
+      }
+    } else if (f.nodeName === 'TEXTAREA') {
+      if (t.getAttribute('value') === null) f.value = t.value
+    }
+  }
+}
+
+},{"./update-events.js":15,"bel":1,"morphdom":8}],15:[function(require,module,exports){
 module.exports = [
   // attribute events (can be set with attributes)
   'onclick',
@@ -2638,219 +2764,358 @@ module.exports = [
   'onfocusout'
 ]
 
-},{}],18:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
 var title = require('title');
 
-page('/store', function (ctx, next) {
-	title('Administración');
+page('/signin', function (ctx, next) {
+	title('Signin');
 	var main = document.getElementById('main-container');
-
-	var menuss = [{
-		pizzaname: 'Pizza Primera',
-		url: 'pizza.png',
-		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-		likes: 14,
-		liked: true
-	}, {
-		pizzaname: 'Pizza Segunda',
-		url: 'pizza2.png',
-		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-		likes: 1,
-		liked: false
-	}];
-
 	empty(main).appendChild(template);
 });
 
-},{"./template":19,"empty-element":3,"page":4,"title":7}],19:[function(require,module,exports){
+},{"./template":17,"empty-element":3,"page":11,"title":13}],17:[function(require,module,exports){
 var yo = require('yo-yo');
-var layout = require('../layout');
-/*var menu = require('../');*/
+var landing = require('../../landing');
 
-module.exports = function (menuss) {
-	var el = yo`<div class="content">
-		<div class="container">
-			<div class="row">
-				<div class="col s12">
-					
-				</div>		
-			</div>
-		</div>
-	</div>`;
-
-	return layout(el);
-};
-
-},{"../layout":26,"yo-yo":8}],20:[function(require,module,exports){
-var yo = require('yo-yo');
-
-var el = yo`<footer class="page-footer blue lighten-2">
-    <div class="container">
-        <div class="row">
-		    <div class="col l6 s12">
-                <h5 class="white-text">Contenido del Footer</h5>
-                <p class="grey-text text-lighten-4">Espacio para información de la empresa u otra relevante, se podrá organizar por columnas u otro...</p>
+var signinForm = yo`<div class="col s10 push-s1 m6 push-m3">
+    <div class="row">
+        <div class="signin-box center-align top blue-text text-darken-2">
+            <form class="signin-form">
+                <h2>Inicia sesión</h2>
+                <div class="input-field">
+                    <input type="email" name="email" placeholder="Correo electrónico" class="validate" />
+                </div>
+                <div class="input-field">
+                    <input type="password" name="password" placeholder="Contraseña" class="validate" />
+                </div>
+                <button class="btn btn-emp waves-effect waves-light" type="submit">Ingresar</button>
+            </form>
+        	<div>
+                ¿No estás registrado? <a class="indigo-text text-darken-4" href="/signup">Regístrate</a>
             </div>
-            <div class="col l4 offset-l2 s12">
-                <h5 class="white-text">Links</h5>
-                <ul>
-	                <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
-	                <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
-	                <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
-	                <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
-                </ul>
-        	</div>
-        </div>
-  	</div>
-  	<div class="footer-copyright">
-    <div class="container">
-    	© 2018 Copyright Texto
-    	<a class="grey-text text-lighten-4 right" href="#!">Más Links</a>
+        </div>            
     </div>
-  	</div>
-</footer>`;
+</div>`;
 
-document.getElementById('footer-container').appendChild(el);
+module.exports = landing(signinForm);
 
-},{"yo-yo":8}],21:[function(require,module,exports){
-var yo = require('yo-yo');
-var empty = require('empty-element');
-
-$(document).ready(function () {
-	$('.button-collapse').sideNav();
-});
-
-var el = yo`<nav class="header">
-	<div class="nav-wrapper blue lighten-2">
-	  	<a href="#!" class="brand-logo inline">Logo</a>
-	  	<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-	   	<ul class="right hide-on-med-and-down">
-	  		<li><a href="#!">Nuestra Masa</a></li>
-		    <li><a href="#!">Base de Salsa</a></li>
-		    <li><a href="#!">Tamaño Pizza</a></li>
-		    <li><a href="#!">Más...</a></li>
-		</ul>
-		<div class="col s2 m8 right-align">
-			<a href="#" class="icon-nav btn btn-large btn-flat dropdown-button" data-activates="drop-car">
-				<i class="small material-icons icon-white">shopping_cart</i>
-			</a>
-			<ul id="drop-car" class="dropdown-content">	
-				<li><a href="#">Pedir</a></li>
-			</ul>
-			<a href="#" class="icon-nav btn btn-large btn-flat dropdown-button" data-activates="drop-user">
-				<i class="small material-icons icon-white">perm_identity</i>
-			</a>
-			<ul id="drop-user" class="dropdown-content">
-				<li><a href="#">Salir</a></li>
-			</ul>
-		</div>
-		<ul class="side-nav" id="mobile-demo">
-		  	<li><a href="sass.html">Nuestra Masa</a></li>
-		    <li><a href="badges.html">Base de Salsa</a></li>
-		    <li><a href="collapsible.html">Tamaño Pizza</a></li>
-		    <li><a href="mobile.html">Más...</a></li>
-		</ul>
-	</div>
-</nav>`;
-
-module.exports = function header(ctx, next) {
-	var container = document.getElementById('header-container');
-	empty(container).appendChild(el);
-	next();
-};
-
-},{"empty-element":3,"yo-yo":8}],22:[function(require,module,exports){
+},{"../../landing":23,"yo-yo":14}],18:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
 var title = require('title');
-var header = require('../header');
+
+page('/signup', function (ctx, next) {
+	title('Signup');
+	var main = document.getElementById('main-container');
+	empty(main).appendChild(template);
+});
+
+},{"./template":19,"empty-element":3,"page":11,"title":13}],19:[function(require,module,exports){
+var yo = require('yo-yo');
+var landing = require('../../landing');
+
+var signupForm = yo`<div class="col s10 push-s1 m6 push-m3">
+    <div class="row">
+        <div class="signup-box center-align top blue-text text-darken-2">
+            <form class="signup-form">
+                <h2>Ingresa tus datos</h2>
+                <div class="section">
+                    <input type="email" name="email" placeholder="Correo electrónico" />
+                    <input type="text" name="usuario" placeholder="Nombre de usuario" />
+                    <input type="text" name="direccion" placeholder="Dirección" />
+                    <input type="password" name="password" placeholder="Contraseña" />
+                    <input type="password" name="check_password" placeholder="Repetir Contraseña" />
+                    <button class="btn waves-effect waves-light" type="submit">Regístrate</button>
+                </div>
+            </form>
+        	<div>
+                ¿Ya estás registrado? <a class="indigo-text text-darken-4" href="/signin">Entrar</a>
+            </div>
+        </div>            
+    </div>
+</div>`;
+
+module.exports = landing(signupForm);
+
+},{"../../landing":23,"yo-yo":14}],20:[function(require,module,exports){
+var page = require('page');
+var empty = require('empty-element');
+var template = require('./template');
+var title = require('title');
+var header = require('../layout/header');
 
 page('/', header, function (ctx, next) {
-	title('Pizza Algo');
+	title('Ragustino');
 	var main = document.getElementById('main-container');
 
-	var menus = [{
-		pizzaname: 'Pizza Primera',
+	var pizzas = [{
+		id: '100001',
+		pizzaname: 'PIZZA PRIMERA',
 		url: 'pizza.png',
 		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 		likes: 47,
-		liked: true
+		liked: true,
+		price: 9000
 	}, {
-		pizzaname: 'Pizza Segunda',
+		id: '100002',
+		pizzaname: 'PIZZA SEGUNDA',
 		url: 'pizza2.png',
 		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 		likes: 124,
-		liked: true
+		liked: false,
+		price: 8500
 	}, {
-		pizzaname: 'Pizza Tercera',
+		id: '100003',
+		pizzaname: 'PIZZA TERCERA',
 		url: 'pizza3.png',
 		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 		likes: 10,
-		liked: true
+		liked: true,
+		price: 9000
+	}, {
+		id: '100004',
+		pizzaname: 'PIZZA CUARTA',
+		url: 'pizza.png',
+		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
+		likes: 15,
+		liked: true,
+		price: 10000
+	}, {
+		id: '100005',
+		pizzaname: 'PIZZA QUINTA',
+		url: 'pizza2.png',
+		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
+		likes: 72,
+		liked: true,
+		price: 9000
+	}, {
+		id: '100006',
+		pizzaname: 'PIZZA SEXTA',
+		url: 'pizza3.png',
+		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
+		likes: 4,
+		liked: true,
+		price: 10000
 	}];
 
-	empty(main).appendChild(template(menus));
-
-	$('.carousel.carousel-slider').carousel({ fullWidth: true });
+	empty(main).appendChild(template(pizzas));
 });
 
-},{"../header":21,"./template":23,"empty-element":3,"page":4,"title":7}],23:[function(require,module,exports){
+},{"../layout/header":25,"./template":21,"empty-element":3,"page":11,"title":13}],21:[function(require,module,exports){
 var yo = require('yo-yo');
 var layout = require('../layout');
-var menu = require('../menu-card');
+var pizza = require('../products/pizza');
 
-module.exports = function (menus) {
-	var el = yo`<div class="content">
-		<div class="container">
-			<div class="row">
-				<div class="col s12">
-					<div class="row top">
-						<div class="col s12 center-align">
-					        <p class="menu-text hide-on-small-only blue-text text-darken-2">Texto de bienvenida o descriptivo, destacando características específicas o la funcionalidad de seguimiento en línea</p>
-					        <p class="menu-text hide-on-med-and-up blue-text text-darken-2">Nuestras Recetas</p>
-			    		</div>
-			    	</div>
-			    	<div class="row">
-			    		<div class="col s12 m8 push-m2 l6 push-l3">
-							<div class="carousel carousel-slider">
-								${menus.map(function (pic) {
-		return menu(pic);
+module.exports = function (pizzas) {
+	var el = yo`<div class="content fondo base">
+		<div>
+			<img class="pic-ini" src="fondo.jpg" />
+		</div>
+		<div class="container principal">
+			<div class="row principal2">
+				<div class="col s12 seccion">
+					<div class="row">
+						<div class="col s12 m4">
+							<div class="row">
+								<div class="col s12 center-align">
+									<p class="pack-text grey-text text-darken-4">Sorprende a tus seres queridos con nustros pack's preparados con exquisitos productos</p>
+									<img class="pic-pack" src="pack.jpg" />
+								</div>
+							</div>
+							<div class="divider"></div>
+							<div class="row">
+								<div class="col s12 center-align">
+									<p class="pack-text grey-text text-darken-4">La fiesta la armamos nosotros, conoce nuestros excelentes pack's para disfrutar con tus amigos</p>
+									<img class="pic-pack" src="pack-fiesta.jpg" />
+								</div>
+							</div>
+							<div class="divider hide-on-med-and-up"></div>
+						</div>
+						<div class="col s12 m8">
+							<ul class="collapsible popout" data-collapsible="accordion">
+								<p class="pack-text grey-text text-darken-4 center-align">Conoce las recetas que hemos preparado especialmente para ti con productos de primera seleccion</p>
+							    <li>
+							    	<div class="collapsible-header grey lighten-2">
+							    		<p class="menu-text padding1 hide-on-small-only grey-text text-darken-4 center-align">Nuestras Recetas Especiales</p>
+							        	<p class="menu-text padding1 hide-on-med-and-up grey-text text-darken-4 center-align">Nuestras Recetas</p>
+							    	</div>
+							    	<div class="collapsible-body">
+							    		<div class="col s12 white">
+							    			<div class="row paddingl">
+												<div class="col s12">
+													<p class="menu-text paddingl grey-text text-darken-4">Pizzas</p>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col s12 ajuste-menu-store">
+									    			${pizzas.map(function (pic) {
+		return pizza(pic);
 	})}
-					        </div>
+												</div>
+											</div>	
+											<div class="divider"></div>
+											<div class="row paddingl">
+												<div class="col s12">
+													<p class="menu-text paddingl grey-text text-darken-4">Otros</p>
+												</div>
+											</div>
+											<div class="divider"></div>
+										</div>
+									</div>
+							    </li>
+							    <p class="pack-text grey-text text-darken-4 center-align">Tambièn puedes prepararla a tu gusto selleccionando x ingredientes de distintos tipos, todas las pizzas son preparadas en nuestra masa especial con nuestra receta de salsa</p>
+							    <li>
+									<div class="collapsible-header grey lighten-2">
+										<p class="menu-text padding1 hide-on-small-only grey-text text-darken-4 center-align">Armala a tu gusto</p>
+								    	<p class="menu-text padding1 hide-on-med-and-up grey-text text-darken-4 center-align">A tu gusto</p>
+								   	</div>
+								   	<div class="collapsible-body">
+								   		<div class="col s12 white">
+								   			<div class="row">
+												<div class="col s12">
+													<form action="#">
+														<div class="row paddingl">
+															<div class="col s12">
+																<p class="menu-text paddingl grey-text text-darken-4">Vegetales</p>
+															</div>
+														</div>
+			    										<div class="row">
+														    <div class="col s12 ajuste-menu-store">
+														    	<div class="item">
+																   	<input type="checkbox" class="filled-in" id="filled-in-box1" />
+																   	<label for="filled-in-box1">Producto</label>
+																   	<img src="vegetal.jpg" class="vegetal" />
+																   	<span class="precio">$1.200.-</span>
+																</div>
+																<div class="item">
+																   	<input type="checkbox" class="filled-in" id="filled-in-box2" />
+																   	<label for="filled-in-box2">Producto</label>
+																   	<img src="vegetal.jpg" class="vegetal" />
+																   	<span class="precio">$1.200.-</span>
+																</div>
+																<div class="item">
+																   	<input type="checkbox" class="filled-in" id="filled-in-box3" />
+																   	<label for="filled-in-box3">Producto</label>
+																   	<img src="vegetal.jpg" class="vegetal" />
+																   	<span class="precio">$1.200.-</span>
+																</div>
+																<div class="item">
+																   	<input type="checkbox" class="filled-in" id="filled-in-box4" />
+																   	<label for="filled-in-box4">Producto</label>
+																   	<img src="vegetal.jpg" class="vegetal" />
+																   	<span class="precio">$1.200.-</span>
+																</div>
+																<div class="item">
+																   	<input type="checkbox" class="filled-in" id="filled-in-box5" />
+																   	<label for="filled-in-box5">Producto</label>
+																   	<img src="vegetal.jpg" class="vegetal" />
+																   	<span class="precio">$1.200.-</span>
+																</div>
+																<div class="item">
+																   	<input type="checkbox" class="filled-in" id="filled-in-box6" />
+																   	<label for="filled-in-box6">Producto</label>
+																   	<img src="vegetal.jpg" class="vegetal" />
+																   	<span class="precio">$1.200.-</span>
+																</div>
+														    </div>
+														</div>
+														<div class="divider"></div>
+														<div class="row paddingl">
+															<div class="col s12">
+																<p class="menu-text paddingl grey-text text-darken-4">Carnes</p>
+															</div>
+														</div>
+														<div class="row">
+														    <div class="col s12 ajuste-menu-store">
+														    	<div class="item">
+																   	<input type="checkbox" class="filled-in" id="filled-in-box7" />
+																   	<label for="filled-in-box7">Producto</label>
+																   	<img src="carne.jpg" class="vegetal" />
+																   	<span class="precio">$1.200.-</span>
+																</div>
+																<div class="item">
+																   	<input type="checkbox" class="filled-in" id="filled-in-box8" />
+																   	<label for="filled-in-box8">Producto</label>
+																   	<img src="carne.jpg" class="vegetal" />
+																   	<span class="precio">$1.200.-</span>
+																</div>
+																<div class="item">
+																   	<input type="checkbox" class="filled-in" id="filled-in-box9" />
+																   	<label for="filled-in-box9">Producto</label>
+																   	<img src="carne.jpg" class="vegetal" />
+																   	<span class="precio">$1.200.-</span>
+																</div>
+																<div class="item">
+																   	<input type="checkbox" class="filled-in" id="filled-in-box10" />
+																   	<label for="filled-in-box10">Producto</label>
+																   	<img src="carne.jpg" class="vegetal" />
+																   	<span class="precio">$1.200.-</span>
+																</div>
+																<div class="item">
+																   	<input type="checkbox" class="filled-in" id="filled-in-box11" />
+																   	<label for="filled-in-box11">Producto</label>
+																   	<img src="carne.jpg" class="vegetal" />
+																   	<span class="precio">$1.200.-</span>
+																</div>
+																<div class="item">
+																   	<input type="checkbox" class="filled-in" id="filled-in-box12" />
+																   	<label for="filled-in-box12">Producto</label>
+																   	<img src="carne.jpg" class="vegetal" />
+																   	<span class="precio">$1.200.-</span>
+																</div>
+															</div>
+														</div>
+														<div class="divider"></div>
+														<div class="row paddingl">
+															<div class="col s12">
+																<p class="menu-text paddingl grey-text text-darken-4">Otros</p>
+															</div>
+														</div>
+													</form>
+												</div>
+										    </div>
+								    	</div>
+								    </div>
+								</li>
+							    <p class="pack-text grey-text text-darken-4 center-align">Descubre las ofertas que hemos preparado especialmente para ti.</p>
+							    <li>
+							    	<div class="collapsible-header grey lighten-2">
+							    		<p class="menu-text padding1 hide-on-small-only grey-text text-darken-4 center-align">Nuestras Ofertas Especiales</p>
+							        	<p class="menu-text padding1 hide-on-med-and-up grey-text text-darken-4 center-align">Ofertas</p>
+							    	</div>
+							    	<div class="collapsible-body">
+							    	</div>
+							    </li>
+							</ul>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col s12 center-align">
-					        <p class="menu-text hide-on-small-only blue-text text-darken-2">Siendo esta la pantalla de inicio podrá apoyarse en imágenes y formas que resalten las caracteríticas más importantes</p>
-					        <p class="menu-text hide-on-med-and-up blue-text text-darken-2">Preparadas con la mejor base y salsa...</p>
-					</div>
-			    	</div>
-				</div>			
+				</div>
 			</div>
 		</div>
+		<div>
+			<img class="pic-ini" src="fondo.jpg" />
+		</div> 
 	</div>`;
 
 	return layout(el);
 };
 
-},{"../layout":26,"../menu-card":27,"yo-yo":8}],24:[function(require,module,exports){
+},{"../layout":26,"../products/pizza":27,"yo-yo":14}],22:[function(require,module,exports){
 // acá se incluirá toda la lógica del proyecto, las rutas, timeline, etc.
 var page = require('page');
 
 require('./homepage');
-require('./store');
-require('./app');
-require('./signup');
-require('./signin');
-require('./footer');
+require('./clients/signup');
+require('./clients/signin');
+require('./layout/footer');
 
 page();
 
-},{"./app":18,"./footer":20,"./homepage":22,"./signin":28,"./signup":30,"./store":33,"page":4}],25:[function(require,module,exports){
+},{"./clients/signin":16,"./clients/signup":18,"./homepage":20,"./layout/footer":24,"page":11}],23:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function landing(box) {
@@ -2865,7 +3130,93 @@ module.exports = function landing(box) {
 	</div>`;
 };
 
-},{"yo-yo":8}],26:[function(require,module,exports){
+},{"yo-yo":14}],24:[function(require,module,exports){
+var yo = require('yo-yo');
+
+var el = yo`<footer class="page-footer grey lighten-2">
+    <div class="container">
+        <div class="row">
+		    <div class="col l6 s12">
+                <h5 class="grey-text text-darken-4">Contenido del Footer</h5>
+                <p class="grey-text text-darken-4">Espacio para información de la empresa u otra relevante, se podrá organizar por columnas u otro...</p>
+            </div>
+            <div class="col l4 offset-l2 s12">
+                <h5 class="grey-text text-darken-4">Links</h5>
+                <ul>
+	                <li><a class="grey-text text-darken-4" href="#!">Link 1</a></li>
+	                <li><a class="grey-text text-darken-4" href="#!">Link 2</a></li>
+	                <li><a class="grey-text text-darken-4" href="#!">Link 3</a></li>
+	                <li><a class="grey-text text-darken-4" href="#!">Link 4</a></li>
+                </ul>
+        	</div>
+        </div>
+  	</div>
+  	<div class="footer-copyright">
+        <div class="grey-text text-darken-4 container">
+        	© 2018 Copyright Texto
+        	<a class="grey-text text-darken-4 right" href="#!">Más Links</a>
+        </div>
+  	</div>
+</footer>`;
+
+document.getElementById('footer-container').appendChild(el);
+
+},{"yo-yo":14}],25:[function(require,module,exports){
+var yo = require('yo-yo');
+var empty = require('empty-element');
+
+$(document).ready(function () {
+	$('.button-collapse').sideNav();
+});
+
+var el = yo`<nav class="header grey lighten-3">
+	<div class="container">
+		<div class="row piso-nav">
+			<div class="col s12">
+				<div class="nav-wrapper">
+					<div class="container barra">
+						<div class="row piso-nav">
+								<div class="col s2">
+							  	<a href="#!" class="brand-logo">LOGO</a>
+							  	<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+							</div>
+							<div class="col s8">
+								<ul class="right hide-on-med-and-down">
+									<li><a href="#!">CARTA</a></li>
+								    <li><a href="#!">PACK's</a></li>
+								    <li><a href="#!">ARTA TU FIESTA</a></li>
+								    <li><a href="#!"><i class="material-icons left">shopping_cart</i></a></li>
+								</ul>
+							</div>
+							<div class="col s2 offset-s8 m2 offset-m8 l2">
+							   	<a href="#" class="btn btn-large btn-flat dropdown-button" data-activates="drop-user">
+									<i class="small material-icons">perm_identity</i>
+								</a>
+								<ul id="drop-user" class="dropdown-content">
+									<li><a href="#">Salir</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<ul class="side-nav" id="mobile-demo">
+					  	<li><a href="#!">CARTA</a></li>
+					    <li><a href="#!">PACK's</a></li>
+					    <li><a href="#!">ARTA TU FIESTA</a></li>
+					    <li><a href="#!"><i class="material-icons left">shopping_cart</i></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</nav>`;
+
+module.exports = function header(ctx, next) {
+	var container = document.getElementById('header-container');
+	empty(container).appendChild(el);
+	next();
+};
+
+},{"empty-element":3,"yo-yo":14}],26:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function layout(content) {
@@ -2874,349 +3225,28 @@ module.exports = function layout(content) {
 	</div>`;
 };
 
-},{"yo-yo":8}],27:[function(require,module,exports){
+},{"yo-yo":14}],27:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (pic) {
-	return yo`<div class="carousel-item card">
+	return yo`<div class="card pizza-card-content">
 		<div class="card-image waves-effect waves-block waves-light">
-		    <img class="activator responsive-img" src="${pic.url}">
-		</div>
-		<div class="card-reveal">
-		    <span class="card-title blue-text text-darken-2">${pic.pizzaname}<i class="material-icons right">close</i></span>
-		    <p>${pic.pizzacontent}</p>
-		    <a class="waves-effect waves-light btn"><i class="material-icons left">shopping_cart</i>Pedir en Línea</a>
-		    <p class="center-align bottom">
-				<a class="left" href="#"><i class="material-icons">favorite_border</i></a>
-				<span class="left likes">${pic.likes} me gusta</span>
-			</p>
-		</div>
-	</div>`;
-};
-
-},{"yo-yo":8}],28:[function(require,module,exports){
-var page = require('page');
-var empty = require('empty-element');
-var template = require('./template');
-var title = require('title');
-
-page('/signin', function (ctx, next) {
-	title('Signin');
-	var main = document.getElementById('main-container');
-	empty(main).appendChild(template);
-});
-
-},{"./template":29,"empty-element":3,"page":4,"title":7}],29:[function(require,module,exports){
-var yo = require('yo-yo');
-var landing = require('../landing');
-
-var signinForm = yo`<div class="col s10 push-s1 m6 push-m3">
-    <div class="row">
-        <div class="signup-box center-align top blue-text text-darken-2">
-            <form class="signup-form">
-                <h2>Inicia sesión</h2>
-                <div class="section">
-                    <input type="email" name="email" placeholder="Correo electrónico" />
-                    <input type="password" name="password" placeholder="Contraseña" />
-                    <button class="btn btn-emp waves-effect waves-light" type="submit">Ingresar</button>
-                </div>
-            </form>
-        	<div class="login-box">
-                ¿No estás registrado? <a class="indigo-text text-darken-4" href="/signup">Regístrate</a>
-            </div>
-        </div>            
-    </div>
-</div>`;
-
-module.exports = landing(signinForm);
-
-},{"../landing":25,"yo-yo":8}],30:[function(require,module,exports){
-var page = require('page');
-var empty = require('empty-element');
-var template = require('./template');
-var title = require('title');
-
-page('/signup', function (ctx, next) {
-	title('Signup');
-	var main = document.getElementById('main-container');
-	empty(main).appendChild(template);
-});
-
-},{"./template":31,"empty-element":3,"page":4,"title":7}],31:[function(require,module,exports){
-var yo = require('yo-yo');
-var landing = require('../landing');
-
-var signupForm = yo`<div class="col s10 push-s1 m6 push-m3">
-    <div class="row">
-        <div class="signup-box center-align top blue-text text-darken-2">
-            <form class="signup-form">
-                <h2>Ingresa tus datos</h2>
-                <div class="section">
-                    <input type="email" name="email" placeholder="Correo electrónico" />
-                    <input type="text" name="usuario" placeholder="Nombre de usuario" />
-                    <input type="text" name="direccion" placeholder="Dirección" />
-                    <input type="password" name="password" placeholder="Contraseña" />
-                    <input type="password" name="check_password" placeholder="Repetir Contraseña" />
-                    <button class="btn btn-emp waves-effect waves-light" type="submit">Regístrate</button>
-                </div>
-            </form>
-        	<div class="login-box">
-                ¿Ya estás registrado? <a class="indigo-text text-darken-4" href="/signin">Entrar</a>
-            </div>
-        </div>            
-    </div>
-</div>`;
-
-module.exports = landing(signupForm);
-
-},{"../landing":25,"yo-yo":8}],32:[function(require,module,exports){
-var yo = require('yo-yo');
-
-module.exports = function (pic) {
-	return yo`<div class="card menu-store top">
-		<div class="card-image waves-effect waves-block waves-light">
-		    <img class="activator responsive-img" src="${pic.url}">
+			<img class="activator responsive" src="${pic.url}">
 		</div>
 		<div class="card-content">
-			<p class="center-align bottom">
-				<a class="left" href="#"><i class="material-icons">favorite_border</i></a>
+			<span class="pizza-text card-title activator grey-text text-darken-4">${pic.pizzaname}</span>
+			<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons">add</i></a>
+			<p class="likes-content">
+				<a class="left" href="#!"><i class="material-icons">favorite_border</i></a>
 				<span class="left likes">${pic.likes} me gusta</span>
 			</p>
 		</div>
 		<div class="card-reveal">
-		    <span class="card-title blue-text text-darken-2">${pic.pizzaname}<i class="material-icons right">close</i></span>
-		    <p>${pic.pizzacontent}</p>
-		  	<a class="waves-effect waves-light btn"><i class="material-icons left">shopping_cart</i>Pedir en Línea</a>
+		    <span class="pizza-text card-title blue-text text-darken-2">${pic.pizzaname}<i class="material-icons right">close</i></span>
+		    <p class="pizza-content-text">${pic.pizzacontent}</p>
+		    <span class="left likes blue-text text-darken-2">Valor: $${pic.price}</span>
 		</div>
 	</div>`;
 };
 
-},{"yo-yo":8}],33:[function(require,module,exports){
-var page = require('page');
-var empty = require('empty-element');
-var template = require('./template');
-var title = require('title');
-var header = require('../header');
-
-page('/store', header, function (ctx, next) {
-	title('Tienda en Línea');
-	var main = document.getElementById('main-container');
-
-	var menuss = [{
-		pizzaname: 'Pizza Primera',
-		url: 'pizza.png',
-		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-		likes: 14,
-		liked: true
-	}, {
-		pizzaname: 'Pizza Segunda',
-		url: 'pizza2.png',
-		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-		likes: 1,
-		liked: false
-	}, {
-		pizzaname: 'Pizza Tercera',
-		url: 'pizza3.png',
-		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-		likes: 124,
-		liked: true
-	}, {
-		pizzaname: 'Pizza Cuarta',
-		url: 'pizza.png',
-		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-		likes: 14,
-		liked: true
-	}, {
-		pizzaname: 'Pizza Cuarta',
-		url: 'pizza.png',
-		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-		likes: 14,
-		liked: true
-	}, {
-		pizzaname: 'Pizza Sexta',
-		url: 'pizza3.png',
-		pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-		likes: 4,
-		liked: true
-	}];
-
-	empty(main).appendChild(template(menuss));
-
-	$(document).ready(function () {
-		$('.collapsible').collapsible();
-	});
-});
-
-},{"../header":21,"./template":34,"empty-element":3,"page":4,"title":7}],34:[function(require,module,exports){
-var yo = require('yo-yo');
-var layout = require('../layout');
-var menu = require('../store-card');
-
-module.exports = function (menuss) {
-	var el = yo`<div class="content">
-		<div class="container">
-			<div class="row">
-				<div class="col s12">
-					<div class="row top">
-						<div class="col s12 center-align">
-					        <p class="menu-text hide-on-small-only blue-text text-darken-2 ">Texto introductorio, podrá definir una visión general de la pizza, con el sello propio, talvez las características de la masa y la base de salsa</p>
-					        <p class="menu-text hide-on-med-and-up blue-text text-darken-2 ">Texto introductorio, resumido y acotado...</p>
-			    		</div>
-			    	</div>
-					<ul class="collapsible popout" data-collapsible="accordion">
-					    <li class="bottom">
-					    	<div class="collapsible-header blue lighten-2">
-					    		<p class="menu-text padding1 hide-on-small-only white-text center-align">Nuestras Recetas Especiales</p>
-					        	<p class="menu-text padding1 hide-on-med-and-up white-text center-align">Nuestras Recetas</p>
-					    	</div>
-					    	<div class="collapsible-body">
-					    		<div class="col s12 white ajuste-menu-store">
-					    			${menuss.map(function (pic) {
-		return menu(pic);
-	})}
-								</div>
-					    	</div>
-					    </li>
-					    <li class="bottom">
-					    	<div class="collapsible-header blue lighten-2">
-					    		<p class="menu-text padding1 hide-on-small-only white-text center-align">Armala a tu gusto</p>
-					        	<p class="menu-text padding1 hide-on-med-and-up white-text center-align">A tu gusto</p>
-					    	</div>
-					    	<div class="collapsible-body">
-					    		<div class="col s12 white">
-					    			<div class="row reset">
-										<div class="col s12 center-align">
-									        <p class="menu-text padding1 hide-on-small-only blue-text text-darken-2 ">Descripciones generales de la pizza como la base y masa además de explicar la cantidad y tipos de ingredientes, rectricciones si existen...</p>
-									        <p class="menu-text padding1 hide-on-med-and-up blue-text text-darken-2 ">Breve descripción e instrucciones...</p>
-							    		</div>
-							    	</div>
-							    	<div class="row">
-										<div class="col s12">
-											<form action="#">
-												<div class="row paddingl">
-													<div class="col s12">
-														<p class="menu-text paddingl blue-text text-darken-2">Vegetales</p>
-													</div>
-												</div>
-    											<div class="row">
-												    <div class="col s12 ajuste-menu-store">
-												    	<div class="item menu-store">
-														   	<input type="checkbox" class="filled-in" id="filled-in-box1" />
-														   	<label for="filled-in-box1">Producto</label>
-														   	<img src="vegetal.jpg" class="vegetal" />
-														   	<span class="precio">$1.200.-</span>
-														</div>
-														<div class="item menu-store">
-														   	<input type="checkbox" class="filled-in" id="filled-in-box2" />
-														   	<label for="filled-in-box2">Producto</label>
-														   	<img src="vegetal.jpg" class="vegetal" />
-														   	<span class="precio">$1.200.-</span>
-														</div>
-														<div class="item menu-store">
-														   	<input type="checkbox" class="filled-in" id="filled-in-box3" />
-														   	<label for="filled-in-box3">Producto</label>
-														   	<img src="vegetal.jpg" class="vegetal" />
-														   	<span class="precio">$1.200.-</span>
-														</div>
-														<div class="item menu-store">
-														   	<input type="checkbox" class="filled-in" id="filled-in-box4" />
-														   	<label for="filled-in-box4">Producto</label>
-														   	<img src="vegetal.jpg" class="vegetal" />
-														   	<span class="precio">$1.200.-</span>
-														</div>
-														<div class="item menu-store">
-														   	<input type="checkbox" class="filled-in" id="filled-in-box5" />
-														   	<label for="filled-in-box5">Producto</label>
-														   	<img src="vegetal.jpg" class="vegetal" />
-														   	<span class="precio">$1.200.-</span>
-														</div>
-														<div class="item menu-store">
-														   	<input type="checkbox" class="filled-in" id="filled-in-box6" />
-														   	<label for="filled-in-box6">Producto</label>
-														   	<img src="vegetal.jpg" class="vegetal" />
-														   	<span class="precio">$1.200.-</span>
-														</div>
-												    </div>
-												</div>
-												<div class="divider bottom"></div>
-												<div class="row paddingl">
-													<div class="col s12">
-														<p class="menu-text paddingl blue-text text-darken-2">Carnes</p>
-													</div>
-												</div>
-												<div class="row">
-												    <div class="col s12 ajuste-menu-store">
-												    	<div class="item menu-store">
-														   	<input type="checkbox" class="filled-in" id="filled-in-box7" />
-														   	<label for="filled-in-box7">Producto</label>
-														   	<img src="carne.jpg" class="vegetal" />
-														   	<span class="precio">$1.200.-</span>
-														</div><div class="item menu-store">
-														   	<input type="checkbox" class="filled-in" id="filled-in-box8" />
-														   	<label for="filled-in-box8">Producto</label>
-														   	<img src="carne.jpg" class="vegetal" />
-														   	<span class="precio">$1.200.-</span>
-														</div>
-														<div class="item menu-store">
-														   	<input type="checkbox" class="filled-in" id="filled-in-box9" />
-														   	<label for="filled-in-box9">Producto</label>
-														   	<img src="carne.jpg" class="vegetal" />
-														   	<span class="precio">$1.200.-</span>
-														</div>
-														<div class="item menu-store">
-														   	<input type="checkbox" class="filled-in" id="filled-in-box10" />
-														   	<label for="filled-in-box10">Producto</label>
-														   	<img src="carne.jpg" class="vegetal" />
-														   	<span class="precio">$1.200.-</span>
-														</div>
-														<div class="item menu-store">
-														   	<input type="checkbox" class="filled-in" id="filled-in-box11" />
-														   	<label for="filled-in-box11">Producto</label>
-														   	<img src="carne.jpg" class="vegetal" />
-														   	<span class="precio">$1.200.-</span>
-														</div>
-														<div class="item menu-store">
-														   	<input type="checkbox" class="filled-in" id="filled-in-box12" />
-														   	<label for="filled-in-box12">Producto</label>
-														   	<img src="carne.jpg" class="vegetal" />
-														   	<span class="precio">$1.200.-</span>
-														</div>
-													</div>
-												</div>
-												<div class="divider bottom"></div>
-												<div class="row paddingl">
-													<div class="col s12">
-														<p class="menu-text paddingl blue-text text-darken-2">Otros</p>
-													</div>
-												</div>
-
-											</form>
-									    </div>
-							    	</div>
-					    		</div>
-					    	</div>
-					    </li>
-					    <li class="bottom">
-					    	<div class="collapsible-header blue lighten-2">
-					    		<p class="menu-text padding1 hide-on-small-only white-text center-align">Líquidos para acompañarla</p>
-					        	<p class="menu-text padding1 hide-on-med-and-up white-text center-align">Líquidos</p>
-					    	</div>
-					    	<div class="collapsible-body">
-					    	</div>
-					    </li>
-					</ul>
-					<div class="row">
-						<div class="col s12 center-align">
-					        <p class="menu-text hide-on-small-only blue-text text-darken-2 ">Instrucciones específicas para continuar con la compra, se pueden incluir<a href="#!" class="indigo-text text-darken-4"> enlaces </a>para apoyar la lógica de la aplicación</p>
-					        <p class="menu-text hide-on-med-and-up blue-text text-darken-2 ">Instruccciones resumidas más un<a href="#!" class="indigo-text text-darken-4"> enlace</a></p>
-			    		</div>
-			    	</div>
-				</div>		
-			</div>
-		</div>
-	</div>`;
-
-	return layout(el);
-};
-
-},{"../layout":26,"../store-card":32,"yo-yo":8}]},{},[24]);
+},{"yo-yo":14}]},{},[22]);
