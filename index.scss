@@ -20,31 +20,20 @@ Body {
 	padding: 0;
 }
 
-.item {
-	max-width: 40%;
-	min-width: 40%;
-}
-
-@media #{$small-and-down} {
-	.item {
-		max-width: 100%;
-		min-width: 100%;
-	}
-}
-
-[type="checkbox"].filled-in:checked + label:after {
-  border: 2px solid #1976D2;
-  background-color: #1976D2;
-}
-
-.vegetal {
-	max-width: 3rem;
-	border-radius: 50%;
+.landing-fondo {
+	background: $color-brand;
+	margin-bottom: 0;
 }
 
 @import "src/layout/header/styles";
-@import "src/homepage/styles";
-@import "src/products/pizza/styles";
 @import "src/clients/signup/styles";
 @import "src/clients/signin/styles";
+@import "src/homepage/styles";
+@import "src/carta/styles";
+@import "src/packs/styles";
+@import "src/products/pizza/styles";
+@import "src/products/vegetal/styles";
+@import "src/ragsystem/styles";
+/*@import "src/ragsystem/headersystem/styles";
+@import "src/ragsystem/estadisticas/styles";*/
 @import "src/layout/footer/styles";

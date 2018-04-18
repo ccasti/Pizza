@@ -1,0 +1,30 @@
+.item {
+	max-width: 30%;
+	min-width: 30%;
+}
+
+@media #{$medium-and-down} {
+    .item {
+    	max-width: 45%;
+    	min-width: 45%;
+    }
+}
+
+@media #{$small-and-down} {
+	.item {
+		max-width: 90%;
+		min-width: 90%;
+	}
+}
+
+.vegetal {
+	max-width: 3rem;
+	border-radius: 50%;
+	margin: 0 1rem;
+	padding-top: 8px;
+}
+
+[type="checkbox"].filled-in:checked + label:after {
+	border: 2px solid #1976d2 !important;
+	background-color: #1976d2 !important;
+}

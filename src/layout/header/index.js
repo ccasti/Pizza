@@ -13,15 +13,16 @@ var el = yo`<nav class="header grey lighten-3">
 					<div class="container barra">
 						<div class="row piso-nav">
 								<div class="col s2">
-							  	<a href="#!" class="brand-logo">LOGO</a>
+							  	<a href="/" class="brand-logo">LOGO</a>
 							  	<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
 							</div>
 							<div class="col s8">
 								<ul class="right hide-on-med-and-down">
-									<li><a href="#!">CARTA</a></li>
-								    <li><a href="#!">PACK's</a></li>
-								    <li><a href="#!">ARTA TU FIESTA</a></li>
-								    <li><a href="#!"><i class="material-icons left">shopping_cart</i></a></li>
+									<li><a href="/">INICIO</a></li>
+									<li><a href="/carta">CARTA</a></li>
+								    <li><a href="/packs">PACK's</a></li>
+								    <li><a href="/fiesta">ARTA TU FIESTA</a></li>
+								    <li><a href="/carro"><i class="material-icons left">shopping_cart</i></a></li>
 								</ul>
 							</div>
 							<div class="col s2 offset-s8 m2 offset-m8 l2">
@@ -35,10 +36,11 @@ var el = yo`<nav class="header grey lighten-3">
 						</div>
 					</div>
 					<ul class="side-nav" id="mobile-demo">
-					  	<li><a href="#!">CARTA</a></li>
-					    <li><a href="#!">PACK's</a></li>
-					    <li><a href="#!">ARTA TU FIESTA</a></li>
-					    <li><a href="#!"><i class="material-icons left">shopping_cart</i></a></li>
+						<li><a href="/">INICIO</a></li>
+					  	<li><a href="/carta">CARTA</a></li>
+					    <li><a href="/packs">PACK's</a></li>
+					    <li><a href="/fiesta">ARTA TU FIESTA</a></li>
+					    <li><a href="/carro"><i class="material-icons left">shopping_cart</i></a></li>
 					</ul>
 				</div>
 			</div>

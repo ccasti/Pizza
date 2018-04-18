@@ -1,11 +1,17 @@
 .pizza-card-content {
-	max-width: 40%;
-	margin: 0 0 2rem 0 !important;
+	max-width: 27%;
+	margin: 2rem 0 !important;
+}	
+
+@media #{$medium-and-down} {
+    .pizza-card-content {
+    	max-width: 39%;
+    }
 }
 
 @media #{$small-and-down} {
 	.pizza-card-content {
-		max-width: 100%;
+		max-width: 70%;
 	}
 }
 
@@ -34,4 +40,18 @@
 	line-height: 2rem;
 	margin-left: 1rem;
 	font-size: 0.8rem;
+}
+
+.card .favorite {
+	display: none;
+}
+
+.card.liked {
+	.favorite {
+		display: block;
+	}
+
+	.favorite_border {
+		display: none;
+	}
 }

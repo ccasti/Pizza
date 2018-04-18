@@ -6435,22 +6435,9 @@ Body {
   margin: 0 auto;
   padding: 0; }
 
-.item {
-  max-width: 40%;
-  min-width: 40%; }
-
-@media only screen and (max-width: 600px) {
-  .item {
-    max-width: 100%;
-    min-width: 100%; } }
-
-[type="checkbox"].filled-in:checked + label:after {
-  border: 2px solid #1976D2;
-  background-color: #1976D2; }
-
-.vegetal {
-  max-width: 3rem;
-  border-radius: 50%; }
+.landing-fondo {
+  background: #e0e0e0;
+  margin-bottom: 0; }
 
 .piso-nav {
   margin-bottom: 0 !important; }
@@ -6468,6 +6455,36 @@ nav a {
 nav ul a {
   color: #212121 !important;
   font-size: 0.8rem; }
+
+.signup-box {
+  background: #fff;
+  border-radius: 5px;
+  padding: 10px; }
+
+.top {
+  margin-top: 2rem; }
+
+.signup-form h2 {
+  font-size: 1.5em; }
+
+.input-field input[type=text]:focus {
+  border-bottom: 1px solid #1976D2;
+  box-shadow: 0 1px 0 0 #1976D2;
+  color: #212121 !important; }
+
+input[type=email]:focus:not([readonly]) + label, input[type=text]:focus:not([readonly]) + label, textarea.materialize-textarea:focus:not([readonly]) + label {
+  color: #1976D2 !important; }
+
+.signin-box {
+  background: #fff;
+  border-radius: 5px;
+  padding: 10px; }
+
+.top {
+  margin-top: 2rem; }
+
+.signin-form h2 {
+  font-size: 1.5em; }
 
 .fondo {
   background: #fff; }
@@ -6514,13 +6531,43 @@ nav ul a {
 .paddingl {
   padding: 1rem 0 0 2rem !important; }
 
+.collapsible.popout > li {
+  margin-bottom: 4rem; }
+
+.menu-text-in {
+  font-size: 1.2rem;
+  margin: 0 auto; }
+
+.top {
+  margin-top: 2rem; }
+
+.dropdown-content li > span {
+  color: #1976d2; }
+
+.separar {
+  margin-bottom: 2rem; }
+
+.card.horizontal {
+  margin-bottom: 4rem; }
+
+.up {
+  margin-top: 2rem; }
+
+.iconcard {
+  color: #039be5 !important;
+  margin-right: 0 !important; }
+
 .pizza-card-content {
-  max-width: 40%;
-  margin: 0 0 2rem 0 !important; }
+  max-width: 27%;
+  margin: 2rem 0 !important; }
+
+@media only screen and (max-width: 992px) {
+  .pizza-card-content {
+    max-width: 39%; } }
 
 @media only screen and (max-width: 600px) {
   .pizza-card-content {
-    max-width: 100%; } }
+    max-width: 70%; } }
 
 .pizza-text {
   max-width: 100%;
@@ -6544,48 +6591,43 @@ nav ul a {
   margin-left: 1rem;
   font-size: 0.8rem; }
 
-.signup-box {
-  background: #fff;
-  border-radius: 5px;
-  padding: 10px; }
+.card .favorite {
+  display: none; }
 
-.top {
-  margin-top: 2rem; }
+.card.liked .favorite {
+  display: block; }
 
-.signup-form h2 {
-  font-size: 1.5em; }
+.card.liked .favorite_border {
+  display: none; }
 
-.signin-box {
-  background: #fff;
-  border-radius: 5px;
-  padding: 10px; }
+.item {
+  max-width: 30%;
+  min-width: 30%; }
 
-.top {
-  margin-top: 2rem; }
+@media only screen and (max-width: 992px) {
+  .item {
+    max-width: 45%;
+    min-width: 45%; } }
 
-.signin-form h2 {
-  font-size: 1.5em; }
+@media only screen and (max-width: 600px) {
+  .item {
+    max-width: 90%;
+    min-width: 90%; } }
 
-.input-field label {
-  color: #1976D2; }
+.vegetal {
+  max-width: 3rem;
+  border-radius: 50%;
+  margin: 0 1rem;
+  padding-top: 8px; }
 
-.input-field input[type=email], input[type=password]:focus + label {
-  color: #1976D2; }
+[type="checkbox"].filled-in:checked + label:after {
+  border: 2px solid #1976d2 !important;
+  background-color: #1976d2 !important; }
 
-.input-field input[type=email], input[type=password]:focus {
-  border-bottom: 1px solid #1976D2;
-  box-shadow: 0 1px 0 0 #1976D2; }
+.venta-item {
+  padding: 1rem 2rem !important; }
 
-.input-field input[type=email], input[type=password].valid {
-  border-bottom: 1px solid #1976D2;
-  box-shadow: 0 1px 0 0 #1976D2; }
-
-.input-field input[type=email], input[type=password].invalid {
-  border-bottom: 1px solid #9e9e9e;
-  box-shadow: 0 1px 0 0 #9e9e9e; }
-
-.input-field .prefix.active {
-  color: #1976D2; }
-
+/*@import "src/ragsystem/headersystem/styles";
+@import "src/ragsystem/estadisticas/styles";*/
 footer.page-footer {
   margin-top: 0; }

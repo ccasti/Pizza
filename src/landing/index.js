@@ -4,7 +4,7 @@ module.exports = function landing (box) {
 	return yo`<div class="container">
     	<div class="row">
     	    <div class="col s10 push-s1">
-     	       <div class="row">
+     	       <div class="row landing-fondo">
       		        ${box}
             	</div>
         	</div>

@@ -8,13 +8,11 @@ var el = yo`<footer class="page-footer grey lighten-2">
                 <p class="grey-text text-darken-4">Espacio para información de la empresa u otra relevante, se podrá organizar por columnas u otro...</p>
             </div>
             <div class="col l4 offset-l2 s12">
-                <h5 class="grey-text text-darken-4">Links</h5>
+                <h5 class="grey-text text-darken-4">Ragustino</h5>
                 <ul>
-	                <li><a class="grey-text text-darken-4" href="#!">Link 1</a></li>
-	                <li><a class="grey-text text-darken-4" href="#!">Link 2</a></li>
-	                <li><a class="grey-text text-darken-4" href="#!">Link 3</a></li>
-	                <li><a class="grey-text text-darken-4" href="#!">Link 4</a></li>
-                </ul>
+	                <li><a class="grey-text text-darken-4" href="/">Inicio</a></li>
+	                <li><a class="grey-text text-darken-4" href="/carro">Carro</a></li>
+	            </ul>
         	</div>
         </div>
   	</div>
