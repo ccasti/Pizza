@@ -21,7 +21,15 @@ gulp.task('assets', function () {
 })
 
 function compile(watch) {//watch es la VARIABLE que indicará si hacemos o no watch, enviando o no el PARAMETRO
-	var bundle = watchify(browserify('./src/index.js'/*, { debug: true}*/));
+	var bundle = browserify('./src/index.js');
+
+	if(watch) {//chequea si la condición es verdadera o no
+		bundle = watchify(bundle);
+		bundle.on('update', function () {
+			console.log('--> bundling...');
+			rebundle();
+		});
+	}
 
 	function rebundle() {
 		bundle
@@ -33,13 +41,6 @@ function compile(watch) {//watch es la VARIABLE que indicará si hacemos o no wa
 			/*.pipe(stripDebug())*/
 			.pipe(rename('app.js'))
 			.pipe(gulp.dest('public'));
-	}
-
-	if(watch) {//chequea si la condición es verdadera o no
-		bundle.on('update', function () {
-			console.log('--> bundling...');
-			rebundle();
-		})
 	}
 
 	rebundle();

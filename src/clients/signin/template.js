@@ -1,23 +1,38 @@
 var yo = require('yo-yo');
 var landing = require('../../landing');
 
-var signinForm = yo`<div class="col s10 push-s1 m6 push-m3">
+var signinForm = yo`<div class="col s10 push-s1 m6 push-m3 l4 push-l4">
     <div class="row">
         <div class="signin-box">
             <form class="signin-form">
-                <h2>Inicia sesión</h2>
-                <div class="input-field col s12">
-                    <input id="email" type="email" class="validate" />
-                    <label for="email">Email</label>
+                <div class="row">
+                    <div class="col s12">
+                        <h2 class="center-align">Inicia sesión</h2>
+                    </div>
                 </div>
-                <div class="input-field">
-                    <input type="password" name="password" placeholder="Contraseña" class="validate" />
+                <div class="row">
+                    <div class="col s12 input-field">
+                        <input id="email" type="email" class="validate" />
+                        <label for="email">Correo Electronico</label>
+                    </div>
                 </div>
-                <button class="btn btn-emp waves-effect waves-light" type="submit">Ingresar</button>
+                <div class="row">
+                    <div class="col s12 input-field">
+                        <input id="password" type="password" class="validate">
+                        <label for="password">Contraseña</label>
+                    </div>
+                </div>
+                <div class="row signin-btn">
+                    <div class="col s12 center-align">
+                        <button class="btn waves-effect waves-light blue darken-2">Ingresar</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 center-align">
+                        ¿No estás registrado? <a class="indigo-text text-darken-4" href="/signup">Regístrate</a>
+                    </div>
+                </div>
             </form>
-        	<div>
-                ¿No estás registrado? <a class="indigo-text text-darken-4" href="/signup">Regístrate</a>
-            </div>
         </div>            
     </div>
 </div>`;

@@ -11,7 +11,7 @@
 
 @media #{$small-and-down} {
 	.pizza-card-content {
-		max-width: 70%;
+		max-width: 80%;
 	}
 }
 
@@ -19,6 +19,7 @@
 	max-width: 100%;
 	font-size: 0.8rem !important;
 	color: $color-brand;
+	margin-bottom: 1rem !important;
 }
 
 .pizza-content-text {
@@ -29,7 +30,7 @@
 
 .likes-content {
 	margin: 0 0 2rem 0 !important;
-	padding: 0 !important;
+	padding: 0 0 1rem 0 !important;
 }
 
 .card .card-content {

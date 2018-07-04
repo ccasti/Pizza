@@ -1,0 +1,43 @@
+.col-text {
+	padding-right: 0 !important;
+}
+
+.item-text {
+	padding: 0 !important;
+	font-size: 1.2rem;
+	margin: 0 !important;
+}
+
+@media #{$medium-and-down} {
+    .item-text, .precio {
+    	font-size: 1.1rem;
+    }
+}
+
+@media #{$small-and-down} {
+	.item-text, .precio {
+		font-size: 1rem;
+	}
+}
+
+.detalle-text {
+	padding: 0 !important;
+	font-size: 1.0rem;
+	margin: 0 !important;
+}
+
+@media #{$medium-and-down} {
+    .detalle-text, .precio {
+    	font-size: 0.9rem;
+    }
+}
+
+@media #{$small-and-down} {
+	.detalle-text, .precio {
+		font-size: 0.8rem;
+	}
+}
+
+.fila-nombre {
+	margin-bottom: 0 !important;
+}

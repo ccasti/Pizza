@@ -1,4 +1,5 @@
 @import "node_modules/materialize-css/sass/materialize.scss";
+@import url('https://fonts.googleapis.com/css?family=Oswald');
 
 $color-brand: #e0e0e0;
 $color-secondary: #fff;
@@ -6,7 +7,7 @@ $color-text: #212121;
 
 Body {
 	background: $color-brand;
-	font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+	font-family: 'Oswald', helvetica, sans-serif;
 	font-size: 16px;
 }
 
@@ -25,15 +26,17 @@ Body {
 	margin-bottom: 0;
 }
 
-@import "src/layout/header/styles";
+@import "src/header/styles";
 @import "src/clients/signup/styles";
 @import "src/clients/signin/styles";
-@import "src/homepage/styles";
+@import "src/layout/styles";
 @import "src/carta/styles";
-@import "src/packs/styles";
 @import "src/products/pizza/styles";
 @import "src/products/vegetal/styles";
-@import "src/ragsystem/styles";
-/*@import "src/ragsystem/headersystem/styles";
-@import "src/ragsystem/estadisticas/styles";*/
-@import "src/layout/footer/styles";
+@import "src/products/pack/styles";
+@import "src/ragsystem/headersystem/styles";
+@import "src/ragsystem/homesystem/styles";
+@import "src/ragsystem/adm_productos/styles";
+@import "src/products/item/styles";
+/*@import "src/ragsystem/estadisticas/styles";*/
+@import "src/footer/styles";

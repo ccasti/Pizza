@@ -1,0 +1,38 @@
+.pack-card-content {
+	max-width: 39%;
+	margin: 2rem 0 !important;
+}	
+
+@media #{$medium-and-down} {
+    .pack-card-content {
+    	max-width: 42%;
+    }
+}
+
+@media #{$small-and-down} {
+	.pack-card-content {
+		max-width: 90%;
+	}
+}
+
+.opt-pizza {
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+.opt-name li > span {
+	padding: 5px 0;
+	font-size: 1rem !important;
+}
+
+.item-name-pack {
+	font-size: 1rem;
+	padding: 10px 0 !important;
+	margin: 0 !important;
+}
+
+.pack-price {
+	line-height: 2rem;
+	margin: 1rem 0 0 1rem;
+	font-size: 0.8rem;
+}

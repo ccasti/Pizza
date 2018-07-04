@@ -13,7 +13,7 @@ var el = yo`<nav class="header grey lighten-3">
 					<div class="container barra-system">
 						<div class="row piso-nav">
 								<div class="col s2">
-							  	<a href="/ragsystem" class="brand-logo">LOGO</a>
+							  	<a href="/ragsystem" class="brand-logo">SISTEMA DE GESTION</a>
 							  	<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
 							</div>
 							<div class="col s8">

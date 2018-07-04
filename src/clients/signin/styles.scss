@@ -2,6 +2,7 @@
 	background: $color-secondary;
 	border-radius: 5px;
 	padding: 10px;
+	margin: 5rem auto;
 }
 
 .top {
@@ -10,4 +11,15 @@
 
 .signin-form h2 {
 	font-size: 1.5em;
+}
+
+.signin-title {
+	font-size: 2rem;
+}
+.signin-form .row {
+	margin-bottom: 0;
+}
+
+.signin-btn {
+	margin: 2rem auto !important;
 }

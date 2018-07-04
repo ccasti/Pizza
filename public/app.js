@@ -4800,53 +4800,44 @@ var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
 var title = require('title');
-var header = require('../layout/header');
-
-page('/carro', header, function (ctx, next) {
-	title('Ragustino - Carro');
-	var main = document.getElementById('main-container');
-	empty(main).appendChild(template());
-});
-
-},{"../layout/header":38,"./template":24,"empty-element":4,"page":12,"title":20}],24:[function(require,module,exports){
-var yo = require('yo-yo');
-var layout = require('../layout');
-
-module.exports = function () {
-	var el = yo`<div class="content fondo base">
-		<div class="container">
-			<div class="row">
-				<div class="col s12">
-					<p>Este serà el carro de compras</p>
-				</div>
-			</div>
-		</div>
-	</div>`;
-
-	return layout(el);
-};
-
-},{"../layout":39,"yo-yo":21}],25:[function(require,module,exports){
-var page = require('page');
-var empty = require('empty-element');
-var template = require('./template');
-var title = require('title');
-var header = require('../layout/header');
+var header = require('../header');
+var footer = require('../footer');
 var request = require('superagent');
 
-page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadEnsaladas, loadAdicionales, function (ctx, next) {
+page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, loadPiadinas, loadPacks, loadItems, footer, function (ctx, next) {
 	title('Ragustino - Carta');
 	var main = document.getElementById('main-container');
 
+	empty(main).appendChild(template(ctx.pizzas, ctx.vegetales, ctx.carnes, ctx.calzones, ctx.piadinas, ctx.packs, ctx.items));
+
+	function Carrito() {
+		this.constructor = function () {
+			if (!localStorage.getItem("carrito")) {
+				localStorage.setItem('carrito', '[]');
+			}
+		};
+
+		this.getCarrito = JSON.parse(localStorage.getItem("carrito"));
+
+		this.agregarItem = function () {};
+	}
+
+	var carrito = new Carrito();
+
 	$(document).ready(function () {
 		$('.collapsible').collapsible();
-	});
-
-	$(document).ready(function () {
 		$('select').material_select();
-	});
 
-	empty(main).appendChild(template(ctx.pizzas, ctx.vegetales, ctx.carnes, ctx.ensaladas, ctx.adicionales));
+		carrito.constructor();
+
+		document.getElementById('catalogo').addEventListener("click", function (ev) {
+			ev.preventDefault();
+			if (ev.target.id === "addItem") {
+				var item = ev.path[0].dataset;
+				console.log(item);
+			}
+		});
+	});
 });
 
 function loadPizzas(ctx, next) {
@@ -4876,298 +4867,335 @@ function loadCarnes(ctx, next) {
 	});
 }
 
-function loadEnsaladas(ctx, next) {
-	request.get('/api/ensaladas').end(function (err, res) {
+function loadCalzones(ctx, next) {
+	request.get('/api/calzones').end(function (err, res) {
 		if (err) return console.log(err);
 
-		ctx.ensaladas = res.body;
+		ctx.calzones = res.body;
 		next();
 	});
 }
 
-function loadAdicionales(ctx, next) {
-	request.get('/api/adicionales').end(function (err, res) {
+function loadPiadinas(ctx, next) {
+	request.get('/api/piadinas').end(function (err, res) {
 		if (err) return console.log(err);
 
-		ctx.adicionales = res.body;
+		ctx.piadinas = res.body;
 		next();
 	});
 }
 
-},{"../layout/header":38,"./template":26,"empty-element":4,"page":12,"superagent":15,"title":20}],26:[function(require,module,exports){
+function loadPacks(ctx, next) {
+	request.get('/api/packs').end(function (err, res) {
+		if (err) return console.log(err);
+
+		ctx.packs = res.body;
+		next();
+	});
+}
+
+function loadItems(ctx, next) {
+	request.get('/api/items').end(function (err, res) {
+		if (err) return console.log(err);
+
+		ctx.items = res.body;
+		next();
+	});
+}
+
+},{"../footer":29,"../header":30,"./template":24,"empty-element":4,"page":12,"superagent":15,"title":20}],24:[function(require,module,exports){
 var yo = require('yo-yo');
 var layout = require('../layout');
 var pizza = require('../products/pizza');
 var vegetal = require('../products/vegetal');
 var carne = require('../products/carne');
-var ensalada = require('../products/ensalada');
-var adicional = require('../products/adicional');
+var calzon = require('../products/calzon');
+var piadina = require('../products/piadina');
+var item = require('../products/item');
+var pack = require('../products/pack');
 
-module.exports = function (pizzas, vegetales, carnes, ensaladas, adicionales) {
+module.exports = function (pizzas, vegetales, carnes, calzones, piadinas, packs, items) {
+
 	var el = yo`<div class="col s12 seccion">
 		<div class="row">
-			<div class="col s12">
+			<div class="col s12" id="catalogo">
 				<ul class="collapsible popout" data-collapsible="accordion">
-					<p class="pack-text grey-text text-darken-4 center-align">Conoce las recetas que hemos preparado especialmente para ti con productos de primera selección</p>
-				    <li>
-				    	<div class="collapsible-header grey lighten-2">
-				    		<p class="menu-text padding1 grey-text text-darken-4 center-align">Pizzas</p>
-				        </div>
-				    	<div class="collapsible-body">
-				    		<div class="col s12 white">
-				    			<div class="row">
-									<div class="col s12 ajuste-menu-store">
-						    			${pizzas.map(function (pic) {
+					<p class="menu-text pack-text grey-text text-darken-4 center-align">Conoce las recetas que hemos preparado especialmente para ti con productos de primera selección</p>
+					<li>
+					    <div class="collapsible-header grey lighten-2">
+					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pizzas</p>
+					    </div>
+					    <div class="collapsible-body">
+					    	<div class="row">
+						    	<div class="col s12 white">
+						    		<div class="row">
+										<div class="col s12 ajuste-menu-store">
+								    		${pizzas.map(function (pic) {
 		return pizza(pic);
 	})}
+										</div>
 									</div>
 								</div>
-								<div class="divider separar"></div>
 							</div>
 						</div>
-				    </li>
-				    <li>
-				    	<div class="collapsible-header grey lighten-2">
-				    		<p class="menu-text padding1 grey-text text-darken-4 center-align">Arma tu Pizza</p>
-				        </div>
-				    	<div class="collapsible-body">
-				    		<div class="col s12 white">
-				    			<div class="row principal2">
-				    				<div class="col s12">
-				    					<p class="menu-text-in grey-text text-darken-4 center-align">Todas preparadas en nuestra masa especial y una exquisita salsa... </p>
-				    				</div>
-				    			</div>
-				    			<form action="#">
-				    				<div class="row">
-				    					<div class="col s12">
-				    						<p class="menu-text-in paddingl grey-text text-darken-4">Vegetales</p>
-				    					</div>
-				    				</div>
-				    				<div class="row">
-				    				    <div class="col s12 ajuste-menu-store">
-				    						${vegetales.map(function (pic) {
-		return vegetal(pic);
-	})}
-				    					</div>
-				    				</div>
-				    				<div class="divider"></div>
-				    				<div class="row">
-				    					<div class="col s12">
-				    						<p class="menu-text-in paddingl grey-text text-darken-4">Carnes</p>
-				    					</div>
-				    				</div>
-				    				<div class="row">
-				    				    <div class="col s12 ajuste-menu-store">
-				    				    	${carnes.map(function (pic) {
-		return carne(pic);
-	})}
-				    					</div>
-				    				</div>
-				    				<div class="divider"></div>
-				    				<div class="row">
-				    					<div class="col s12">
-				    						<p class="menu-text-in paddingl grey-text text-darken-4">Otros</p>
-				    					</div>
-				    				</div>
-				    				<div class="divider"></div>
-				    				<div class="row top">
-				    					<div class="col s10 offset-s1 m4 offset-m4 center-align">
-				    						<a class="waves-effect waves-light btn blue darken-2">Subir al carro</a>
-				    					</div>
-				    				</div>
-				    				<div class="divider separar"></div>
-				    			</form>
-				    		</div>
-				    	</div>
-				    </li>
-				    <li>
-						<div class="collapsible-header grey lighten-2">
-							<p class="menu-text padding1 grey-text text-darken-4 center-align">Ensaladas</p>
+					</li>
+					<li>
+					    <div class="collapsible-header grey lighten-2">
+					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pizzas Calzones</p>
 					    </div>
-					   	<div class="collapsible-body">
-					   		<div class="col s12 white">
-					   			<div class="row">
-									<div class="col s12 ajuste-menu-store">
-										${ensaladas.map(function (pic) {
-		return ensalada(pic);
+					    <div class="collapsible-body">
+					    	<div class="row">
+						   		<div class="col s12 white">
+						   			<div class="row">
+						   				<div class="col s12">
+						   					<p class="menu-text">Pizza Calzones (2 Unidades)</p>
+						   				</div>	
+						   			</div>
+						   			<div class="row">
+						   				<div class="col s12 ajuste-menu-store">
+						   	    			${calzones.map(function (pic) {
+		return calzon(pic);
 	})}
-									</div>
-							    </div>
-							    <div class="divider separar"></div>
-					    	</div>
+						   				</div>
+						   			</div>
+						   		</div>
+						   	</div>
 					    </div>
 					</li>
 					<li>
-				    	<div class="collapsible-header grey lighten-2">
-				    		<p class="menu-text padding1 grey-text text-darken-4 center-align">Acompañamientos</p>
-				        </div>
-				    	<div class="collapsible-body">
-				    		<div class="col s12 white">
-				    			<div class="row">
-				    				<div class="col s12 ajuste-menu-store">
-				    	    			${adicionales.map(function (pic) {
-		return adicional(pic);
+					    <div class="collapsible-header grey lighten-2">
+					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Piadinas</p>
+					    </div>
+					    <div class="collapsible-body">
+					    	<div class="row">
+						   		<div class="col s12 white">
+						   			<div class="row">
+						   				<div class="col s12">
+						   					<p class="menu-text">Piadinas (2 Unidades)</p>
+						   				</div>	
+						   			</div>
+						   			<div class="row">
+						   				<div class="col s12 ajuste-menu-store">
+						   	    			${piadinas.map(function (pic) {
+		return piadina(pic);
 	})}
-				    				</div>
-				    			</div>
-				    			<div class="divider"></div>
-				    			<div class="row top">
-				    				<form class="col s12 m6 l4">
-					    				<div class="row">
-					    					<div class="col s10 offset-s1">
-					    						<input type="checkbox" class="filled-in" id="filled-in-box1" />
-					    						<label for="filled-in-box1">Bebidas</label>
-					    						<img src="bebida.jpg" class="vegetal" />
-					    					</div>
-					    				</div>
-					    				<div class="row">
-					    					<div class="input-field col s10 offset-s1">
-					    						<select>
-					    					    	<option value="" disabled selected>Sabor</option>
-					    					    	<option value="1">Coca Cola</option>
-					    					    	<option value="2">Fanta</option>
-					    					    	<option value="3">Sprite</option>
-					    						</select>
-					    					</div>
-					    				</div>
-					    				<div class="row">
-					    					<div class="input-field col s10 offset-s1">
-					    						<select>
-					    					    	<option value="" disabled selected>Tipo</option>
-					    					    	<option value="1">Normal</option>
-					    					    	<option value="2">Ligth</option>
-					    					    	<option value="3">Zero</option>
-					    						</select>
-					    					</div>
-					    				</div>
-					    				<div class="row">
-					    					<div class="input-field col s10 offset-s1">
-					    						<select>
-					    					    	<option value="" disabled selected>Tamaño</option>
-					    					    	<option value="1">lata</option>
-					    					    	<option value="2">500cc</option>
-					    					    	<option value="3">1.500cc</option>
-					    						</select>
-					    					</div>
-					    				</div>
-					    				<div class="row">
-					    					<div class="input-field col s10 offset-s1">
-					    						<select>
-					    					    	<option value="" disabled selected>Cantidad</option>
-					    					    	<option value="1">1</option>
-					    					    	<option value="2">2</option>
-					    					    	<option value="3">3</option>
-					    					    	<option value="3">4</option>
-					    						</select>
-					    					</div>
-					    				</div>
-					    				<div class="row">
-					    					<div class="col s10 offset-s1 center-align">
-					    						<a class="waves-effect waves-light btn blue darken-2">Subir al carro</a>
-					    					</div>
-					    				</div>
-					    				<div class="divider separar hide-on-med-and-up"></div>
-					    			</form>
-					    			<form class="col s12 m6 l4">
-					    				<div class="row">
-					    					<div class="col s10 offset-s1">
-					    						<input type="checkbox" class="filled-in" id="filled-in-box2" />
-					    						<label for="filled-in-box2">Aguas</label>
-					    						<img src="agua.jpg" class="vegetal" />
-					    					</div>
-					    				</div>
-					    				<div class="row">
-					    					<div class="input-field col s10 offset-s1">
-					    						<select>
-					    					    	<option value="" disabled selected>Tipo</option>
-					    					    	<option value="1">Gasificada</option>
-					    					    	<option value="2">Sin Gas</option>
-					    					    </select>
-					    					</div>
-					    				</div>
-					    				<div class="row">
-					    					<div class="input-field col s10 offset-s1">
-					    						<select>
-					    					    	<option value="" disabled selected>Tamaño</option>
-					    					    	<option value="1">500cc</option>
-					    					    	<option value="2">1.500cc</option>
-					    					    </select>
-					    					</div>
-					    				</div>
-					    				<div class="row">
-					    					<div class="input-field col s10 offset-s1">
-					    						<select>
-					    					    	<option value="" disabled selected>Cantidad</option>
-					    					    	<option value="1">1</option>
-					    					    	<option value="2">2</option>
-					    					    	<option value="3">3</option>
-					    					    	<option value="3">4</option>
-					    						</select>
-					    					</div>
-					    				</div>
-					    				<div class="row">
-					    					<div class="col s10 offset-s1 center-align">
-					    						<a class="waves-effect waves-light btn blue darken-2">Subir al carro</a>
-					    					</div>
-					    				</div>
-					    				<div class="divider separar hide-on-large-only"></div>
-					    			</form>
-					    			<form class="col s12 m6 l4">
-					    				<div class="row">
-					    					<div class="col s10 offset-s1">
-					    						<input type="checkbox" class="filled-in" id="filled-in-box3" />
-					    						<label for="filled-in-box3">Jugos</label>
-					    						<img src="jugo.jpg" class="vegetal" />
-					    					</div>
-					    				</div>
-					    				<div class="row">
-					    					<div class="input-field col s10 offset-s1">
-					    						<select>
-					    					    	<option value="" disabled selected>Sabor</option>
-					    					    	<option value="1">Naranja</option>
-					    					    	<option value="2">Piña</option>
-					    					    	<option value="3">Durazno</option>
-					    					    </select>
-					    					</div>
-					    				</div>
-					    				<div class="row">
-					    					<div class="input-field col s10 offset-s1">
-					    						<select>
-					    					    	<option value="" disabled selected>Tamaño</option>
-					    					    	<option value="1">500cc</option>
-					    					    	<option value="2">1.500cc</option>
-					    					    </select>
-					    					</div>
-					    				</div>
-					    				<div class="row">
-					    					<div class="input-field col s10 offset-s1">
-					    						<select>
-					    					    	<option value="" disabled selected>Cantidad</option>
-					    					    	<option value="1">1</option>
-					    					    	<option value="2">2</option>
-					    					    	<option value="3">3</option>
-					    					    	<option value="3">4</option>
-					    						</select>
-					    					</div>
-					    				</div>
-					    				<div class="row">
-					    					<div class="col s10 offset-s1 center-align">
-					    						<a class="waves-effect waves-light btn blue darken-2">Subir al carro</a>
-					    					</div>
-					    				</div>
-					    			</form>					    			
-				    			</div>
-				    			<div class="divider separar"></div>
-				    		</div>
-				    	</div>
-				    </li>
-				    <li>
-				    	<div class="collapsible-header grey lighten-2">
-				    		<p class="menu-text padding1 grey-text text-darken-4 center-align">Ofertas</p>
-				        </div>
-				    	<div class="collapsible-body">
-				    	</div>
-				    </li>
+						   				</div>
+						   			</div>
+						   		</div>
+						   	</div>
+					    </div>
+					</li>
+					<li>
+					    <div class="collapsible-header grey lighten-2">
+					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Arma tu Pizza</p>
+					    </div>
+					    <div class="collapsible-body">
+					    	<div class="row">
+						   		<div class="col s12 white">
+						   			<div class="row principal2">
+						   				<div class="col s12">
+						   					<p class="menu-text grey-text text-darken-4 center-align">Preparada en Masa Napolitana Clásica de Fermentación Lenta, más sanas y livianas para nuestro organismo.</p>
+						   				</div>
+						   			</div>
+						   			<form action="#">
+						   				<div class="row">
+						   					<div class="col s12">
+						   						<p class="menu-text paddingl grey-text text-darken-4">Vegetales</p>
+						   					</div>
+						   				</div>
+						   				<div class="row">
+						   				    <div class="col s12 ajuste-menu-store">
+						   						${vegetales.map(function (pic) {
+		return vegetal(pic);
+	})}
+						   					</div>
+						   				</div>
+						   				<div class="divider"></div>
+						   				<div class="row">
+						   					<div class="col s12">
+						   						<p class="menu-text paddingl grey-text text-darken-4">Carnes</p>
+						   					</div>
+						   				</div>
+						   				<div class="row">
+						   				    <div class="col s12 ajuste-menu-store">
+						   				    	${carnes.map(function (pic) {
+		return carne(pic);
+	})}
+						   					</div>
+						   				</div>
+						   				<div class="divider"></div>
+						   				<div class="row top">
+						   					<div class="col s10 offset-s1 m4 offset-m4 center-align">
+						   						<a class="waves-effect waves-light btn blue darken-2">Subir al carro</a>
+						   					</div>
+						   				</div>
+						   			</form>
+						   		</div>
+						   	</div>
+					    </div>
+					</li>
+					<li>
+					    <div class="collapsible-header grey lighten-2">
+					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Para Beber</p>
+					    </div>
+					    <div class="collapsible-body">
+					       	<div class="row">
+						       	<div class="col s12 white">
+						       		<div class="row">
+						       			<div class="col s12">
+						       				<p class="menu-text">Bebidas</p>
+						           		</div>	
+						           	</div>
+						           	<div class="row">
+						       		   	${items.map(function (pic) {
+		return item(pic);
+	})}
+						       		</div>
+						       		<div class="divider separar"></div>
+						       		   <div class="row">
+						       		   	<div class="col s12">
+						       		   		<p class="menu-text">Jugos</p>
+						       		   	</div>	
+						       		</div>
+						           	<div class="row">
+						       			${items.map(function (pic) {
+		return item(pic);
+	})}
+						       		</div>
+						       	</div>
+						    </div>
+					    </div>
+					</li>
+					<li>
+					    <div class="collapsible-header grey lighten-2">
+					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Para Picar</p>
+					    </div>
+					    <div class="collapsible-body">
+					       	<div class="row">
+						       	<div class="col s12 white">
+						       		<div class="row">
+						       			<div class="col s12">
+					       					<p class="menu-text">Quesos</p>
+						           		</div>	
+					           		</div>
+						           	<div class="row">
+					       		    	${items.map(function (pic) {
+		return item(pic);
+	})}
+						       		</div>
+						       		<div class="divider separar"></div>
+						       		<div class="row">
+						     			<div class="col s12">
+						       				<p class="menu-text">Papas</p>
+						       			</div>	
+						       		</div>
+						           	<div class="row">
+						       			${items.map(function (pic) {
+		return item(pic);
+	})}
+						       		</div>
+						       	</div>
+						    </div>
+					    </div>
+					</li>
+					<li>
+					    <div class="collapsible-header grey lighten-2">
+					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pack Regalo</p>
+					    </div>
+					    <div class="collapsible-body">
+					       	<div class="row">
+						       	<div class="col s12 white">
+						       		<div class="row">
+						       			<div class="col s12 center-align">
+					       					<p class="menu-text">Sorprende a quien tu quieras con nuestros packs preparados con exquisitos productos.</p>
+						           		</div>	
+					           		</div>
+						           	<div class="row">
+						           		<div class="col s12 ajuste-menu-store">
+						       		    	${packs.map(function (pic) {
+		return pack(pic);
+	})}
+						        		</div>	
+						       		</div>
+						       	</div>
+						    </div>
+					    </div>
+					</li>
+					<li>
+					    <div class="collapsible-header grey lighten-2">
+					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pack Fiesta</p>
+					    </div>
+					    <div class="collapsible-body">
+					       	<div class="row">
+						       	<div class="col s12 white">
+						       		<div class="row">
+						       			<div class="col s12 center-align">
+					       					<p class="menu-text">No te preocupes de los preparativos, la fiesta la armamos nosotros...</p>
+						           		</div>	
+					           		</div>
+						       		<div class="row">
+						       			<div class="col s12">
+					       					<p class="menu-text">Pack´s para 04 personas.</p>
+						           		</div>	
+					           		</div>
+					           		<div class="row">
+						           		<div class="col s12 ajuste-menu-store">
+						       		    	${packs.map(function (pic) {
+		return pack(pic);
+	})}
+						        		</div>	
+						       		</div>
+						       		<div class="divider separar"></div>
+						       		<div class="row">
+						       			<div class="col s12">
+					       					<p class="menu-text">Pack´s para 06 personas.</p>
+						           		</div>	
+					           		</div>
+					           		<div class="row">
+						           		<div class="col s12 ajuste-menu-store">
+						       		    	${packs.map(function (pic) {
+		return pack(pic);
+	})}
+						        		</div>	
+						       		</div>
+						       		<div class="divider separar"></div>
+						       		<div class="row">
+						       			<div class="col s12">
+					       					<p class="menu-text">Pack´s para 08 personas.</p>
+						           		</div>	
+					           		</div>
+					           		<div class="row">
+						           		<div class="col s12 ajuste-menu-store">
+						       		    	${packs.map(function (pic) {
+		return pack(pic);
+	})}
+						        		</div>	
+						       		</div>
+						       	</div>
+						    </div>
+					    </div>
+					</li>
+					<li>
+					    <div class="collapsible-header grey lighten-2">
+					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Accesorios</p>
+					    </div>
+					    <div class="collapsible-body">
+					       	<div class="row">
+						       	<div class="col s12 white">
+						       		<div class="row">
+						       			<div class="col s12">
+					       					<p class="menu-text">Accesorios</p>
+						           		</div>	
+					           		</div>
+						           	<div class="row">
+					       		    	${items.map(function (pic) {
+		return item(pic);
+	})}
+						       		</div>
+						       	</div>
+						    </div>
+					    </div>
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -5176,206 +5204,137 @@ module.exports = function (pizzas, vegetales, carnes, ensaladas, adicionales) {
 	return layout(el);
 };
 
-},{"../layout":39,"../products/adicional":42,"../products/carne":43,"../products/ensalada":44,"../products/pizza":46,"../products/vegetal":47,"yo-yo":21}],27:[function(require,module,exports){
+},{"../layout":35,"../products/calzon":36,"../products/carne":37,"../products/item":41,"../products/pack":42,"../products/piadina":43,"../products/pizza":44,"../products/vegetal":45,"yo-yo":21}],25:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
 var title = require('title');
+var header = require('../../header');
 
-page('/signin', function (ctx, next) {
+page('/signin', header, function (ctx, next) {
 	title('Signin');
 	var main = document.getElementById('main-container');
 	empty(main).appendChild(template);
 });
 
-},{"./template":28,"empty-element":4,"page":12,"title":20}],28:[function(require,module,exports){
+},{"../../header":30,"./template":26,"empty-element":4,"page":12,"title":20}],26:[function(require,module,exports){
 var yo = require('yo-yo');
 var landing = require('../../landing');
 
-var signinForm = yo`<div class="col s10 push-s1 m6 push-m3">
+var signinForm = yo`<div class="col s10 push-s1 m6 push-m3 l4 push-l4">
     <div class="row">
         <div class="signin-box">
             <form class="signin-form">
-                <h2>Inicia sesión</h2>
-                <div class="input-field col s12">
-                    <input id="email" type="email" class="validate" />
-                    <label for="email">Email</label>
+                <div class="row">
+                    <div class="col s12">
+                        <h2 class="center-align">Inicia sesión</h2>
+                    </div>
                 </div>
-                <div class="input-field">
-                    <input type="password" name="password" placeholder="Contraseña" class="validate" />
+                <div class="row">
+                    <div class="col s12 input-field">
+                        <input id="email" type="email" class="validate" />
+                        <label for="email">Correo Electronico</label>
+                    </div>
                 </div>
-                <button class="btn btn-emp waves-effect waves-light" type="submit">Ingresar</button>
+                <div class="row">
+                    <div class="col s12 input-field">
+                        <input id="password" type="password" class="validate">
+                        <label for="password">Contraseña</label>
+                    </div>
+                </div>
+                <div class="row signin-btn">
+                    <div class="col s12 center-align">
+                        <button class="btn waves-effect waves-light blue darken-2">Ingresar</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 center-align">
+                        ¿No estás registrado? <a class="indigo-text text-darken-4" href="/signup">Regístrate</a>
+                    </div>
+                </div>
             </form>
-        	<div>
-                ¿No estás registrado? <a class="indigo-text text-darken-4" href="/signup">Regístrate</a>
-            </div>
         </div>            
     </div>
 </div>`;
 
 module.exports = landing(signinForm);
 
-},{"../../landing":36,"yo-yo":21}],29:[function(require,module,exports){
+},{"../../landing":34,"yo-yo":21}],27:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
 var title = require('title');
+var header = require('../../header');
 
-page('/signup', function (ctx, next) {
+page('/signup', header, function (ctx, next) {
 	title('Signup');
 	var main = document.getElementById('main-container');
 	empty(main).appendChild(template);
 });
 
-},{"./template":30,"empty-element":4,"page":12,"title":20}],30:[function(require,module,exports){
+},{"../../header":30,"./template":28,"empty-element":4,"page":12,"title":20}],28:[function(require,module,exports){
 var yo = require('yo-yo');
 var landing = require('../../landing');
 
-var signupForm = yo`<div class="col s10 push-s1 m6 push-m3">
+var signupForm = yo`<div class="col s10 push-s1 m6 push-m3 l4 push-l4">
     <div class="row">
-        <div class="signup-box top blue-text text-darken-2">
+        <div class="col s12 signup-box">
             <form class="signup-form">
-                <h2 class="center-align">Ingresa tus datos</h2>
-                <div class="section">
-                    <div class="input-field col s12">
+                <div class="row item-form">
+                    <div class="col s12">
+                        <h2 class="center-align">Ingresa tus datos</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 input-field">
                         <input id="email" type="email" class="validate" />
                         <label for="email">Correo Electronico</label>
                     </div>
-                    <div class="input-field col s12">
+                </div>
+                <div class="row">
+                    <div class="col s12 input-field">
                         <input id="name" type="text" />
                         <label for="name">Nombre y Apellidos</label>
                     </div>
-                    <div class="input-field col s12">
-                        <input type="text" name="direccion" placeholder="Dirección" />
+                </div>
+                <div class="row">
+                    <div class="col s12 input-field">
+                        <input id="direccion" type="text" />
+                        <label for="direccion">Dirección</label>
                     </div>
-                    <div class="input-field col s12">
-                        <input type="password" name="password" placeholder="Contraseña" />
+                </div>
+                <div class="row">
+                    <div class="col s12 input-field">
+                        <input id="password" type="password" class="validate">
+                        <label for="password">Contraseña</label>
                     </div>
-                    <div class="input-field col s12">
-                        <input type="password" name="check_password" placeholder="Repetir Contraseña" />
+                </div>
+                <div class="row">
+                    <div class="col s12 input-field">
+                        <input id="check-password" type="password" class="validate">
+                        <label for="check-password">Repetir Contraseña</label>
                     </div>
-                    <button class="btn waves-effect waves-light center-align" type="submit">Regístrate</button>
+                </div>
+                <div class="row signup-btn">
+                    <div class="col s12 center-align">
+                        <button class="btn waves-effect waves-light blue darken-2">Enviar</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 center-align">
+                        ¿Ya estás registrado? <a class="indigo-text text-darken-4" href="/signin">Entrar</a>
+                    </div>
                 </div>
             </form>
-        	<div class="center-align">
-                ¿Ya estás registrado? <a class="indigo-text text-darken-4" href="/signin">Entrar</a>
-            </div>
         </div>            
     </div>
 </div>`;
 
 module.exports = landing(signupForm);
 
-},{"../../landing":36,"yo-yo":21}],31:[function(require,module,exports){
-var page = require('page');
+},{"../../landing":34,"yo-yo":21}],29:[function(require,module,exports){
+var yo = require('yo-yo');
 var empty = require('empty-element');
-var template = require('./template');
-var title = require('title');
-var header = require('../layout/header');
-
-page('/fiesta', header, function (ctx, next) {
-	title('Ragustino - Fiesta');
-	var main = document.getElementById('main-container');
-	empty(main).appendChild(template());
-});
-
-},{"../layout/header":38,"./template":32,"empty-element":4,"page":12,"title":20}],32:[function(require,module,exports){
-var yo = require('yo-yo');
-var layout = require('../layout');
-
-module.exports = function () {
-	var el = yo`<div class="col s12">
-		<p>aca los packs para armar la fiesta</p>
-	</div>`;
-
-	return layout(el);
-};
-
-},{"../layout":39,"yo-yo":21}],33:[function(require,module,exports){
-var page = require('page');
-var empty = require('empty-element');
-var template = require('./template');
-var title = require('title');
-var header = require('../layout/header');
-var request = require('superagent');
-
-page('/', header, function (ctx, next) {
-	title('Ragustino');
-	var main = document.getElementById('main-container');
-
-	empty(main).appendChild(template());
-});
-
-},{"../layout/header":38,"./template":34,"empty-element":4,"page":12,"superagent":15,"title":20}],34:[function(require,module,exports){
-var yo = require('yo-yo');
-var layout = require('../layout');
-
-module.exports = function () {
-	var el = yo`<div class="content fondo base">
-		<div class="col s12 m4">
-			<div class="row">
-				<div class="col s12 center-align">
-					<p class="pack-text grey-text text-darken-4">Sorprende a tus seres queridos con nustros pack's preparados con exquisitos productos</p>
-					<img class="pic-pack" src="pack.jpg" />
-				</div>
-			</div>
-			<div class="divider"></div>
-			<div class="row">
-				<div class="col s12 center-align">
-					<p class="pack-text grey-text text-darken-4">La fiesta la armamos nosotros, conoce nuestros excelentes pack's para disfrutar con tus amigos</p>
-					<img class="pic-pack" src="pack-fiesta.jpg" />
-				</div>
-			</div>
-			<div class="divider hide-on-med-and-up"></div>
-		</div>
-		<div class="col s12 m8">
-			<p class="pack-text grey-text text-darken-4 center-align">Conoce las recetas que hemos preparado especialmente para ti con productos de primera selección</p>
-			<div class="divider"></div>
-			<p class="pack-text grey-text text-darken-4 center-align">También puedes prepararla a tu gusto selleccionando x ingredientes de distintos tipos, todas las pizzas son preparadas en nuestra masa especial con nuestra receta de salsa</p>
-			<div class="divider"></div>
-			<p class="pack-text grey-text text-darken-4 center-align">Descubre las ofertas que hemos preparado especialmente para ti.</p>
-		</div>
-	</div>`;
-
-	return layout(el);
-};
-
-},{"../layout":39,"yo-yo":21}],35:[function(require,module,exports){
-// acá se incluirá toda la lógica del proyecto, las rutas, timeline, etc.
-var page = require('page');
-
-require('./homepage');
-require('./clients/signup');
-require('./clients/signin');
-require('./carta');
-require('./packs');
-require('./fiesta');
-require('./carro');
-require('./ragsystem');
-require('./ragsystem/estadisticas');
-/*require('./ragsystem/adm_equipo');
-require('./ragsystem/adm_productos');*/
-require('./layout/footer');
-
-page();
-
-},{"./carro":23,"./carta":25,"./clients/signin":27,"./clients/signup":29,"./fiesta":31,"./homepage":33,"./layout/footer":37,"./packs":40,"./ragsystem":51,"./ragsystem/estadisticas":48,"page":12}],36:[function(require,module,exports){
-var yo = require('yo-yo');
-
-module.exports = function landing(box) {
-  return yo`<div class="container">
-    	<div class="row">
-    	    <div class="col s10 push-s1">
-     	       <div class="row landing-fondo">
-      		        ${box}
-            	</div>
-        	</div>
-    	</div>
-	</div>`;
-};
-
-},{"yo-yo":21}],37:[function(require,module,exports){
-var yo = require('yo-yo');
 
 var el = yo`<footer class="page-footer grey lighten-2">
     <div class="container">
@@ -5401,9 +5360,13 @@ var el = yo`<footer class="page-footer grey lighten-2">
   	</div>
 </footer>`;
 
-document.getElementById('footer-container').appendChild(el);
+module.exports = function footer(ctx, next) {
+    var container = document.getElementById('footer-container');
+    empty(container).appendChild(el);
+    next();
+};
 
-},{"yo-yo":21}],38:[function(require,module,exports){
+},{"empty-element":4,"yo-yo":21}],30:[function(require,module,exports){
 var yo = require('yo-yo');
 var empty = require('empty-element');
 
@@ -5414,39 +5377,34 @@ $(document).ready(function () {
 var el = yo`<nav class="header grey lighten-3">
 	<div class="container">
 		<div class="row piso-nav">
-			<div class="col s12">
+			<div class="col s12 sp">
 				<div class="nav-wrapper">
 					<div class="container barra">
 						<div class="row piso-nav">
-								<div class="col s2">
-							  	<a href="/" class="brand-logo">LOGO</a>
+							<div class="col s2 m4 l2 sp">
+							  	<a href="/" class="brand-logo">RAGUSTINO</a>
 							  	<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
 							</div>
-							<div class="col s8">
-								<ul class="right hide-on-med-and-down">
+							<div class="col l6 hide-on-med-and-down">
+								<ul class="right">
 									<li><a href="/">INICIO</a></li>
-									<li><a href="/carta">CARTA</a></li>
-								    <li><a href="/packs">PACK's</a></li>
-								    <li><a href="/fiesta">ARTA TU FIESTA</a></li>
-								    <li><a href="/carro"><i class="material-icons left">shopping_cart</i></a></li>
+									<li><a href="/carta">NUESTROS PRODUCTOS</a></li>
 								</ul>
 							</div>
-							<div class="col s2 offset-s8 m2 offset-m8 l2">
-							   	<a href="#" class="btn btn-large btn-flat dropdown-button" data-activates="drop-user">
-									<i class="small material-icons">perm_identity</i>
-								</a>
+							<div class="col s2 m2 offset-m4 l2 center-align sp">
+								<a href="#" class="btn btn-flat dropdown-button chip-user" data-activates="drop-user"><i class="small material-icons carrito">perm_identity</i></a>
 								<ul id="drop-user" class="dropdown-content">
 									<li><a href="#">Salir</a></li>
 								</ul>
+							</div>
+							<div class="col s3 offset-s5 m2 l2 sp">
+								<a class="btn modal-trigger blue darken-2 chip-carro" href="#modal9"><i class="small material-icons left carrito">shopping_cart</i>0</a>
 							</div>
 						</div>
 					</div>
 					<ul class="side-nav" id="mobile-demo">
 						<li><a href="/">INICIO</a></li>
-					  	<li><a href="/carta">CARTA</a></li>
-					    <li><a href="/packs">PACK's</a></li>
-					    <li><a href="/fiesta">ARTA TU FIESTA</a></li>
-					    <li><a href="/carro"><i class="material-icons left">shopping_cart</i></a></li>
+					  	<li><a href="/carta">NUESTROS PRODUCTOS</a></li>
 					</ul>
 				</div>
 			</div>
@@ -5455,18 +5413,82 @@ var el = yo`<nav class="header grey lighten-3">
 </nav>`;
 
 module.exports = function header(ctx, next) {
+
 	var container = document.getElementById('header-container');
 	empty(container).appendChild(el);
 	next();
 };
 
-},{"empty-element":4,"yo-yo":21}],39:[function(require,module,exports){
+},{"empty-element":4,"yo-yo":21}],31:[function(require,module,exports){
+var page = require('page');
+var empty = require('empty-element');
+var template = require('./template');
+var title = require('title');
+var header = require('../header');
+var footer = require('../footer');
+var request = require('superagent');
+
+page('/', header, footer, function (ctx, next) {
+	title('Ragustino');
+	var main = document.getElementById('main-container');
+
+	empty(main).appendChild(template());
+});
+
+},{"../footer":29,"../header":30,"./template":32,"empty-element":4,"page":12,"superagent":15,"title":20}],32:[function(require,module,exports){
+var yo = require('yo-yo');
+var layout = require('../layout');
+
+module.exports = function () {
+
+	var el = yo`<div class="content">
+		
+	</div>`;
+
+	return layout(el);
+};
+
+},{"../layout":35,"yo-yo":21}],33:[function(require,module,exports){
+var page = require('page');
+
+require('./homepage');
+require('./carta');
+require('./clients/signup');
+require('./clients/signin');
+require('./ragsystem/homesystem');
+require('./ragsystem/estadisticas');
+require('./ragsystem/adm_productos');
+/*require('./ragsystem/adm_equipo');*/
+
+page();
+
+},{"./carta":23,"./clients/signin":25,"./clients/signup":27,"./homepage":31,"./ragsystem/adm_productos":46,"./ragsystem/estadisticas":48,"./ragsystem/homesystem":51,"page":12}],34:[function(require,module,exports){
+var yo = require('yo-yo');
+
+module.exports = function landing(box) {
+  return yo`<div class="container">
+    	<div class="row">
+    	    <div class="col s12">
+     	       <div class="row landing-fondo">
+      		        ${box}
+            	</div>
+        	</div>
+    	</div>
+	</div>`;
+};
+
+},{"yo-yo":21}],35:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function layout(content) {
+
+	$(document).ready(function () {
+		$('.modal').modal();
+	});
+
 	return yo`<div class="content fondo base">
 		<div>
-			<img class="pic-ini" src="fondo.jpg" />
+			<img class="pic-ini" src="arriba.png" />
 		</div>
 		<div class="container principal">
 			<div class="row principal2">
@@ -5477,61 +5499,68 @@ module.exports = function layout(content) {
 				</div>
 			</div>
 		</div>
+		<div id="modal9" class="modal bottom-sheet">
+			<div class="container">
+				<div class="row">
+					<div class="col s12">
+						<div class="modal-content">
+							<h4>Tu Carro de Compras</h4>
+							<ul class="collection">
+								<li class="collection-item">
+									<div class="row">
+										<div class="col s8 m4">
+											Nombre
+										</div>
+										<div class="col s4 m2 center-align">
+											Precio
+										</div>
+										<div class="col s3 offset-s3 m2 center-align">
+											Cantidad
+										</div>
+										<div class="col s3 m2 center-align">
+											Total
+										</div>
+										<div class="col s3 m2 center-align">
+											Quitar
+										</div>
+									</div>
+								</li>
+								<li class="collection-item">
+									<div class="row">
+										<div class="col s8 m4">
+											Nombre
+										</div>
+										<div class="col s4 m2 center-align">
+											Precio
+										</div>
+										<div class="col s3 offset-s3 m2 center-align">
+											Cantidad
+										</div>
+										<div class="col s3 m2 center-align">
+											Total
+										</div>
+										<div class="col s3 m2 center-align">
+											Quitar
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div class="modal-footer">
+							<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Comprar</a>
+							<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cerrar</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div>
-			<img class="pic-ini" src="fondo.jpg" />
+			<img class="pic-ini" src="abajo.png" />
 		</div>
 	</div>`;
 };
 
-},{"yo-yo":21}],40:[function(require,module,exports){
-var page = require('page');
-var empty = require('empty-element');
-var template = require('./template');
-var title = require('title');
-var header = require('../layout/header');
-var request = require('superagent');
-
-page('/packs', header, loadPacks, function (ctx, next) {
-	title('Ragustino - Packs');
-	var main = document.getElementById('main-container');
-	empty(main).appendChild(template(ctx.packs));
-});
-
-function loadPacks(ctx, next) {
-	request.get('/api/packs').end(function (err, res) {
-		if (err) return console.log(err);
-
-		ctx.packs = res.body;
-		next();
-	});
-}
-
-},{"../layout/header":38,"./template":41,"empty-element":4,"page":12,"superagent":15,"title":20}],41:[function(require,module,exports){
-var yo = require('yo-yo');
-var layout = require('../layout');
-var pack = require('../products/pack');
-
-module.exports = function (packs) {
-	var el = yo`<div class="col s12 seccion up">
-		<div class="row">
-			<div class="col s12 m10 offset-m1">
-				<h2 class="menu-text padding1 grey-text text-darken-4 center-align">Nombre del Pack Individual</h2>
-				<p class="pack-text grey-text text-darken-4 center-align">Descripción del pack o de la idea general del producto, ocasiones en que puedes regalarlo</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col s12 m7 offset-m1">
-				${packs.map(function (pic) {
-		return pack(pic);
-	})}
-			</div>
-		</div>
-	</div>`;
-
-	return layout(el);
-};
-
-},{"../layout":39,"../products/pack":45,"yo-yo":21}],42:[function(require,module,exports){
+},{"yo-yo":21}],36:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function pictureCard(pic) {
@@ -5539,11 +5568,11 @@ module.exports = function pictureCard(pic) {
 	function render(picture) {
 		return yo`<div class="card pizza-card-content ${picture.liked ? 'liked' : ''}">
 			<div class="card-image waves-effect waves-block waves-light">
-				<img class="activator responsive" src="${picture.adicionalurl}">
+				<img class="activator responsive" src="${picture.url}">
 			</div>
 			<div class="card-content">
-				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.adicionalname}</span>
-				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons">add</i></a>
+				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.name}</span>
+				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-producto="${picture}">add</i></a>
 				<p class="likes-content">
 					<a class="left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
 					<a class="left" href="#" onclick=${like.bind(null, false)}><i class="material-icons favorite">favorite</i></a>
@@ -5551,9 +5580,9 @@ module.exports = function pictureCard(pic) {
 				</p>
 			</div>
 			<div class="card-reveal">
-			    <span class="pizza-text card-title blue-text text-darken-2">${picture.adicionalname}<i class="material-icons right">close</i></span>
-			    <p class="pizza-content-text">${picture.adicionalcontent}</p>
-			    <span class="left likes blue-text text-darken-2">Valor: $${picture.adicionalprice}</span>
+			    <span class="pizza-text card-title blue-text text-darken-2">${picture.name}<i class="material-icons right">close</i></span>
+			    <p class="pizza-content-text">${picture.content}</p>
+			    <span class="left likes blue-text text-darken-2">Valor: $${picture.price}</span>
 			</div>
 		</div>`;
 	}
@@ -5570,7 +5599,7 @@ module.exports = function pictureCard(pic) {
 	return el;
 };
 
-},{"yo-yo":21}],43:[function(require,module,exports){
+},{"yo-yo":21}],37:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (pic) {
@@ -5582,6 +5611,153 @@ module.exports = function (pic) {
 	</div>`;
 };
 
+},{"yo-yo":21}],38:[function(require,module,exports){
+var yo = require('yo-yo');
+var option = require('./option');
+
+module.exports = function (optt) {
+	return yo`<div class="input-field col s12 opt-pizza">
+		<select>
+			<option value="" disabled selected>${optt.opttipo}</option>
+			${optt.optname.map(function (item) {
+		return option(item);
+	})}
+		</select>
+	</div>`;
+};
+
+},{"./option":39,"yo-yo":21}],39:[function(require,module,exports){
+var yo = require('yo-yo');
+
+module.exports = function (item) {
+	return yo`<option value="${item.itemid}">${item.itemname}</option>`;
+};
+
+},{"yo-yo":21}],40:[function(require,module,exports){
+var yo = require('yo-yo');
+
+module.exports = function (opt) {
+	return yo`<div class="col s12 opt-pizza">
+		<p class="item-name-pack">${opt.optname}</p>
+	</div>`;
+};
+
+},{"yo-yo":21}],41:[function(require,module,exports){
+var yo = require('yo-yo');
+
+module.exports = function (pic) {
+	return yo`<div class="col s12 m6">
+		<div class="row">
+			<div class="col s2 l2 offset-l1">
+				<img src="${pic.url}" class="vegetal" />
+			</div>
+			<div class="col s6 l5 col-text">
+				<div class="row fila-nombre">
+					<div class="col s12">
+						<P class="item-text">${pic.name}</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12">
+						<P class="detalle-text">${pic.content}</p>
+					</div>
+				</div>
+			</div>
+			<div class="col s2">
+				<span class="precio">$${pic.price}.-</span>
+			</div>
+			<div class="col s2">
+				<a class="btn-floating left waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-producto="${pic}">add</i></a>
+			</div>
+		</div>
+	</div>`;
+};
+
+},{"yo-yo":21}],42:[function(require,module,exports){
+var yo = require('yo-yo');
+var itemopt = require('../item-opt');
+var itemoptt = require('../item-opt-opt');
+
+module.exports = function pictureCard(pic) {
+	var el;
+	function render(picture) {
+		return yo`<div class="card pack-card-content ${picture.liked ? 'liked' : ''}">
+			<div class="card-image waves-effect waves-block waves-light">
+				<img class="activator responsive" src="${picture.url}">
+			</div>
+			<div class="card-content">
+				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.name}</span>
+				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-name="${picture.name}" data-content="${picture.content}">add</i></a>
+				<p class="likes-content">
+					<a class="left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
+					<a class="left" href="#" onclick=${like.bind(null, false)}><i class="material-icons favorite">favorite</i></a>
+					<span class="left likes">${picture.likes} me gusta</span>
+				</p>
+			</div>
+			<div class="card-reveal">
+			    <span class="pizza-text card-title blue-text text-darken-2">${picture.name}<i class="material-icons right">close</i></span>
+			    ${picture.contents.map(function (optt) {
+			return itemoptt(optt);
+		})}
+			    ${picture.content.map(function (opt) {
+			return itemopt(opt);
+		})}
+				<span class="left pack-price blue-text text-darken-2">Valor: $${picture.price}</span>
+			</div>
+		</div>`;
+	}
+
+	function like(liked) {
+		pic.liked = liked;
+		pic.likes += liked ? 1 : -1;
+		var newEl = render(pic);
+		yo.update(el, newEl);
+		return false;
+	}
+
+	el = render(pic);
+	return el;
+};
+
+},{"../item-opt":40,"../item-opt-opt":38,"yo-yo":21}],43:[function(require,module,exports){
+var yo = require('yo-yo');
+
+module.exports = function pictureCard(pic) {
+	var el;
+	function render(picture) {
+		return yo`<div class="card pizza-card-content ${picture.liked ? 'liked' : ''}">
+			<div class="card-image waves-effect waves-block waves-light">
+				<img class="activator responsive" src="${picture.url}">
+			</div>
+			<div class="card-content">
+				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.name}</span>
+				<div class="likes-content">
+					<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-producto="${picture}">add</i></a>
+					<a class="left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
+					<a class="left" href="#" onclick=${like.bind(null, false)}><i class="material-icons favorite">favorite</i></a>
+					<span class="left likes">${picture.likes} me gusta</span>
+				</div>
+			</div>
+			<div class="card-reveal">
+			    <span class="pizza-text card-title blue-text text-darken-2">${picture.name}<i class="material-icons right">close</i></span>
+			    <p class="pizza-content-text">${picture.content}</p>
+			    <span class="left likes blue-text text-darken-2">Valor: $${picture.price}</span>
+			</div>
+		</div>`;
+	}
+
+	function like(liked) {
+		pic.liked = liked;
+		pic.likes += liked ? 1 : -1;
+		var newEl = render(pic);
+		yo.update(el, newEl);
+		return false;
+	}
+
+	el = render(pic);
+	return el;
+};
+
 },{"yo-yo":21}],44:[function(require,module,exports){
 var yo = require('yo-yo');
 
@@ -5590,11 +5766,11 @@ module.exports = function pictureCard(pic) {
 	function render(picture) {
 		return yo`<div class="card pizza-card-content ${picture.liked ? 'liked' : ''}">
 			<div class="card-image waves-effect waves-block waves-light">
-				<img class="activator responsive" src="${picture.ensaladaurl}">
+				<img class="activator responsive" src="${picture.url}">
 			</div>
 			<div class="card-content">
-				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.ensaladaname}</span>
-				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons">add</i></a>
+				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.name}</span>
+				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-id="${picture.id}">add</i></a>
 				<p class="likes-content">
 					<a class="left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
 					<a class="left" href="#" onclick=${like.bind(null, false)}><i class="material-icons favorite">favorite</i></a>
@@ -5602,9 +5778,9 @@ module.exports = function pictureCard(pic) {
 				</p>
 			</div>
 			<div class="card-reveal">
-			    <span class="pizza-text card-title blue-text text-darken-2">${picture.ensaladaname}<i class="material-icons right">close</i></span>
-			    <p class="pizza-content-text">${picture.ensaladacontent}</p>
-			    <span class="left likes blue-text text-darken-2">Valor: $${picture.ensaladaprice}</span>
+			    <span class="pizza-text card-title blue-text text-darken-2">${picture.name}<i class="material-icons right">close</i></span>
+			    <p class="pizza-content-text">${picture.content}</p>
+			    <span class="left likes blue-text text-darken-2">Valor: $${picture.price}</span>
 			</div>
 		</div>`;
 	}
@@ -5624,82 +5800,6 @@ module.exports = function pictureCard(pic) {
 },{"yo-yo":21}],45:[function(require,module,exports){
 var yo = require('yo-yo');
 
-module.exports = function pictureCard(pic) {
-	var el;
-	function render(picture) {
-		return yo`<div class="card horizontal ${picture.liked ? 'liked' : ''}">
-			<div class="card-image">
-				<img src="${picture.packurl}">
-		    </div>
-		    <div class="card-stacked">
-		        <div class="card-content">
-		        	<p>${picture.packcontent}</p>
-		        </div>
-		        <div class="card-action">
-		        	<a class="iconcard left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
-		        	<a class="iconcard left" href="#" onclick=${like.bind(null, false)}><i class="material-icons favorite">favorite</i></a>
-		        	<span class="left likes">${picture.likes} me gusta</span>
-		        	<span class="left likes blue-text text-darken-2">Valor: $${picture.packprice}</span>
-		        	<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons">add</i></a>
-		        </div>
-		    </div>
-		</div>`;
-	}
-
-	function like(liked) {
-		pic.liked = liked;
-		pic.likes += liked ? 1 : -1;
-		var newEl = render(pic);
-		yo.update(el, newEl);
-		return false;
-	}
-
-	el = render(pic);
-	return el;
-};
-
-},{"yo-yo":21}],46:[function(require,module,exports){
-var yo = require('yo-yo');
-
-module.exports = function pictureCard(pic) {
-	var el;
-	function render(picture) {
-		return yo`<div class="card pizza-card-content ${picture.liked ? 'liked' : ''}">
-			<div class="card-image waves-effect waves-block waves-light">
-				<img class="activator responsive" src="${picture.pizzaurl}">
-			</div>
-			<div class="card-content">
-				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.pizzaname}</span>
-				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons">add</i></a>
-				<p class="likes-content">
-					<a class="left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
-					<a class="left" href="#" onclick=${like.bind(null, false)}><i class="material-icons favorite">favorite</i></a>
-					<span class="left likes">${picture.likes} me gusta</span>
-				</p>
-			</div>
-			<div class="card-reveal">
-			    <span class="pizza-text card-title blue-text text-darken-2">${picture.pizzaname}<i class="material-icons right">close</i></span>
-			    <p class="pizza-content-text">${picture.pizzacontent}</p>
-			    <span class="left likes blue-text text-darken-2">Valor: $${picture.pizzaprice}</span>
-			</div>
-		</div>`;
-	}
-
-	function like(liked) {
-		pic.liked = liked;
-		pic.likes += liked ? 1 : -1;
-		var newEl = render(pic);
-		yo.update(el, newEl);
-		return false;
-	}
-
-	el = render(pic);
-	return el;
-};
-
-},{"yo-yo":21}],47:[function(require,module,exports){
-var yo = require('yo-yo');
-
 module.exports = function (pic) {
 	return yo`<div class="item">
 		<input type="checkbox" class="filled-in" id="filled-in-box${pic.vegid}" />
@@ -5709,7 +5809,176 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"yo-yo":21}],48:[function(require,module,exports){
+},{"yo-yo":21}],46:[function(require,module,exports){
+var page = require('page');
+var empty = require('empty-element');
+var template = require('./template');
+var title = require('title');
+var header = require('../headersystem');
+var request = require('superagent');
+
+page('/adm_productos', header, loadPizzas,
+/*loadVegetales,
+loadCarnes,*/
+loadEnsaladas, loadAdicionales, function (ctx, next) {
+	title('Adm-Productos');
+	var main = document.getElementById('main-container');
+
+	$(document).ready(function () {
+		$('.collapsible').collapsible();
+	});
+
+	empty(main).appendChild(template(ctx.pizzas,
+	/*ctx.vegetales,
+ ctx.carnes,*/
+	ctx.ensaladas, ctx.adicionales));
+});
+
+function loadPizzas(ctx, next) {
+	request.get('/api/pizzas').end(function (err, res) {
+		if (err) return console.log(err);
+
+		ctx.pizzas = res.body;
+		next();
+	});
+}
+
+/*function loadVegetales (ctx, next) {
+	request
+		.get('/api/vegetales')
+		.end(function (err, res) {
+			if (err) return console.log(err);
+
+			ctx.vegetales = res.body;
+			next();
+		})
+}
+
+function loadCarnes (ctx, next) {
+	request
+		.get('/api/carnes')
+		.end(function (err, res) {
+			if (err) return console.log(err);
+
+			ctx.carnes = res.body;
+			next();
+		})
+}*/
+
+function loadEnsaladas(ctx, next) {
+	request.get('/api/ensaladas').end(function (err, res) {
+		if (err) return console.log(err);
+
+		ctx.ensaladas = res.body;
+		next();
+	});
+}
+
+function loadAdicionales(ctx, next) {
+	request.get('/api/adicionales').end(function (err, res) {
+		if (err) return console.log(err);
+
+		ctx.adicionales = res.body;
+		next();
+	});
+}
+
+},{"../headersystem":50,"./template":47,"empty-element":4,"page":12,"superagent":15,"title":20}],47:[function(require,module,exports){
+var yo = require('yo-yo');
+var pizza = require('../products_system/pizzasystem');
+/*var vegetal = require('../products_system/vegetalsystem');
+var carne = require('../products_system/carnesystem');*/
+var ensalada = require('../products_system/ensaladasystem');
+var adicional = require('../products_system/adicionalsystem');
+/*var pack = require('../products_system/packsystem');
+var fiesta = require('../products_system/fiestasystem');*/
+
+module.exports = function (pizzas, /*vegetales, carnes, */ensaladas, adicionales) {
+	return yo`<div class="content">
+		<div class="container">
+			<div class="row">
+				<div class="col s12">
+					<ul class="collapsible popout" data-collapsible="accordion">
+						<p class="pack-text grey-text text-darken-4 center-align">Administación de Productos Ragustino</p>
+						<li>
+					    	<div class="collapsible-header grey lighten-2">
+					    		<p class="menu-text padding1 grey-text text-darken-4 center-align">Pizzas</p>
+					        </div>
+					    	<div class="collapsible-body">
+					    		<div class="col s12 white">
+					    			<form action="#">
+						    			<div class="row">
+											<div class="col s12">
+												<ul class="collection">
+													<div class="row">
+														<div class="col s6 center-align">
+															<span>Agregar Pizza <i class="material-icons edit-item">add_circle</i></span>
+														</div>
+														<div class="col s6 center-align">
+															<span class="edit-item">Eliminar Pizza <i class="material-icons">remove_circle</i></span>
+														</div>
+													</div>
+									    			${pizzas.map(function (pic) {
+		return pizza(pic);
+	})}
+												</ul>
+											</div>
+										</div>
+										<div class="divider separar"></div>
+									</form>
+								</div>
+							</div>
+					    </li>
+						<li>
+					    	<div class="collapsible-header grey lighten-2">
+					    		<p class="menu-text padding1 grey-text text-darken-4 center-align">Ensaladas</p>
+					        </div>
+					    	<div class="collapsible-body">
+					    		<div class="col s12 white">
+					    			<form action="#">
+						    			<div class="row">
+											<div class="col s12">
+												<ul class="collection">
+									    			${ensaladas.map(function (pic) {
+		return ensalada(pic);
+	})}
+												</ul>
+											</div>
+										</div>
+										<div class="divider separar"></div>
+									</form>
+								</div>
+							</div>
+					    </li>
+						<li>
+					    	<div class="collapsible-header grey lighten-2">
+					    		<p class="menu-text padding1 grey-text text-darken-4 center-align">Acompañamientos</p>
+					        </div>
+					    	<div class="collapsible-body">
+					    		<div class="col s12 white">
+					    			<form action="#">
+						    			<div class="row">
+											<div class="col s12">
+												<ul class="collection">
+									    			${adicionales.map(function (pic) {
+		return adicional(pic);
+	})}
+												</ul>
+											</div>
+										</div>
+										<div class="divider separar"></div>
+									</form>
+								</div>
+							</div>
+					    </li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>`;
+};
+
+},{"../products_system/adicionalsystem":53,"../products_system/ensaladasystem":54,"../products_system/pizzasystem":55,"yo-yo":21}],48:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -5724,10 +5993,9 @@ page('/estadisticas', header, function (ctx, next) {
 
 },{"../headersystem":50,"./template":49,"empty-element":4,"page":12,"title":20}],49:[function(require,module,exports){
 var yo = require('yo-yo');
-var layout = require('../../layout');
 
 module.exports = function () {
-	var el = yo`<div class="content">
+	return yo`<div class="content">
 		<div class="container">
 			<div class="row">
 				<div class="col s12">
@@ -5736,11 +6004,9 @@ module.exports = function () {
 			</div>
 		</div>	
 	</div>`;
-
-	return layout(el);
 };
 
-},{"../../layout":39,"yo-yo":21}],50:[function(require,module,exports){
+},{"yo-yo":21}],50:[function(require,module,exports){
 var yo = require('yo-yo');
 var empty = require('empty-element');
 
@@ -5756,7 +6022,7 @@ var el = yo`<nav class="header grey lighten-3">
 					<div class="container barra-system">
 						<div class="row piso-nav">
 								<div class="col s2">
-							  	<a href="/ragsystem" class="brand-logo">LOGO</a>
+							  	<a href="/ragsystem" class="brand-logo">SISTEMA DE GESTION</a>
 							  	<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
 							</div>
 							<div class="col s8">
@@ -5798,7 +6064,7 @@ var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
 var title = require('title');
-var header = require('./headersystem');
+var header = require('../headersystem');
 
 page('/ragsystem', header, function (ctx, next) {
 	title('Sistema Interno');
@@ -5806,12 +6072,11 @@ page('/ragsystem', header, function (ctx, next) {
 	empty(main).appendChild(template());
 });
 
-},{"./headersystem":50,"./template":52,"empty-element":4,"page":12,"title":20}],52:[function(require,module,exports){
+},{"../headersystem":50,"./template":52,"empty-element":4,"page":12,"title":20}],52:[function(require,module,exports){
 var yo = require('yo-yo');
-var layout = require('../layout');
 
 module.exports = function () {
-	var el = yo`<div class="content">
+	return yo`<div class="content">
 		<div class="container">
 			<div class="row">
 				<div class="col s12">
@@ -5852,8 +6117,42 @@ module.exports = function () {
 			</div>
 		</div>	
 	</div>`;
-
-	return layout(el);
 };
 
-},{"../layout":39,"yo-yo":21}]},{},[35]);
+},{"yo-yo":21}],53:[function(require,module,exports){
+var yo = require('yo-yo');
+
+module.exports = function (pic) {
+	return yo`<li class="collection-item avatar">
+		<img src="${pic.adicionalurl}" alt="" class="circle">
+		<span class="title">${pic.adicionalname}  $${pic.adicionalprice}.- ${pic.likes} me gusta</span>
+		<p>${pic.adicionalcontent}</p>
+		<a href="#!" class="secondary-content"><i class="material-icons">edit</i></a>
+	</li>`;
+};
+
+},{"yo-yo":21}],54:[function(require,module,exports){
+var yo = require('yo-yo');
+
+module.exports = function (pic) {
+	return yo`<li class="collection-item avatar">
+		<img src="${pic.ensaladaurl}" alt="" class="circle">
+		<span class="title">${pic.ensaladaname}  $${pic.ensaladaprice}.- ${pic.likes} me gusta</span>
+		<p>${pic.ensaladacontent}</p>
+		<a href="#!" class="secondary-content"><i class="material-icons">edit</i></a>
+	</li>`;
+};
+
+},{"yo-yo":21}],55:[function(require,module,exports){
+var yo = require('yo-yo');
+
+module.exports = function (pic) {
+	return yo`<li class="collection-item avatar">
+		<img src="${pic.pizzaurl}" alt="" class="circle">
+		<span class="title">${pic.pizzaname} / $${pic.pizzaprice}.- / ${pic.likes} me gusta</span>
+		<p class="detalle-item">${pic.pizzacontent}</p>
+		<a href="#!" class="secondary-content edit-item"><i class="material-icons">edit</i></a>
+	</li>`;
+};
+
+},{"yo-yo":21}]},{},[33]);

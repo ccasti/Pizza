@@ -1,0 +1,32 @@
+.fondo{
+	background: $color-secondary;
+}
+
+.base {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.pic-ini {
+	max-width: 100%;
+}
+
+.principal {
+	background: $color-brand;
+	padding: 1.5rem;
+}
+
+@media #{$medium-and-down} {
+	.principal {
+		margin: 0 0 !important;
+		min-width: 100%;
+	}
+}
+
+.principal2 {
+	margin: 0 !important;
+}
+
+.seccion {
+	background: $color-secondary;
+}

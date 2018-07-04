@@ -18,10 +18,9 @@
 }
 
 .vegetal {
-	max-width: 3rem;
+	max-width: 48px;
 	border-radius: 50%;
-	margin: 0 1rem;
-	padding-top: 8px;
+	margin: 0 auto;
 }
 
 [type="checkbox"].filled-in:checked + label:after {

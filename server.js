@@ -22,18 +22,6 @@ app.get('/carta', function (req, res) {
 	res.render('index', { title: 'Ragustino - Carta' });
 })
 
-app.get('/packs', function (req, res) {
-	res.render('index', { title: 'Ragustino - Packs' });
-})
-
-app.get('/fiesta', function (req, res) {
-	res.render('index', { title: 'Ragustino - Fiesta' });
-})
-
-app.get('/carro', function (req, res) {
-	res.render('index', { title: 'Ragustino - Carro' });
-})	
-
 app.get('/ragsystem', function (req, res) {
 	res.render('index', { title: 'Sistema Interno' });
 })
@@ -44,137 +32,74 @@ app.get('/estadisticas', function (req, res) {
 
 /*app.get('/ragsystem/adm_equipo', function (req, res) {
 	res.render('index', { title: 'Adm-Equipo' });
-})
-
-app.get('/ragsystem/adm_productos', function (req, res) {
-	res.render('index', { title: 'Adm-Productos' });
 })*/
 
-app.get('/api/pizzas', function (req, res) {
+app.get('/adm_productos', function (req, res) {
+	res.render('index', { title: 'Adm-Productos' });
+})
+
+app.get('/api/pizzas', function(req, res) {
 	var pizzas = [
 		{
-			pizzaid: '100001',
-			pizzaname: 'PIZZA PRIMERA',
-			pizzaurl: 'pizza.png',
-			pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
+			id: '100001',
+			name: 'PIZZA PRIMERA',
+			url: 'pizza.png',
+			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 			likes: 101,
 			liked: false,
-			pizzaprice: 9000
+			price: 9000
 		},
 		{
-			pizzaid: '100002',
-			pizzaname: 'PIZZA SEGUNDA',
-			pizzaurl: 'pizza2.png',
-			pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
+			id: '100002',
+			name: 'PIZZA SEGUNDA',
+			url: 'pizza2.png',
+			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 			likes: 102,
 			liked: false,
-			pizzaprice: 8500
+			price: 8500
 		},
 		{
-			pizzaid: '100003',
-			pizzaname: 'PIZZA TERCERA',
-			pizzaurl: 'pizza3.png',
-			pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
+			id: '100003',
+			name: 'PIZZA TERCERA',
+			url: 'pizza3.png',
+			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 			likes: 103,
 			liked: false,
-			pizzaprice: 9000
+			price: 9000
 		},
 		{
-			pizzaid: '100004',
-			pizzaname: 'PIZZA CUARTA',
-			pizzaurl: 'pizza.png',
-			pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
+			id: '100004',
+			name: 'PIZZA CUARTA',
+			url: 'pizza.png',
+			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 			likes: 104,
 			liked: false,
-			pizzaprice: 10000
+			price: 10000
 		},
 		{
-			pizzaid: '100005',
-			pizzaname: 'PIZZA QUINTA',
-			pizzaurl: 'pizza2.png',
-			pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
+			id: '100005',
+			name: 'PIZZA QUINTA',
+			url: 'pizza2.png',
+			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 			likes: 105,
 			liked: false,
-			pizzaprice: 9000
+			price: 9000
 		},
 		{
-			pizzaid: '100006',
-			pizzaname: 'PIZZA SEXTA',
-			pizzaurl: 'pizza3.png',
-			pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 106,
-			liked: false,
-			pizzaprice: 10000
-		},
-		{
-			pizzaid: '100007',
-			pizzaname: 'PIZZA SEPTIMA',
-			pizzaurl: 'pizza.png',
-			pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 107,
-			liked: false,
-			pizzaprice: 9000
-		},
-		{
-			pizzaid: '100008',
-			pizzaname: 'PIZZA OCTAVA',
-			pizzaurl: 'pizza2.png',
-			pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 108,
-			liked: false,
-			pizzaprice: 8500
-		},
-		{
-			pizzaid: '100009',
-			pizzaname: 'PIZZA NOVENA',
-			pizzaurl: 'pizza3.png',
-			pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 109,
-			liked: false,
-			pizzaprice: 9000
-		},
-		{
-			pizzaid: '100010',
-			pizzaname: 'PIZZA DECIMA',
-			pizzaurl: 'pizza.png',
-			pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 110,
-			liked: false,
-			pizzaprice: 10000
-		},
-		{
-			pizzaid: '1000011',
-			pizzaname: 'PIZZA UNDECIMA',
-			pizzaurl: 'pizza2.png',
-			pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 111,
-			liked: false,
-			pizzaprice: 9000
-		},
-		{
-			pizzaid: '1000012',
-			pizzaname: 'PIZZA DUODECIMA',
-			pizzaurl: 'pizza3.png',
-			pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 112,
-			liked: false,
-			pizzaprice: 10000
-		},
-		{
-			pizzaid: '1000013',
-			pizzaname: 'PIZZA TRECEAVA',
-			pizzaurl: 'pizza3.png',
-			pizzacontent: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 113,
-			liked: false,
-			pizzaprice: 10000
+			id: '100006',
+			name: 'PIZZA SEXTA',
+			url: 'pizza3.png',
+			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
+			likes: 105,
+			liked: true,
+			price: 9000
 		}
 	];
 
 	res.send(pizzas);
 })
 
-app.get('/api/vegetales', function (req, res) {
+app.get('/api/vegetales', function(req, res) {
 	var vegetales = [
 		{
 			vegid: '110001',
@@ -217,7 +142,7 @@ app.get('/api/vegetales', function (req, res) {
 	res.send(vegetales);
 })
 
-app.get('/api/carnes', function (req, res) {
+app.get('/api/carnes', function(req, res) {
 	var carnes = [
 		{
 			carid: '120001',
@@ -260,106 +185,412 @@ app.get('/api/carnes', function (req, res) {
 	res.send(carnes);
 })
 
-app.get('/api/ensaladas', function (req, res) {
-	var ensaladas = [
+app.get('/api/calzones', function(req, res) {
+	var calzones = [
 		{
-			ensaladaid: '200001',
-			ensaladaname: 'ENSALADA 1',
-			ensaladaurl: 'ensalada.jpg',
-			ensaladacontent: 'detalle de la ensalada con los productos que contiene y las característics que se quiera destacar',
-			likes: 201,
-			liked: false,
-			ensaladaprice: 10000
-		},
-		{
-			ensaladaid: '200002',
-			ensaladaname: 'ENSALADA 2',
-			ensaladaurl: 'ensalada.jpg',
-			ensaladacontent: 'detalle de la ensalada 2 con los productos que contiene y las característics que se quiera destacar',
-			likes: 202,
-			liked: false,
-			ensaladaprice: 9000
-		},
-		{
-			ensaladaid: '200003',
-			ensaladaname: 'ENSALADA 3',
-			ensaladaurl: 'ensalada.jpg',
-			ensaladacontent: 'detalle de la ensalada 3 con los productos que contiene y las característics que se quiera destacar',
-			likes: 203,
-			liked: false,
-			ensaladaprice: 8000
-		}
-	];
-
-	res.send(ensaladas);
-})
-
-app.get('/api/adicionales', function (req, res) {
-	var adicionales = [
-		{
-			adicionalid: '300001',
-			adicionalname: 'GRISSINI',
-			adicionalurl: 'grissini.jpg',
-			adicionalcontent: 'detalle y características de Grissini',
+			id: '200001',
+			name: 'CALZONE JAMON-PESTO',
+			url: 'grissini.jpg',
+			content: 'Pomodoro, mozzarella, jamón, pesto, albhaca',
 			likes: 301,
 			liked: false,
-			adicionalprice: 5000
+			price: 9400
 		},
 		{
-			adicionalid: '300002',
-			adicionalname: 'MINI CALZONE',
-			adicionalurl: 'minicalzone.jpg',
-			adicionalcontent: 'detalle y características de Mini Calzone',
+			id: '200002',
+			name: 'CALZONE CHAMPIÑON',
+			url: 'minicalzone.jpg',
+			content: 'Pomodoro, mozzarella, jamón, champiñones, oregano',
 			likes: 302,
 			liked: false,
-			adicionalprice: 5000
+			price: 9600
 		},
 		{
-			adicionalid: '300003',
-			adicionalname: 'FOCACCIA',
-			adicionalurl: 'focaccia.jpg',
-			adicionalcontent: 'detalle y características de Focaccia',
+			id: '200003',
+			name: 'CALZONE PIMENTON',
+			url: 'focaccia.jpg',
+			content: 'Pomodoro, mozzarella, pimentón asado, zuchinni asado',
 			likes: 303,
 			liked: false,
-			adicionalprice: 5000
+			price: 8900
 		}
 	];
 
-	res.send(adicionales);
+	res.send(calzones);
 })
 
-app.get('/api/packs', function (req, res) {
+app.get('/api/piadinas', function(req, res) {
+	var piadinas = [
+		{
+			id: '300001',
+			name: 'PIADINA CLASICA',
+			url: 'grissini.jpg',
+			content: 'Queso crema, jamón, tomate cherry, rúcula',
+			likes: 301,
+			liked: false,
+			price: 9400
+		},
+		{
+			id: '300002',
+			name: 'PIADINA CHAMPIÑON',
+			url: 'minicalzone.jpg',
+			content: 'Queso crema, jamón, champiñon, rúcula',
+			likes: 302,
+			liked: false,
+			price: 5000
+		},
+		{
+			id: '300003',
+			name: 'PIADINA ATUN',
+			url: 'focaccia.jpg',
+			content: 'Mozzarella, atún, cebolla, tomate',
+			likes: 303,
+			liked: false,
+			price: 9600
+		}
+	];
+
+	res.send(piadinas);
+})
+
+app.get('/api/packs', function(req, res) {
 	var packs = [
 		{
-			packid: '500001',
-			packname: 'PACK INDIVIDUAL 1',
-			packurl: 'packcard.jpg',
-			packcontent: 'Productos 1 a n del Pack Individual 1',
+			id: '510000',
+			name: 'PACK INDIVIDUAL A',
+			url: 'pack1.png',
+			contents: [
+				{
+					optid: '510001',
+					opttipo: 'Elije tu Pizza',
+					optname: [
+						{
+							itemid: '100001',
+							itemname: 'Margarita'
+						},
+						{
+							itemid: '100002',
+							itemname: 'Zucchini Parmesano'
+						},
+						{
+							itemid: '100003',
+							itemname: 'Caprese'
+						},
+						{
+							itemid: '100004',
+							itemname: 'Margarita'
+						}
+					]
+				},
+				{
+					optid: '500004',
+					opttipo: 'Elije tu Líquido',
+					optname: [
+						{
+							itemid: '190001',
+							itemname: 'Opción 1'
+						},
+						{
+							itemid: '190002',
+							itemname: 'Opción 2'
+						},
+						{
+							itemid: '190003',
+							itemname: 'Opción 3'
+						},
+						{
+							itemid: '190004',
+							itemname: 'Opción 4'
+						}
+					]
+				}
+			],
+			content: [
+				{
+					optid: '50002',
+					optname: '- Ensalada Ragustino'
+				},
+				{
+					optid: '500003',
+					optname: '- Grissinis'
+				},
+				
+				{
+					optid: '500005',
+					optname: '- Bombones Ferrero Rocher (3 unidades)'
+				},
+				{
+					optid: '500006',
+					optname: '- Cortador de Pizza'
+				},
+				{
+					optid: '500007',
+					optname: '- Tarjeta de Saludo'
+				}
+			],
 			likes: 501,
 			liked: false,
-			packprice: 8000
+			price: 18900
 		},
 		{
-			packid: '500002',
-			packname: 'PACK INDIVIDUAL 2',
-			packurl: 'packcard.jpg',
-			packcontent: 'Productos 1 a n del Pack Individual 2',
-			likes: 502,
+			id: '520000',
+			name: 'PACK INDIVIDUAL B',
+			url: 'pack2.png',
+			contents: [
+				{
+					optid: '500001',
+					opttipo: 'Elije tu Pizza',
+					optname: [
+						{
+							itemid: '100001',
+							itemname: 'Margarita'
+						},
+						{
+							itemid: '100002',
+							itemname: 'Zucchini Parmesano'
+						},
+						{
+							itemid: '100003',
+							itemname: 'Caprese'
+						},
+						{
+							itemid: '100004',
+							itemname: 'Margarita'
+						},
+						{
+							itemid: '100005',
+							itemname: 'Prosciutto'
+						},
+						{
+							itemid: '100006',
+							itemname: 'Pimentón'
+						},
+						{
+							itemid: '100007',
+							itemname: 'Campesina'
+						},
+						{
+							itemid: '100008',
+							itemname: 'Capricciosa'
+						},
+						{
+							itemid: '100009',
+							itemname: 'Silvestre'
+						}
+					]
+				},
+				{
+					optid: '500004',
+					opttipo: 'Elije tu Líquido',
+					optname: [
+						{
+							itemid: '190001',
+							itemname: 'Opción 1'
+						},
+						{
+							itemid: '190002',
+							itemname: 'Opción 2'
+						},
+						{
+							itemid: '190003',
+							itemname: 'Opción 3'
+						},
+						{
+							itemid: '190004',
+							itemname: 'Opción 4'
+						}
+					]
+				}
+			],
+			content: [
+				{
+					optid: '500002',
+					optname: '- Ensalada Ragustino'
+				},
+				{
+					optid: '500003',
+					optname: '- 02 Mini Focaccias Cebolla-Aceitunas'
+				},
+				{
+					optid: '500005',
+					optname: '- Maní Crocante con Jamón Ahuado 100g'
+				},
+				{
+					optid: '500006',
+					optname: '- Bombones Ferrero Rocher (3 unidades)'
+				},
+				{
+					optid: '500007',
+					optname: '- Cortador de Pizza Vinilo'
+				},
+				{
+					optid: '500008',
+					optname: '- Tarjeta de Saludo'
+				}
+			],
+			likes: 501,
 			liked: false,
-			packprice: 11000
+			price: 22900
 		},
 		{
-			packid: '500003',
-			packname: 'PACK INDIVIDUAL 3',
-			packurl: 'packcard.jpg',
-			packcontent: 'Productos 1 a n del Pack Individual 3',
-			likes: 503,
+			id: '530000',
+			name: 'PACK INDIVIDUAL C',
+			url: 'pack3.png',
+			contents: [
+				{
+					optid: '500001',
+					opttipo: 'Elije tu Pizza',
+					optname: [
+						{
+							itemid: '100001',
+							itemname: 'Margarita'
+						},
+						{
+							itemid: '100002',
+							itemname: 'Zucchini Parmesano'
+						},
+						{
+							itemid: '100003',
+							itemname: 'Caprese'
+						},
+						{
+							itemid: '100004',
+							itemname: 'Margarita'
+						},
+						{
+							itemid: '100005',
+							itemname: 'Prosciutto'
+						},
+						{
+							itemid: '100006',
+							itemname: 'Pimentón'
+						},
+						{
+							itemid: '100007',
+							itemname: 'Campesina'
+						},
+						{
+							itemid: '100008',
+							itemname: 'Capricciosa'
+						},
+						{
+							itemid: '100009',
+							itemname: 'Silvestre'
+						},
+						{
+							itemid: '100010',
+							itemname: 'Carnivora'
+						},
+						{
+							itemid: '100011',
+							itemname: 'Ibérica'
+						},
+						{
+							itemid: '100012',
+							itemname: 'Pollo, Jamón y Rucula'
+						},
+						{
+							itemid: '100013',
+							itemname: 'Patagónica'
+						},
+						{
+							itemid: '100014',
+							itemname: '4 Quesos'
+						},
+						{
+							itemid: '100015',
+							itemname: 'Mar y Tierra'
+						}
+					]
+				},
+				{
+					optid: '500004',
+					opttipo: 'Elije tu Líquido',
+					optname: [
+						{
+							itemid: '190001',
+							itemname: 'Opción 1'
+						},
+						{
+							itemid: '190002',
+							itemname: 'Opción 2'
+						},
+						{
+							itemid: '190003',
+							itemname: 'Opción 3'
+						},
+						{
+							itemid: '190004',
+							itemname: 'Opción 4'
+						}
+					]
+				}
+			],
+			content: [
+				{
+					optid: '500002',
+					optname: '- Ensalada Ragustino'
+				},
+				{
+					optid: '500003',
+					optname: '- 04 Mini Focaccias Cebolla-Aceitunas'
+				},
+				{
+					optid: '500005',
+					optname: '- Almendras Naturales 80g'
+				},
+				{
+					optid: '500006',
+					optname: '- Aceitunas Rellenas de Almendras Fragata 142g (3 unidades)'
+				},
+				{
+					optid: '500007',
+					optname: '- Bombones Ferrero Rocher (3 unidades)'
+				},
+				{
+					optid: '500008',
+					optname: '- Mini cuchillos corta quesos (5 piezas)'
+				},
+				{
+					optid: '500008',
+					optname: '- Tarjeta de Saludo'
+				}
+			],
+			likes: 501,
 			liked: false,
-			packprice: 15000
+			price: 24900
 		}
 	];
 
 	res.send(packs);
+})
+
+app.get('/api/items', function(req, res) {
+	var items = [
+		{
+			id: '600001',
+			name: 'Producto Individual 1',
+			url: 'vegetal.jpg',
+			content: 'Detalle Producto Individual 1',
+			price: 1000
+		},
+		{
+			id: '600002',
+			name: 'Producto Individual 2',
+			url: 'vegetal.jpg',
+			content: 'Detalle Producto Individual 2',
+			price: 1200
+		},
+		{
+			id: '600003',
+			name: 'Producto Individual 3',
+			url: 'bebida.jpg',
+			content: 'Detalle Producto Individual 3',
+			price: 5000
+		}
+	];
+
+	res.send(items);
 })
 
 app.listen(3000, function (err) {

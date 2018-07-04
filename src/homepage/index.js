@@ -2,10 +2,11 @@ var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
 var title = require('title');
-var header = require('../layout/header');
+var header = require('../header');
+var footer = require('../footer');
 var request = require('superagent');
 
-page('/', header, function (ctx, next) {
+page('/', header, footer, function (ctx, next) {
 	title('Ragustino');
 	var main = document.getElementById('main-container');
 
