@@ -4810,7 +4810,31 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 
 	empty(main).appendChild(template(ctx.pizzas, ctx.vegetales, ctx.carnes, ctx.calzones, ctx.piadinas, ctx.packs, ctx.items));
 
+	var pizzasCat = ctx.pizzas;
+	var calzonesCat = ctx.calzones;
+	var piadinasCat = ctx.piadinas;
+	var packsCat = ctx.packs;
+	var itemsCat = ctx.items;
+
 	function Carrito() {
+		var catalogo = [];
+
+		for (i of pizzasCat) {
+			catalogo.push(i);
+		}
+		for (i of calzonesCat) {
+			catalogo.push(i);
+		}
+		for (i of piadinasCat) {
+			catalogo.push(i);
+		}
+		for (i of packsCat) {
+			catalogo.push(i);
+		}
+		for (i of itemsCat) {
+			catalogo.push(i);
+		}
+
 		this.constructor = function () {
 			if (!localStorage.getItem("carrito")) {
 				localStorage.setItem('carrito', '[]');
@@ -4819,22 +4843,111 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 
 		this.getCarrito = JSON.parse(localStorage.getItem("carrito"));
 
-		this.agregarItem = function () {};
+		this.agregarItem = function (item) {
+			for (i of catalogo) {
+				if (i.id === item) {
+					var registro = i;
+				}
+			}
+			if (!registro) {
+				return;
+			}
+
+			for (i of this.getCarrito) {
+				if (i.id === item) {
+					i.cantidad++;
+					localStorage.setItem("carrito", JSON.stringify(this.getCarrito));
+					return;
+				}
+			}
+			registro.cantidad = 1;
+			this.getCarrito.push(registro);
+			localStorage.setItem("carrito", JSON.stringify(this.getCarrito));
+		};
+
+		this.getTotal = function () {
+			var total = 0;
+			for (i of this.getCarrito) {
+				total += parseFloat(i.cantidad) * parseFloat(i.price);
+			}
+			return total;
+		};
+
+		this.eliminarItem = function (item) {
+			for (var i in this.getCarrito) {
+				if (this.getCarrito[i].id === item) {
+					this.getCarrito.splice(i, 1);
+				}
+			}
+			localStorage.setItem("carrito", JSON.stringify(this.getCarrito));
+		};
+	}
+
+	function Carrito_View() {
+		this.renderCarrito = function () {
+			if (carrito.getCarrito.length <= 0) {
+				template = `<div class="row">
+					<div class="col s12 center-align">
+						No tienes productos en tu carro
+					</div>
+				</div>`;
+				document.getElementById('productosCarrito').innerHTML = template;
+			} else {
+				template = ``;
+				for (i of carrito.getCarrito) {
+					template += `<li class="collection-item">
+						<div class="row itemCarrito">
+							<div class="col s8 m4">
+								${i.name}
+							</div>
+							<div class="col s4 m2 center-align">
+								$${i.price}
+							</div>
+							<div class="col s3 offset-s3 m2 center-align">
+								${i.cantidad}
+							</div>
+							<div class="col s3 m2 center-align">
+								${i.cantidad * i.price}
+							</div>
+							<div class="col s3 m2 center-align">
+								<a href="#"><i class="material-icons iconoBorrar" id="deleteItem" data-id="${i.id}">delete_forever</i></a>
+							</div>
+						</div>
+					</li>`;
+				}
+				document.getElementById('productosCarrito').innerHTML = template;
+			}
+			document.getElementById('totalCarrito').innerHTML = "$ " + carrito.getTotal();
+		};
 	}
 
 	var carrito = new Carrito();
+	var carrito_view = new Carrito_View();
 
 	$(document).ready(function () {
 		$('.collapsible').collapsible();
 		$('select').material_select();
 
+		carrito_view.renderCarrito();
 		carrito.constructor();
 
 		document.getElementById('catalogo').addEventListener("click", function (ev) {
 			ev.preventDefault();
 			if (ev.target.id === "addItem") {
-				var item = ev.path[0].dataset;
-				console.log(item);
+				var id = ev.target.dataset.id;
+				carrito.agregarItem(id);
+				Materialize.toast('Se agregó un producto al carro', 2500, 'rounded');
+				carrito_view.renderCarrito();
+				$('#modal9').modal('open');
+			}
+		});
+
+		document.getElementById('productosCarrito').addEventListener("click", function (ev) {
+			ev.preventDefault();
+			if (ev.target.id === "deleteItem") {
+				carrito.eliminarItem(ev.target.dataset.id);
+				Materialize.toast('Se eliminó un producto del carro', 2500, 'rounded');
+				carrito_view.renderCarrito();
 			}
 		});
 	});
@@ -5504,50 +5617,46 @@ module.exports = function layout(content) {
 				<div class="row">
 					<div class="col s12">
 						<div class="modal-content">
-							<h4>Tu Carro de Compras</h4>
+							<div class="row itemCarrito">
+								<div class="col s8">
+									<h4 class="tituloCarro">Tu Carro de Compras</h4>
+								</div>
+								<div class="col s4 right-align">
+									<h4 class="tituloCarro" id="totalCarrito"></h4>
+								</div>
+							</div>
 							<ul class="collection">
-								<li class="collection-item">
-									<div class="row">
-										<div class="col s8 m4">
-											Nombre
-										</div>
-										<div class="col s4 m2 center-align">
-											Precio
-										</div>
-										<div class="col s3 offset-s3 m2 center-align">
-											Cantidad
-										</div>
-										<div class="col s3 m2 center-align">
-											Total
-										</div>
-										<div class="col s3 m2 center-align">
-											Quitar
-										</div>
+								<div class="row itemCarrito">
+									<div class="col s12">
+										<li class="collection-item">
+											<div class="row itemCarrito">
+												<div class="col s8 m4">
+													Nombre
+												</div>
+												<div class="col s4 m2 center-align">
+													Precio
+												</div>
+												<div class="col s3 offset-s3 m2 center-align">
+													Cantidad
+												</div>
+												<div class="col s3 m2 center-align">
+													Total
+												</div>
+												<div class="col s3 m2 center-align">
+													Quitar
+												</div>
+											</div>
+										</li>
 									</div>
-								</li>
-								<li class="collection-item">
-									<div class="row">
-										<div class="col s8 m4">
-											Nombre
-										</div>
-										<div class="col s4 m2 center-align">
-											Precio
-										</div>
-										<div class="col s3 offset-s3 m2 center-align">
-											Cantidad
-										</div>
-										<div class="col s3 m2 center-align">
-											Total
-										</div>
-										<div class="col s3 m2 center-align">
-											Quitar
-										</div>
+								</div>
+								<div class="row itemCarrito">
+									<div id="productosCarrito" class="col s12">
 									</div>
-								</li>
+								</div>
 							</ul>
 						</div>
 						<div class="modal-footer">
-							<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Comprar</a>
+							<a class="waves-effect waves-light btn blue darken-2">Comprar</a>
 							<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cerrar</a>
 						</div>
 					</div>
@@ -5572,7 +5681,7 @@ module.exports = function pictureCard(pic) {
 			</div>
 			<div class="card-content">
 				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.name}</span>
-				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-producto="${picture}">add</i></a>
+				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-id="${picture.id}">add</i></a>
 				<p class="likes-content">
 					<a class="left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
 					<a class="left" href="#" onclick=${like.bind(null, false)}><i class="material-icons favorite">favorite</i></a>
@@ -5667,7 +5776,7 @@ module.exports = function (pic) {
 				<span class="precio">$${pic.price}.-</span>
 			</div>
 			<div class="col s2">
-				<a class="btn-floating left waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-producto="${pic}">add</i></a>
+				<a class="btn-floating left waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-id="${pic.id}">add</i></a>
 			</div>
 		</div>
 	</div>`;
@@ -5687,7 +5796,7 @@ module.exports = function pictureCard(pic) {
 			</div>
 			<div class="card-content">
 				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.name}</span>
-				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-name="${picture.name}" data-content="${picture.content}">add</i></a>
+				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-id="${picture.id}">add</i></a>
 				<p class="likes-content">
 					<a class="left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
 					<a class="left" href="#" onclick=${like.bind(null, false)}><i class="material-icons favorite">favorite</i></a>
@@ -5732,7 +5841,7 @@ module.exports = function pictureCard(pic) {
 			<div class="card-content">
 				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.name}</span>
 				<div class="likes-content">
-					<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-producto="${picture}">add</i></a>
+					<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-id="${picture.id}">add</i></a>
 					<a class="left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
 					<a class="left" href="#" onclick=${like.bind(null, false)}><i class="material-icons favorite">favorite</i></a>
 					<span class="left likes">${picture.likes} me gusta</span>

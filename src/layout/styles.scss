@@ -30,3 +30,31 @@
 .seccion {
 	background: $color-secondary;
 }
+
+.tituloCarro {
+	font-size: 2rem !important;
+}
+
+@media #{$medium-and-down} {
+	.tituloCarro {
+		font-size: 1.8rem !important;
+	}	
+}
+
+@media #{$small-and-down} {
+	.tituloCarro {
+		font-size: 1.6rem !important;
+	}	
+}
+
+.itemCarrito {
+	margin-bottom: 0 !important;
+}
+
+.iconoBorrar {
+	color: #1976d2;
+}
+
+.modal .modal-content {
+	padding-bottom: 0 !important;
+}

@@ -22,7 +22,7 @@ module.exports = function (pic) {
 				<span class="precio">$${pic.price}.-</span>
 			</div>
 			<div class="col s2">
-				<a class="btn-floating left waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-producto="${pic}">add</i></a>
+				<a class="btn-floating left waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-id="${pic.id}">add</i></a>
 			</div>
 		</div>
 	</div>`

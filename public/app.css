@@ -7041,6 +7041,26 @@ nav ul a {
 .seccion {
   background: #fff; }
 
+.tituloCarro {
+  font-size: 2rem !important; }
+
+@media only screen and (max-width: 992px) {
+  .tituloCarro {
+    font-size: 1.8rem !important; } }
+
+@media only screen and (max-width: 600px) {
+  .tituloCarro {
+    font-size: 1.6rem !important; } }
+
+.itemCarrito {
+  margin-bottom: 0 !important; }
+
+.iconoBorrar {
+  color: #1976d2; }
+
+.modal .modal-content {
+  padding-bottom: 0 !important; }
+
 .collapsible.popout > li {
   margin-bottom: 3rem; }
 

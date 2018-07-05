@@ -11,7 +11,7 @@ module.exports = function pictureCard (pic) {
 			</div>
 			<div class="card-content">
 				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.name}</span>
-				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-name="${picture.name}" data-content="${picture.content}">add</i></a>
+				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-id="${picture.id}">add</i></a>
 				<p class="likes-content">
 					<a class="left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
 					<a class="left" href="#" onclick=${like.bind(null, false)}><i class="material-icons favorite">favorite</i></a>
