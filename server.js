@@ -259,72 +259,100 @@ app.get('/api/packs', function(req, res) {
 			id: '510000',
 			name: 'PACK INDIVIDUAL A',
 			url: 'pack1.png',
-			contents: [
-				{
-					optid: '510001',
-					opttipo: 'Elije tu Pizza',
-					optname: [
-						{
-							itemid: '100001',
-							itemname: 'Margarita'
-						},
-						{
-							itemid: '100002',
-							itemname: 'Zucchini Parmesano'
-						},
-						{
-							itemid: '100003',
-							itemname: 'Caprese'
-						},
-						{
-							itemid: '100004',
-							itemname: 'Margarita'
-						}
-					]
-				},
-				{
-					optid: '500004',
-					opttipo: 'Elije tu Líquido',
-					optname: [
-						{
-							itemid: '190001',
-							itemname: 'Opción 1'
-						},
-						{
-							itemid: '190002',
-							itemname: 'Opción 2'
-						},
-						{
-							itemid: '190003',
-							itemname: 'Opción 3'
-						},
-						{
-							itemid: '190004',
-							itemname: 'Opción 4'
-						}
-					]
-				}
-			],
+			contents: {
+				opciones: [
+					{
+						id: '511000',
+						tipo: 'Elije tu Pizza',
+						selec: false,
+						items: [
+							{
+								idpack: '510000',
+								idopt: '511000',
+								iditem: '511001',
+								itemname: 'Margarita',
+								selected: false
+							},
+							{
+								idpack: '510000',
+								idopt: '511000',
+								iditem: '511002',
+								itemname: 'Zucchini Parmesano',
+								selected: false
+							},
+							{
+								idpack: '510000',
+								idopt: '511000',
+								iditem: '511003',
+								itemname: 'Caprese',
+								selected: false
+							},
+							{
+								idpack: '510000',
+								idopt: '511000',
+								iditem: '511004',
+								itemname: 'Pollo al pesto',
+								selected: false
+							}
+						]
+					},
+					{
+						id: '512000',
+						tipo: 'Elije tu Líquido',
+						selec: false,
+						items: [
+							{
+								idpack: '510000',
+								idopt: '512000',
+								iditem: '512001',
+								itemname: 'Opción 1',
+								selected: false
+							},
+							{
+								idpack: '510000',
+								idopt: '512000',
+								iditem: '512002',
+								itemname: 'Opción 2',
+								selected: false
+							},
+							{
+								idpack: '510000',
+								idopt: '512000',
+								iditem: '512003',
+								itemname: 'Opción 3',
+								selected: false
+							},
+							{
+								idpack: '510000',
+								idopt: '512000',
+								iditem: '512004',
+								itemname: 'Opción 4',
+								selected: false
+							}
+						]
+					}
+				]
+			},
 			content: [
 				{
-					optid: '50002',
+					optid: '513001',
 					optname: '- Ensalada Ragustino'
 				},
 				{
-					optid: '500003',
+					optid: '513002',
 					optname: '- Grissinis'
 				},
 				
 				{
-					optid: '500005',
+					optid: '513003',
 					optname: '- Bombones Ferrero Rocher (3 unidades)'
 				},
 				{
-					optid: '500006',
+					optid: '513004',
 					optname: '- Cortador de Pizza'
 				},
 				{
-					optid: '500007',
+					optid: '513005',
 					optname: '- Tarjeta de Saludo'
 				}
 			],
@@ -336,99 +364,142 @@ app.get('/api/packs', function(req, res) {
 			id: '520000',
 			name: 'PACK INDIVIDUAL B',
 			url: 'pack2.png',
-			contents: [
-				{
-					optid: '500001',
-					opttipo: 'Elije tu Pizza',
-					optname: [
-						{
-							itemid: '100001',
-							itemname: 'Margarita'
-						},
-						{
-							itemid: '100002',
-							itemname: 'Zucchini Parmesano'
-						},
-						{
-							itemid: '100003',
-							itemname: 'Caprese'
-						},
-						{
-							itemid: '100004',
-							itemname: 'Margarita'
-						},
-						{
-							itemid: '100005',
-							itemname: 'Prosciutto'
-						},
-						{
-							itemid: '100006',
-							itemname: 'Pimentón'
-						},
-						{
-							itemid: '100007',
-							itemname: 'Campesina'
-						},
-						{
-							itemid: '100008',
-							itemname: 'Capricciosa'
-						},
-						{
-							itemid: '100009',
-							itemname: 'Silvestre'
-						}
-					]
-				},
-				{
-					optid: '500004',
-					opttipo: 'Elije tu Líquido',
-					optname: [
-						{
-							itemid: '190001',
-							itemname: 'Opción 1'
-						},
-						{
-							itemid: '190002',
-							itemname: 'Opción 2'
-						},
-						{
-							itemid: '190003',
-							itemname: 'Opción 3'
-						},
-						{
-							itemid: '190004',
-							itemname: 'Opción 4'
-						}
-					]
-				}
-			],
+			contents: {
+				opciones: [
+					{
+						id: '521000',
+						tipo: 'Elije tu Pizza',
+						selec: false,
+						items: [
+							{
+								idpack: '520000',
+								idopt: '521000',
+								iditem: '521001',
+								itemname: 'Margarita',
+								selected: false
+							},
+							{
+								idpack: '520000',
+								idopt: '521000',
+								iditem: '521002',
+								itemname: 'Zucchini Parmesano',
+								selected: false
+							},
+							{
+								idpack: '520000',
+								idopt: '521000',
+								iditem: '521003',
+								itemname: 'Caprese',
+								selected: false
+							},
+							{
+								idpack: '520000',
+								idopt: '521000',
+								iditem: '521004',
+								itemname: 'Pollo al pesto',
+								selected: false
+							},
+							{
+								idpack: '520000',
+								idopt: '521000',
+								iditem: '521005',
+								itemname: 'Prosciutto',
+								selected: false
+							},
+							{
+								idpack: '520000',
+								idopt: '521000',
+								iditem: '521006',
+								itemname: 'Pimentón',
+								selected: false
+							},
+							{
+								idpack: '520000',
+								idopt: '521000',
+								iditem: '521007',
+								itemname: 'Campesina',
+								selected: false
+							},
+							{
+								idpack: '520000',
+								idopt: '521000',
+								iditem: '521008',
+								itemname: 'Capricciosa',
+								selected: false
+							},
+							{
+								idpack: '520000',
+								idopt: '521000',
+								iditem: '521009',
+								itemname: 'Silvestre',
+								selected: false
+							}
+						]
+					},
+					{
+						id: '522000',
+						tipo: 'Elije tu Líquido',
+						selec: false,
+						items: [
+							{
+								idpack: '520000',
+								idopt: '522000',
+								iditem: '522001',
+								itemname: 'Opción 1',
+								selected: false
+							},
+							{
+								idpack: '520000',
+								idopt: '522000',
+								iditem: '522002',
+								itemname: 'Opción 2',
+								selected: false
+							},
+							{
+								idpack: '520000',
+								idopt: '522000',
+								iditem: '522003',
+								itemname: 'Opción 3',
+								selected: false
+							},
+							{
+								idpack: '520000',
+								idopt: '522000',
+								iditem: '522004',
+								itemname: 'Opción 4',
+								selected: false
+							}
+						]
+					}
+				]
+			},
 			content: [
 				{
-					optid: '500002',
+					optid: '523001',
 					optname: '- Ensalada Ragustino'
 				},
 				{
-					optid: '500003',
+					optid: '523002',
 					optname: '- 02 Mini Focaccias Cebolla-Aceitunas'
 				},
 				{
-					optid: '500005',
+					optid: '523003',
 					optname: '- Maní Crocante con Jamón Ahuado 100g'
 				},
 				{
-					optid: '500006',
+					optid: '523004',
 					optname: '- Bombones Ferrero Rocher (3 unidades)'
 				},
 				{
-					optid: '500007',
+					optid: '523005',
 					optname: '- Cortador de Pizza Vinilo'
 				},
 				{
-					optid: '500008',
+					optid: '523006',
 					optname: '- Tarjeta de Saludo'
 				}
 			],
-			likes: 501,
+			likes: 502,
 			liked: false,
 			price: 22900
 		},
@@ -436,130 +507,191 @@ app.get('/api/packs', function(req, res) {
 			id: '530000',
 			name: 'PACK INDIVIDUAL C',
 			url: 'pack3.png',
-			contents: [
-				{
-					optid: '500001',
-					opttipo: 'Elije tu Pizza',
-					optname: [
-						{
-							itemid: '100001',
-							itemname: 'Margarita'
-						},
-						{
-							itemid: '100002',
-							itemname: 'Zucchini Parmesano'
-						},
-						{
-							itemid: '100003',
-							itemname: 'Caprese'
-						},
-						{
-							itemid: '100004',
-							itemname: 'Margarita'
-						},
-						{
-							itemid: '100005',
-							itemname: 'Prosciutto'
-						},
-						{
-							itemid: '100006',
-							itemname: 'Pimentón'
-						},
-						{
-							itemid: '100007',
-							itemname: 'Campesina'
-						},
-						{
-							itemid: '100008',
-							itemname: 'Capricciosa'
-						},
-						{
-							itemid: '100009',
-							itemname: 'Silvestre'
-						},
-						{
-							itemid: '100010',
-							itemname: 'Carnivora'
-						},
-						{
-							itemid: '100011',
-							itemname: 'Ibérica'
-						},
-						{
-							itemid: '100012',
-							itemname: 'Pollo, Jamón y Rucula'
-						},
-						{
-							itemid: '100013',
-							itemname: 'Patagónica'
-						},
-						{
-							itemid: '100014',
-							itemname: '4 Quesos'
-						},
-						{
-							itemid: '100015',
-							itemname: 'Mar y Tierra'
-						}
-					]
-				},
-				{
-					optid: '500004',
-					opttipo: 'Elije tu Líquido',
-					optname: [
-						{
-							itemid: '190001',
-							itemname: 'Opción 1'
-						},
-						{
-							itemid: '190002',
-							itemname: 'Opción 2'
-						},
-						{
-							itemid: '190003',
-							itemname: 'Opción 3'
-						},
-						{
-							itemid: '190004',
-							itemname: 'Opción 4'
-						}
-					]
-				}
-			],
+			contents: {
+				opciones: [
+					{
+						id: '531000',
+						tipo: 'Elije tu Pizza',
+						selec: false,
+						items: [
+							{
+								idpack: '530000',
+								idopt: '531000',
+								iditem: '531001',
+								itemname: 'Margarita',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '531000',
+								iditem: '531002',
+								itemname: 'Zucchini Parmesano',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '531000',
+								iditem: '531003',
+								itemname: 'Caprese',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '531000',
+								iditem: '531004',
+								itemname: 'Pollo al pesto',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '531000',
+								iditem: '531005',
+								itemname: 'Prosciutto',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '531000',
+								iditem: '531006',
+								itemname: 'Pimentón',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '531000',
+								iditem: '531007',
+								itemname: 'Campesina',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '531000',
+								iditem: '531008',
+								itemname: 'Capricciosa',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '531000',
+								iditem: '521009',
+								itemname: 'Silvestre',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '531000',
+								iditem: '521010',
+								itemname: 'Carnivora',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '531000',
+								iditem: '521011',
+								itemname: 'Ibérica',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '531000',
+								iditem: '521012',
+								itemname: 'Pollo, Jamón y Rucula',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '531000',
+								iditem: '521013',
+								itemname: 'Patagónica',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '531000',
+								iditem: '521014',
+								itemname: '4 Quesos',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '531000',
+								iditem: '521015',
+								itemname: 'Mar y Tierra',
+								selected: false
+							}
+						]
+					},
+					{
+						id: '532000',
+						tipo: 'Elije tu Líquido',
+						selec: false,
+						items: [
+							{
+								idpack: '530000',
+								idopt: '532000',
+								iditem: '532001',
+								itemname: 'Opción 1',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '532000',
+								iditem: '532002',
+								itemname: 'Opción 2',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '532000',
+								iditem: '532003',
+								itemname: 'Opción 3',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '532000',
+								iditem: '532004',
+								itemname: 'Opción 4',
+								selected: false
+							},
+						]
+					}
+				]
+			},
 			content: [
 				{
-					optid: '500002',
+					optid: '533001',
 					optname: '- Ensalada Ragustino'
 				},
 				{
-					optid: '500003',
+					optid: '533002',
 					optname: '- 04 Mini Focaccias Cebolla-Aceitunas'
 				},
 				{
-					optid: '500005',
+					optid: '533003',
 					optname: '- Almendras Naturales 80g'
 				},
 				{
-					optid: '500006',
+					optid: '533004',
 					optname: '- Aceitunas Rellenas de Almendras Fragata 142g (3 unidades)'
 				},
 				{
-					optid: '500007',
+					optid: '533005',
 					optname: '- Bombones Ferrero Rocher (3 unidades)'
 				},
 				{
-					optid: '500008',
+					optid: '533006',
 					optname: '- Mini cuchillos corta quesos (5 piezas)'
 				},
 				{
-					optid: '500008',
+					optid: '533007',
 					optname: '- Tarjeta de Saludo'
 				}
 			],
-			likes: 501,
+			likes: 503,
 			liked: false,
 			price: 24900
-		}
+		},
 	];
 
 	res.send(packs);

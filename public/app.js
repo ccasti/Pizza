@@ -4810,28 +4810,22 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 
 	empty(main).appendChild(template(ctx.pizzas, ctx.vegetales, ctx.carnes, ctx.calzones, ctx.piadinas, ctx.packs, ctx.items));
 
-	var pizzasCat = ctx.pizzas;
-	var calzonesCat = ctx.calzones;
-	var piadinasCat = ctx.piadinas;
-	var packsCat = ctx.packs;
-	var itemsCat = ctx.items;
-
 	function Carrito() {
 		var catalogo = [];
 
-		for (i of pizzasCat) {
+		for (i of ctx.pizzas) {
 			catalogo.push(i);
 		}
-		for (i of calzonesCat) {
+		for (i of ctx.calzones) {
 			catalogo.push(i);
 		}
-		for (i of piadinasCat) {
+		for (i of ctx.piadinas) {
 			catalogo.push(i);
 		}
-		for (i of packsCat) {
+		for (i of ctx.packs) {
 			catalogo.push(i);
 		}
-		for (i of itemsCat) {
+		for (i of ctx.items) {
 			catalogo.push(i);
 		}
 
@@ -4842,6 +4836,59 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 		};
 
 		this.getCarrito = JSON.parse(localStorage.getItem("carrito"));
+
+		this.agregarItemPack = function (item) {
+			for (i of catalogo) {
+				if (i.id === item) {
+					var registroPack = i;
+				}
+			}
+			if (!registroPack) {
+				return;
+			}
+
+			for (n of registroPack.contents.opciones) {
+				if (n.selec === false) {
+					alert("Debes Seleccionar tu Pizza y Líquido");
+				}
+				if (n.selec === true) {
+					for (i of n.items) {
+						if (i.selected === false) {
+							delete i.idpack;
+							delete i.idopt;
+							delete i.iditem;
+							delete i.itemname;
+							delete i.selected;
+						}
+					}
+				}
+			}
+			registroPack.cantidad = 1;
+			this.getCarrito.push(registroPack);
+			localStorage.setItem("carrito", JSON.stringify(this.getCarrito));
+			console.log(carrito.getCarrito);
+		};
+
+		this.selectOption = function (idPack, idOpt, idItem) {
+			for (p of catalogo) {
+				if (p.id === idPack) {
+					for (n of p.contents.opciones) {
+						if (n.id === idOpt) {
+							for (i of n.items) {
+								if (i.selected === true) {
+									i.selected = false;
+								}
+								if (i.iditem === idItem) {
+									i.selected = true;
+									n.selec = true;
+									console.log(catalogo);
+								}
+							}
+						}
+					}
+				}
+			}
+		};
 
 		this.agregarItem = function (item) {
 			for (i of catalogo) {
@@ -4886,16 +4933,16 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 	function Carrito_View() {
 		this.renderCarrito = function () {
 			if (carrito.getCarrito.length <= 0) {
-				template = `<div class="row">
+				templateNoItems = `<div class="row">
 					<div class="col s12 center-align">
 						No tienes productos en tu carro
 					</div>
 				</div>`;
-				document.getElementById('productosCarrito').innerHTML = template;
+				document.getElementById('productosCarrito').innerHTML = templateNoItems;
 			} else {
-				template = ``;
+				templateItems = ``;
 				for (i of carrito.getCarrito) {
-					template += `<li class="collection-item">
+					templateItems += `<li class="collection-item">
 						<div class="row itemCarrito">
 							<div class="col s8 m4">
 								${i.name}
@@ -4915,9 +4962,14 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 						</div>
 					</li>`;
 				}
-				document.getElementById('productosCarrito').innerHTML = template;
+				document.getElementById('productosCarrito').innerHTML = templateItems;
 			}
 			document.getElementById('totalCarrito').innerHTML = "$ " + carrito.getTotal();
+		};
+
+		this.totalProductos = function () {
+			var total = carrito.getCarrito.length;
+			document.getElementById('totalProductos').innerHTML = total;
 		};
 	}
 
@@ -4929,7 +4981,17 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 		$('select').material_select();
 
 		carrito_view.renderCarrito();
+		carrito_view.totalProductos();
 		carrito.constructor();
+
+		document.getElementById('catalogo').addEventListener("click", function (ev) {
+			if (ev.target.id === "itemSelect") {
+				var idPack = ev.target.dataset.idpack;
+				var idOpt = ev.target.dataset.idopt;
+				var idItem = ev.target.dataset.id;
+				carrito.selectOption(idPack, idOpt, idItem);
+			}
+		});
 
 		document.getElementById('catalogo').addEventListener("click", function (ev) {
 			ev.preventDefault();
@@ -4937,6 +4999,19 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 				var id = ev.target.dataset.id;
 				carrito.agregarItem(id);
 				Materialize.toast('Se agregó un producto al carro', 2500, 'rounded');
+				carrito_view.totalProductos();
+				carrito_view.renderCarrito();
+				$('#modal9').modal('open');
+			}
+		});
+
+		document.getElementById('catalogo').addEventListener("click", function (ev) {
+			ev.preventDefault();
+			if (ev.target.id === "addItemPack") {
+				var id = ev.target.dataset.id;
+				carrito.agregarItemPack(id);
+				Materialize.toast('Se agregó un producto al carro', 2500, 'rounded');
+				carrito_view.totalProductos();
 				carrito_view.renderCarrito();
 				$('#modal9').modal('open');
 			}
@@ -4947,6 +5022,7 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 			if (ev.target.id === "deleteItem") {
 				carrito.eliminarItem(ev.target.dataset.id);
 				Materialize.toast('Se eliminó un producto del carro', 2500, 'rounded');
+				carrito_view.totalProductos();
 				carrito_view.renderCarrito();
 			}
 		});
@@ -5511,7 +5587,7 @@ var el = yo`<nav class="header grey lighten-3">
 								</ul>
 							</div>
 							<div class="col s3 offset-s5 m2 l2 sp">
-								<a class="btn modal-trigger blue darken-2 chip-carro" href="#modal9"><i class="small material-icons left carrito">shopping_cart</i>0</a>
+								<a class="btn modal-trigger blue darken-2 chip-carro" href="#modal9"><i class="small material-icons left carrito">shopping_cart</i><span id="totalProductos">0</span></a>
 							</div>
 						</div>
 					</div>
@@ -5725,13 +5801,16 @@ var yo = require('yo-yo');
 var option = require('./option');
 
 module.exports = function (optt) {
-	return yo`<div class="input-field col s12 opt-pizza">
-		<select>
-			<option value="" disabled selected>${optt.opttipo}</option>
-			${optt.optname.map(function (item) {
+	return yo`<div class="col s12 opt-pizza">
+		<ul>
+			<li class="itemOpt">${optt.tipo}
+				<ul>	
+					${optt.items.map(function (item) {
 		return option(item);
 	})}
-		</select>
+				</ul>		
+			</li>
+		</ul>
 	</div>`;
 };
 
@@ -5739,7 +5818,7 @@ module.exports = function (optt) {
 var yo = require('yo-yo');
 
 module.exports = function (item) {
-	return yo`<option value="${item.itemid}">${item.itemname}</option>`;
+	return yo`<li class="itemOpt" id="itemSelect" data-idpack="${item.idpack}" data-idopt="${item.idopt}" data-id="${item.iditem}">- ${item.itemname}</li>`;
 };
 
 },{"yo-yo":21}],40:[function(require,module,exports){
@@ -5796,7 +5875,7 @@ module.exports = function pictureCard(pic) {
 			</div>
 			<div class="card-content">
 				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.name}</span>
-				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-id="${picture.id}">add</i></a>
+				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItemPack" data-id="${picture.id}">add</i></a>
 				<p class="likes-content">
 					<a class="left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
 					<a class="left" href="#" onclick=${like.bind(null, false)}><i class="material-icons favorite">favorite</i></a>
@@ -5805,7 +5884,7 @@ module.exports = function pictureCard(pic) {
 			</div>
 			<div class="card-reveal">
 			    <span class="pizza-text card-title blue-text text-darken-2">${picture.name}<i class="material-icons right">close</i></span>
-			    ${picture.contents.map(function (optt) {
+			    ${picture.contents.opciones.map(function (optt) {
 			return itemoptt(optt);
 		})}
 			    ${picture.content.map(function (opt) {

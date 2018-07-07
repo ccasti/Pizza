@@ -29,7 +29,7 @@ var el = yo`<nav class="header grey lighten-3">
 								</ul>
 							</div>
 							<div class="col s3 offset-s5 m2 l2 sp">
-								<a class="btn modal-trigger blue darken-2 chip-carro" href="#modal9"><i class="small material-icons left carrito">shopping_cart</i>0</a>
+								<a class="btn modal-trigger blue darken-2 chip-carro" href="#modal9"><i class="small material-icons left carrito">shopping_cart</i><span id="totalProductos">0</span></a>
 							</div>
 						</div>
 					</div>

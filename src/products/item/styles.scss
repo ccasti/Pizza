@@ -41,3 +41,19 @@
 .fila-nombre {
 	margin-bottom: 0 !important;
 }
+
+.itemOpt {
+	padding: 10px 0;
+}
+
+.itemOpt:hover {
+	background-color: #e0e0e0;
+}
+
+.itemOpt ul {
+	display: none;
+}
+
+.itemOpt:hover > ul {
+	display: block;
+}

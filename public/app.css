@@ -6931,7 +6931,8 @@ Body {
   margin-bottom: 0; }
 
 .header {
-  min-height: 60px !important; }
+  min-height: 60px !important;
+  position: fixed; }
 
 .piso-nav {
   margin-bottom: 0 !important; }
@@ -7020,7 +7021,7 @@ nav ul a {
   background: #fff; }
 
 .base {
-  padding-top: 0;
+  padding-top: 60px;
   padding-bottom: 0; }
 
 .pic-ini {
@@ -7257,6 +7258,18 @@ nav ul a {
 
 .fila-nombre {
   margin-bottom: 0 !important; }
+
+.itemOpt {
+  padding: 10px 0; }
+
+.itemOpt:hover {
+  background-color: #e0e0e0; }
+
+.itemOpt ul {
+  display: none; }
+
+.itemOpt:hover > ul {
+  display: block; }
 
 /*@import "src/ragsystem/estadisticas/styles";*/
 footer.page-footer {

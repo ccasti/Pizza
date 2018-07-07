@@ -31,31 +31,25 @@ page('/carta',
 		ctx.items
 	));
 
-	var pizzasCat = ctx.pizzas;
-	var calzonesCat = ctx.calzones;
-	var piadinasCat = ctx.piadinas;
-	var packsCat = ctx.packs;
-	var itemsCat = ctx.items;
-
 	function Carrito() {
 		var catalogo = [];
 		
-		for (i of pizzasCat) {
+		for (i of ctx.pizzas) {
 			catalogo.push(i);
 		}
-		for (i of calzonesCat) {
+		for (i of ctx.calzones) {
 			catalogo.push(i);
 		}
-		for (i of piadinasCat) {
+		for (i of ctx.piadinas) {
 			catalogo.push(i);
 		}
-		for (i of packsCat) {
+		for (i of ctx.packs) {
 			catalogo.push(i);
 		}
-		for (i of itemsCat) {
+		for (i of ctx.items) {
 			catalogo.push(i);
 		}
-		
+
 		this.constructor = function() {
 			if(!localStorage.getItem("carrito")){
 				localStorage.setItem('carrito','[]');
@@ -63,6 +57,59 @@ page('/carta',
 		}
 			
 		this.getCarrito = JSON.parse(localStorage.getItem("carrito"));
+
+		this.agregarItemPack = function(item) {
+			for(i of catalogo) {
+				if(i.id === item) {
+					var registroPack = i
+				}
+			}
+			if(!registroPack) {
+				return
+			}
+
+			for(n of registroPack.contents.opciones) {
+				if(n.selec === false) {
+					alert("Debes Seleccionar tu Pizza y Líquido");
+				}
+				if(n.selec === true) {
+					for(i of n.items) {
+						if(i.selected === false) {
+							delete i.idpack;
+							delete i.idopt;
+							delete i.iditem;
+							delete i.itemname;
+							delete i.selected;
+						}
+					}
+				}
+			}
+			registroPack.cantidad = 1;
+			this.getCarrito.push(registroPack);
+			localStorage.setItem("carrito",JSON.stringify(this.getCarrito));
+			console.log(carrito.getCarrito);
+		}
+
+		this.selectOption = function(idPack, idOpt, idItem) {
+			for(p of catalogo) {
+				if(p.id === idPack) {
+					for(n of p.contents.opciones) {
+						if(n.id === idOpt) {
+							for(i of n.items) {
+								if(i.selected === true) {
+									i.selected = false;
+								}
+								if(i.iditem === idItem) {
+									i.selected = true;
+									n.selec = true;
+									console.log(catalogo);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 			
 		this.agregarItem = function(item) {
 			for(i of catalogo) {
@@ -107,16 +154,16 @@ page('/carta',
 	function Carrito_View() {
 		this.renderCarrito = function() {
 			if(carrito.getCarrito.length <= 0) {
-				template = `<div class="row">
+				templateNoItems = `<div class="row">
 					<div class="col s12 center-align">
 						No tienes productos en tu carro
 					</div>
 				</div>`;
-				document.getElementById('productosCarrito').innerHTML = template;
+				document.getElementById('productosCarrito').innerHTML = templateNoItems;
 			}else{
-				template = ``;
+				templateItems = ``;
 				for(i of carrito.getCarrito) {
-					template += `<li class="collection-item">
+					templateItems += `<li class="collection-item">
 						<div class="row itemCarrito">
 							<div class="col s8 m4">
 								${i.name}
@@ -136,9 +183,14 @@ page('/carta',
 						</div>
 					</li>`;
 				}
-				document.getElementById('productosCarrito').innerHTML = template;
+				document.getElementById('productosCarrito').innerHTML = templateItems;
 			}
 			document.getElementById('totalCarrito').innerHTML = "$ "+carrito.getTotal();
+		}
+
+		this.totalProductos = function() {
+			var total = carrito.getCarrito.length;
+			document.getElementById('totalProductos').innerHTML = total;
 		}
 	}
 		
@@ -150,7 +202,17 @@ page('/carta',
 		$('select').material_select();
 		
 		carrito_view.renderCarrito();
+		carrito_view.totalProductos();
 		carrito.constructor();
+
+		document.getElementById('catalogo').addEventListener("click", function(ev) {
+			if(ev.target.id === "itemSelect") {
+				var idPack = ev.target.dataset.idpack;
+				var idOpt = ev.target.dataset.idopt;
+				var idItem = ev.target.dataset.id;
+				carrito.selectOption(idPack, idOpt, idItem);
+			}
+		});
 		
 		document.getElementById('catalogo').addEventListener("click", function(ev) {
 			ev.preventDefault();
@@ -158,6 +220,19 @@ page('/carta',
 				var id = ev.target.dataset.id;
 				carrito.agregarItem(id);
 				Materialize.toast('Se agregó un producto al carro', 2500, 'rounded')
+				carrito_view.totalProductos();
+				carrito_view.renderCarrito();
+				$('#modal9').modal('open');
+			}
+		});
+
+		document.getElementById('catalogo').addEventListener("click", function(ev) {
+			ev.preventDefault();
+			if(ev.target.id === "addItemPack"){
+				var id = ev.target.dataset.id;
+				carrito.agregarItemPack(id);
+				Materialize.toast('Se agregó un producto al carro', 2500, 'rounded')
+				carrito_view.totalProductos();
 				carrito_view.renderCarrito();
 				$('#modal9').modal('open');
 			}
@@ -168,6 +243,7 @@ page('/carta',
 			if(ev.target.id === "deleteItem") {
 				carrito.eliminarItem(ev.target.dataset.id);
 				Materialize.toast('Se eliminó un producto del carro', 2500, 'rounded')
+				carrito_view.totalProductos();
 				carrito_view.renderCarrito();
 			}
 		})
