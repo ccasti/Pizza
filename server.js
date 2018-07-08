@@ -263,7 +263,7 @@ app.get('/api/packs', function(req, res) {
 				opciones: [
 					{
 						id: '511000',
-						tipo: 'Elije tu Pizza',
+						tipo: 'Pizza',
 						selec: false,
 						items: [
 							{
@@ -298,7 +298,7 @@ app.get('/api/packs', function(req, res) {
 					},
 					{
 						id: '512000',
-						tipo: 'Elije tu Líquido',
+						tipo: 'Líquido',
 						selec: false,
 						items: [
 							{
@@ -368,7 +368,7 @@ app.get('/api/packs', function(req, res) {
 				opciones: [
 					{
 						id: '521000',
-						tipo: 'Elije tu Pizza',
+						tipo: 'Pizza',
 						selec: false,
 						items: [
 							{
@@ -438,7 +438,7 @@ app.get('/api/packs', function(req, res) {
 					},
 					{
 						id: '522000',
-						tipo: 'Elije tu Líquido',
+						tipo: 'Líquido',
 						selec: false,
 						items: [
 							{
@@ -511,7 +511,7 @@ app.get('/api/packs', function(req, res) {
 				opciones: [
 					{
 						id: '531000',
-						tipo: 'Elije tu Pizza',
+						tipo: 'Pizza',
 						selec: false,
 						items: [
 							{
@@ -623,7 +623,7 @@ app.get('/api/packs', function(req, res) {
 					},
 					{
 						id: '532000',
-						tipo: 'Elije tu Líquido',
+						tipo: 'Líquido',
 						selec: false,
 						items: [
 							{
@@ -701,24 +701,83 @@ app.get('/api/items', function(req, res) {
 	var items = [
 		{
 			id: '600001',
-			name: 'Producto Individual 1',
-			url: 'vegetal.jpg',
-			content: 'Detalle Producto Individual 1',
-			price: 1000
+			tipo: 'queso',
+			name: 'Mozzarella',
+			url: 'queso.jpg',
+			gramo: 100,
+			price: 2190
 		},
 		{
 			id: '600002',
-			name: 'Producto Individual 2',
-			url: 'vegetal.jpg',
-			content: 'Detalle Producto Individual 2',
-			price: 1200
+			tipo: 'queso',
+			name: 'Gruyere',
+			url: 'queso.jpg',
+			gramo: 80,
+			price: 2190
 		},
 		{
 			id: '600003',
-			name: 'Producto Individual 3',
-			url: 'bebida.jpg',
-			content: 'Detalle Producto Individual 3',
-			price: 5000
+			tipo: 'queso',
+			name: 'Azul',
+			url: 'queso.jpg',
+			gramo: 30,
+			price: 2190
+		},
+		{
+			id: '600004',
+			tipo: 'queso',
+			name: 'Parmesano',
+			url: 'queso.jpg',
+			gramo: 50,
+			price: 2190
+		},
+		{
+			id: '600005',
+			tipo: 'carne',
+			name: 'Pavo a las Finas Hiervas',
+			url: 'pavo.jpg',
+			gramo: 150,
+			price: 1890
+		},
+		{
+			id: '600006',
+			tipo: 'carne',
+			name: 'Pollo al Curry',
+			url: 'pollo.jpg',
+			gramo: 150,
+			price: 1890
+		},
+		{
+			id: '600007',
+			tipo: 'carne',
+			name: 'Pollo al Grill',
+			url: 'pollo.jpg',
+			gramo: 150,
+			price: 1890
+		},
+		{
+			id: '600008',
+			tipo: 'carne',
+			name: 'Pollo al Pesto',
+			url: 'pollo.jpg',
+			gramo: 150,
+			price: 1890
+		},
+		{
+			id: '600009',
+			tipo: 'carne',
+			name: 'Pollo a la Plancha',
+			url: 'pollo.jpg',
+			gramo: 150,
+			price: 1890
+		},
+		{
+			id: '600010',
+			tipo: 'carne',
+			name: 'Codero Salteado',
+			url: 'pollo.jpg',
+			gramo: 150,
+			price: 2190
 		}
 	];
 

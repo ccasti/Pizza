@@ -1,6 +1,6 @@
 var yo = require('yo-yo');
-var itemopt = require('../item-opt');
-var itemoptt = require('../item-opt-opt');
+var itemopt = require('./item-opt');
+var itemoptt = require('./item-opt-opt');
 
 module.exports = function pictureCard (pic) {
 	var el;

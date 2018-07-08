@@ -7118,7 +7118,7 @@ nav ul a {
 
 .pizza-text {
   max-width: 100%;
-  font-size: 0.8rem !important;
+  font-size: 1rem !important;
   color: #e0e0e0;
   margin-bottom: 1rem !important; }
 
@@ -7201,6 +7201,29 @@ nav ul a {
   margin: 1rem 0 0 1rem;
   font-size: 0.8rem; }
 
+.itemOpt {
+  padding: 10px 0; }
+
+.itemOpt:hover {
+  background-color: #e0e0e0; }
+
+.hover:hover {
+  background-color: #fff; }
+
+.list {
+  display: none; }
+
+.itemOpt:hover > ul {
+  display: block; }
+
+.elegirOpcion {
+  font-size: 1rem;
+  color: #212121; }
+
+.opcionElejida {
+  font-size: 1rem;
+  color: #212121; }
+
 .piso-nav-system {
   margin-bottom: 0 !important; }
 
@@ -7258,18 +7281,6 @@ nav ul a {
 
 .fila-nombre {
   margin-bottom: 0 !important; }
-
-.itemOpt {
-  padding: 10px 0; }
-
-.itemOpt:hover {
-  background-color: #e0e0e0; }
-
-.itemOpt ul {
-  display: none; }
-
-.itemOpt:hover > ul {
-  display: block; }
 
 /*@import "src/ragsystem/estadisticas/styles";*/
 footer.page-footer {

@@ -4848,9 +4848,6 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 			}
 
 			for (n of registroPack.contents.opciones) {
-				if (n.selec === false) {
-					alert("Debes Seleccionar tu Pizza y Líquido");
-				}
 				if (n.selec === true) {
 					for (i of n.items) {
 						if (i.selected === false) {
@@ -4862,7 +4859,12 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 						}
 					}
 				}
+				if (!n.selec) {
+					alert("Debes Seleccionar tu Pizza y Líquido");
+					return agregarItemPack(null);
+				}
 			}
+
 			registroPack.cantidad = 1;
 			this.getCarrito.push(registroPack);
 			localStorage.setItem("carrito", JSON.stringify(this.getCarrito));
@@ -4877,11 +4879,17 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 							for (i of n.items) {
 								if (i.selected === true) {
 									i.selected = false;
+									n.selec = false;
 								}
 								if (i.iditem === idItem) {
 									i.selected = true;
 									n.selec = true;
-									console.log(catalogo);
+									let eleccion = i.itemname;
+									let tipo = n.tipo;
+									console.log(eleccion);
+									console.log(idOpt);
+									document.getElementById(idOpt).innerHTML = '- ' + tipo + ': ' + eleccion;
+									document.getElementById(idOpt + idOpt).style.display = "none";
 								}
 							}
 						}
@@ -4985,6 +4993,7 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 		carrito.constructor();
 
 		document.getElementById('catalogo').addEventListener("click", function (ev) {
+			ev.preventDefault();
 			if (ev.target.id === "itemSelect") {
 				var idPack = ev.target.dataset.idpack;
 				var idOpt = ev.target.dataset.idopt;
@@ -5393,7 +5402,7 @@ module.exports = function (pizzas, vegetales, carnes, calzones, piadinas, packs,
 	return layout(el);
 };
 
-},{"../layout":35,"../products/calzon":36,"../products/carne":37,"../products/item":41,"../products/pack":42,"../products/piadina":43,"../products/pizza":44,"../products/vegetal":45,"yo-yo":21}],25:[function(require,module,exports){
+},{"../layout":35,"../products/calzon":36,"../products/carne":37,"../products/item":38,"../products/pack":39,"../products/piadina":43,"../products/pizza":44,"../products/vegetal":45,"yo-yo":21}],25:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -5798,40 +5807,6 @@ module.exports = function (pic) {
 
 },{"yo-yo":21}],38:[function(require,module,exports){
 var yo = require('yo-yo');
-var option = require('./option');
-
-module.exports = function (optt) {
-	return yo`<div class="col s12 opt-pizza">
-		<ul>
-			<li class="itemOpt">${optt.tipo}
-				<ul>	
-					${optt.items.map(function (item) {
-		return option(item);
-	})}
-				</ul>		
-			</li>
-		</ul>
-	</div>`;
-};
-
-},{"./option":39,"yo-yo":21}],39:[function(require,module,exports){
-var yo = require('yo-yo');
-
-module.exports = function (item) {
-	return yo`<li class="itemOpt" id="itemSelect" data-idpack="${item.idpack}" data-idopt="${item.idopt}" data-id="${item.iditem}">- ${item.itemname}</li>`;
-};
-
-},{"yo-yo":21}],40:[function(require,module,exports){
-var yo = require('yo-yo');
-
-module.exports = function (opt) {
-	return yo`<div class="col s12 opt-pizza">
-		<p class="item-name-pack">${opt.optname}</p>
-	</div>`;
-};
-
-},{"yo-yo":21}],41:[function(require,module,exports){
-var yo = require('yo-yo');
 
 module.exports = function (pic) {
 	return yo`<div class="col s12 m6">
@@ -5861,10 +5836,10 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"yo-yo":21}],42:[function(require,module,exports){
+},{"yo-yo":21}],39:[function(require,module,exports){
 var yo = require('yo-yo');
-var itemopt = require('../item-opt');
-var itemoptt = require('../item-opt-opt');
+var itemopt = require('./item-opt');
+var itemoptt = require('./item-opt-opt');
 
 module.exports = function pictureCard(pic) {
 	var el;
@@ -5907,7 +5882,41 @@ module.exports = function pictureCard(pic) {
 	return el;
 };
 
-},{"../item-opt":40,"../item-opt-opt":38,"yo-yo":21}],43:[function(require,module,exports){
+},{"./item-opt":42,"./item-opt-opt":40,"yo-yo":21}],40:[function(require,module,exports){
+var yo = require('yo-yo');
+var option = require('./option');
+
+module.exports = function (optt) {
+	return yo`<div class="col s12 opt-pizza">
+		<ul>
+			<li class="itemOpt"><a href="#" class="elegirOpcion" id="${optt.id}">- Selecciona tu ${optt.tipo}<i class="material-icons right">arrow_drop_down</i></a>
+				<ul class="list" id="${optt.id}${optt.id}">	
+					${optt.items.map(function (item) {
+		return option(item);
+	})}
+				</ul>		
+			</li>
+		</ul>
+	</div>`;
+};
+
+},{"./option":41,"yo-yo":21}],41:[function(require,module,exports){
+var yo = require('yo-yo');
+
+module.exports = function (item) {
+	return yo`<li class="itemOpt hover" id="itemSelect" data-idpack="${item.idpack}" data-idopt="${item.idopt}" data-id="${item.iditem}"><a href="#" id="itemSelect" class="opcionElejida" data-idpack="${item.idpack}" data-idopt="${item.idopt}" data-id="${item.iditem}">- ${item.itemname}</a></li>`;
+};
+
+},{"yo-yo":21}],42:[function(require,module,exports){
+var yo = require('yo-yo');
+
+module.exports = function (opt) {
+	return yo`<div class="col s12 opt-pizza">
+		<p class="item-name-pack">${opt.optname}</p>
+	</div>`;
+};
+
+},{"yo-yo":21}],43:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function pictureCard(pic) {

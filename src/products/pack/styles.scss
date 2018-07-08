@@ -36,3 +36,33 @@
 	margin: 1rem 0 0 1rem;
 	font-size: 0.8rem;
 }
+
+.itemOpt {
+	padding: 10px 0;
+}
+
+.itemOpt:hover {
+	background-color: #e0e0e0;
+}
+
+.hover:hover {
+	background-color: #fff;	
+}
+
+.list {
+	display: none;
+}
+
+.itemOpt:hover > ul {
+	display: block;
+}
+
+.elegirOpcion {
+	font-size: 1rem;
+	color: $color-text;
+}
+
+.opcionElejida {
+	font-size: 1rem;
+	color: $color-text;
+}

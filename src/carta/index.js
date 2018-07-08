@@ -69,9 +69,6 @@ page('/carta',
 			}
 
 			for(n of registroPack.contents.opciones) {
-				if(n.selec === false) {
-					alert("Debes Seleccionar tu Pizza y Líquido");
-				}
 				if(n.selec === true) {
 					for(i of n.items) {
 						if(i.selected === false) {
@@ -83,7 +80,12 @@ page('/carta',
 						}
 					}
 				}
+				if(!n.selec) {
+					alert("Debes Seleccionar tu Pizza y Líquido");
+					return agregarItemPack(null);
+				}	
 			}
+
 			registroPack.cantidad = 1;
 			this.getCarrito.push(registroPack);
 			localStorage.setItem("carrito",JSON.stringify(this.getCarrito));
@@ -98,11 +100,17 @@ page('/carta',
 							for(i of n.items) {
 								if(i.selected === true) {
 									i.selected = false;
+									n.selec = false;
 								}
 								if(i.iditem === idItem) {
 									i.selected = true;
 									n.selec = true;
-									console.log(catalogo);
+									let eleccion = i.itemname;
+									let tipo = n.tipo;
+									console.log(eleccion);
+									console.log(idOpt);
+									document.getElementById(idOpt).innerHTML = ('- ' + tipo + ': ' + eleccion);
+									document.getElementById(idOpt + idOpt).style.display = "none";
 								}
 							}
 						}
@@ -206,6 +214,7 @@ page('/carta',
 		carrito.constructor();
 
 		document.getElementById('catalogo').addEventListener("click", function(ev) {
+			ev.preventDefault();
 			if(ev.target.id === "itemSelect") {
 				var idPack = ev.target.dataset.idpack;
 				var idOpt = ev.target.dataset.idopt;
