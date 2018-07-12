@@ -99,90 +99,164 @@ app.get('/api/pizzas', function(req, res) {
 	res.send(pizzas);
 })
 
-app.get('/api/vegetales', function(req, res) {
-	var vegetales = [
+app.get('/api/ingredientes', function(req, res) {
+	var ingredientes = [
 		{
-			vegid: '110001',
-			vegname: 'Vegetal_1',
-			vegurl: 'vegetal.jpg',
-			vegprice: 1200
+			id: '600001',
+			control: true,
+			tipo: 'queso',
+			name: 'Mozzarella',
+			url: 'mozzarella.jpg',
+			gramo: 100,
+			price: 2190
 		},
 		{
-			vegid: '110002',
-			vegname: 'Vegetal_2',
-			vegurl: 'vegetal.jpg',
-			vegprice: 1200
+			id: '600002',
+			control: true,
+			tipo: 'queso',
+			name: 'Gruyere',
+			url: 'gruyere.jpg',
+			gramo: 80,
+			price: 2190
 		},
 		{
-			vegid: '110003',
-			vegname: 'Vegetal_3',
-			vegurl: 'vegetal.jpg',
-			vegprice: 1200
+			id: '600003',
+			control: true,
+			tipo: 'queso',
+			name: 'Azul',
+			url: 'azul.jpg',
+			gramo: 30,
+			price: 2190
 		},
 		{
-			vegid: '110004',
-			vegname: 'Vegetal_4',
-			vegurl: 'vegetal.jpg',
-			vegprice: 1200
+			id: '600004',
+			control: true,
+			tipo: 'queso',
+			name: 'Parmesano',
+			url: 'parmesano.jpg',
+			gramo: 50,
+			price: 2190
 		},
 		{
-			vegid: '110005',
-			vegname: 'Vegetal_5',
-			vegurl: 'vegetal.jpg',
-			vegprice: 1200
+			id: '600005',
+			control: true,
+			tipo: 'carne',
+			name: 'Pavo a las Finas Hiervas',
+			url: 'pavo.jpg',
+			gramo: 150,
+			price: 1890
 		},
 		{
-			vegid: '110006',
-			vegname: 'Vegetal_6',
-			vegurl: 'vegetal.jpg',
-			vegprice: 1200
+			id: '600006',
+			control: true,
+			tipo: 'carne',
+			name: 'Pollo al Curry',
+			url: 'pollo.jpg',
+			gramo: 150,
+			price: 1890
+		},
+		{
+			id: '600007',
+			control: true,
+			tipo: 'carne',
+			name: 'Pollo al Grill',
+			url: 'pollo.jpg',
+			gramo: 150,
+			price: 1890
+		},
+		{
+			id: '600008',
+			control: true,
+			tipo: 'carne',
+			name: 'Pollo al Pesto',
+			url: 'pollo.jpg',
+			gramo: 150,
+			price: 1890
+		},
+		{
+			id: '600009',
+			control: true,
+			tipo: 'carne',
+			name: 'Pollo a la Plancha',
+			url: 'pollo.jpg',
+			gramo: 150,
+			price: 1890
+		},
+		{
+			id: '600010',
+			control: true,
+			tipo: 'carne',
+			name: 'Codero Salteado',
+			url: 'cordero.jpg',
+			gramo: 150,
+			price: 2190
+		},
+		{
+			id: '600011',
+			control: true,
+			tipo: 'embu',
+			name: 'Jamón Pierna',
+			url: 'jamon.jpg',
+			gramo: 150,
+			price: 1490
+		},
+		{
+			id: '600012',
+			control: true,
+			tipo: 'embu',
+			name: 'Chorizo Ibérico',
+			url: 'chorizo.jpg',
+			gramo: 150,
+			price: 1890
+		},
+		{
+			id: '600031',
+			control: false,
+			tipo: 'espec',
+			name: 'Oregano',
+			url: 'oregano.jpg',
+			gramo: 1,
+			price: 390
+		},
+		{
+			id: '600032',
+			control: false,
+			tipo: 'espec',
+			name: 'Pesto Casero de Albahaca y Nueces',
+			url: 'pesto.jpg',
+			gramo: 1,
+			price: 390
+		},
+		{
+			id: '600033',
+			control: false,
+			tipo: 'espec',
+			name: 'Romero',
+			url: 'romero.jpg',
+			gramo: 1,
+			price: 390
+		},
+		{
+			id: '600034',
+			control: false,
+			tipo: 'espec',
+			name: 'Pimienta Blanca',
+			url: 'pblanca.jpg',
+			gramo: 1,
+			price: 390
+		},
+		{
+			id: '600035',
+			control: false,
+			tipo: 'espec',
+			name: 'Pimienta Negra',
+			url: 'pnegra.jpg',
+			gramo: 1,
+			price: 390
 		}
 	];
 
-	res.send(vegetales);
-})
-
-app.get('/api/carnes', function(req, res) {
-	var carnes = [
-		{
-			carid: '120001',
-			carname: 'Carne_1',
-			carurl: 'carne.jpg',
-			carprice: 1200
-		},
-		{
-			carid: '120002',
-			carname: 'Carne_2',
-			carurl: 'carne.jpg',
-			carprice: 1200
-		},
-		{
-			carid: '120003',
-			carname: 'Carne_3',
-			carurl: 'carne.jpg',
-			carprice: 1200
-		},
-		{
-			carid: '120004',
-			carname: 'Carne_4',
-			carurl: 'carne.jpg',
-			carprice: 1200
-		},
-		{
-			carid: '120005',
-			carname: 'Carne_5',
-			carurl: 'carne.jpg',
-			carprice: 1200
-		},
-		{
-			carid: '120006',
-			carname: 'Carne_6',
-			carurl: 'carne.jpg',
-			carprice: 1200
-		}
-	];
-
-	res.send(carnes);
+	res.send(ingredientes);
 })
 
 app.get('/api/calzones', function(req, res) {
@@ -701,39 +775,39 @@ app.get('/api/items', function(req, res) {
 	var items = [
 		{
 			id: '600001',
-			tipo: 'queso',
+			queso: true,
 			name: 'Mozzarella',
-			url: 'queso.jpg',
+			url: 'mozzarella.jpg',
 			gramo: 100,
 			price: 2190
 		},
 		{
 			id: '600002',
-			tipo: 'queso',
+			queso: true,
 			name: 'Gruyere',
-			url: 'queso.jpg',
+			url: 'gruyere.jpg',
 			gramo: 80,
 			price: 2190
 		},
 		{
 			id: '600003',
-			tipo: 'queso',
+			queso: true,
 			name: 'Azul',
-			url: 'queso.jpg',
+			url: 'azul.jpg',
 			gramo: 30,
 			price: 2190
 		},
 		{
 			id: '600004',
-			tipo: 'queso',
+			queso: true,
 			name: 'Parmesano',
-			url: 'queso.jpg',
+			url: 'parmesano.jpg',
 			gramo: 50,
 			price: 2190
 		},
 		{
 			id: '600005',
-			tipo: 'carne',
+			carne: true,
 			name: 'Pavo a las Finas Hiervas',
 			url: 'pavo.jpg',
 			gramo: 150,
@@ -741,7 +815,7 @@ app.get('/api/items', function(req, res) {
 		},
 		{
 			id: '600006',
-			tipo: 'carne',
+			carne: true,
 			name: 'Pollo al Curry',
 			url: 'pollo.jpg',
 			gramo: 150,
@@ -749,7 +823,7 @@ app.get('/api/items', function(req, res) {
 		},
 		{
 			id: '600007',
-			tipo: 'carne',
+			carne: true,
 			name: 'Pollo al Grill',
 			url: 'pollo.jpg',
 			gramo: 150,
@@ -757,7 +831,7 @@ app.get('/api/items', function(req, res) {
 		},
 		{
 			id: '600008',
-			tipo: 'carne',
+			carne: true,
 			name: 'Pollo al Pesto',
 			url: 'pollo.jpg',
 			gramo: 150,
@@ -765,7 +839,7 @@ app.get('/api/items', function(req, res) {
 		},
 		{
 			id: '600009',
-			tipo: 'carne',
+			carne: true,
 			name: 'Pollo a la Plancha',
 			url: 'pollo.jpg',
 			gramo: 150,
@@ -773,9 +847,9 @@ app.get('/api/items', function(req, res) {
 		},
 		{
 			id: '600010',
-			tipo: 'carne',
+			carne: true,
 			name: 'Codero Salteado',
-			url: 'pollo.jpg',
+			url: 'cordero.jpg',
 			gramo: 150,
 			price: 2190
 		}

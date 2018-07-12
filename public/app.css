@@ -7062,6 +7062,16 @@ nav ul a {
 .modal .modal-content {
   padding-bottom: 0 !important; }
 
+.boxIng {
+  margin-bottom: 0 !important; }
+
+.filaIng {
+  margin-bottom: 10px; }
+
+.totales {
+  font-size: 20px;
+  font-weight: bold; }
+
 .collapsible.popout > li {
   margin-bottom: 3rem; }
 
@@ -7103,6 +7113,9 @@ nav ul a {
 
 .separar {
   margin-bottom: 2rem; }
+
+.ingContenedor {
+  margin-bottom: 0 !important; }
 
 .pizza-card-content {
   max-width: 27%;
@@ -7148,28 +7161,44 @@ nav ul a {
 .card.liked .favorite_border {
   display: none; }
 
-.item {
-  max-width: 30%;
-  min-width: 30%; }
+.vegetal {
+  max-width: 50px;
+  border-radius: 50%;
+  margin: 0 10px; }
+
+.checkbox {
+  padding: 0 !important;
+  margin: 12px auto; }
+
+.imgCont {
+  padding: 0 !important; }
+
+.nameCont {
+  padding: 0 !important; }
+
+.ingName {
+  margin: 12px 0 !important;
+  font-size: 1.2rem; }
+
+.cursorHover:hover {
+  cursor: pointer;
+  cursor: hand; }
+
+.iconoCheck {
+  color: #1976d2; }
 
 @media only screen and (max-width: 992px) {
-  .item {
-    max-width: 45%;
-    min-width: 45%; } }
+  .ingName {
+    font-size: 1.1rem; } }
 
 @media only screen and (max-width: 600px) {
-  .item {
-    max-width: 90%;
-    min-width: 90%; } }
-
-.vegetal {
-  max-width: 48px;
-  border-radius: 50%;
-  margin: 0 auto; }
-
-[type="checkbox"].filled-in:checked + label:after {
-  border: 2px solid #1976d2 !important;
-  background-color: #1976d2 !important; }
+  .vegetal {
+    max-width: 40px; }
+  .ingName {
+    font-size: 1rem;
+    margin: 5px 0 !important; }
+  .checkbox {
+    margin: 5px auto; } }
 
 .pack-card-content {
   max-width: 39%;
@@ -7254,33 +7283,38 @@ nav ul a {
   padding-right: 0 !important; }
 
 .item-text {
-  padding: 0 !important;
   font-size: 1.2rem;
   margin: 0 !important; }
 
-@media only screen and (max-width: 992px) {
-  .item-text, .precio {
-    font-size: 1.1rem; } }
-
-@media only screen and (max-width: 600px) {
-  .item-text, .precio {
-    font-size: 1rem; } }
+.imagenItem {
+  max-width: 50px;
+  border-radius: 50%;
+  margin: 0 10px; }
 
 .detalle-text {
   padding: 0 !important;
   font-size: 1.0rem;
   margin: 0 !important; }
 
+.fila-nombre {
+  margin-bottom: 0 !important; }
+
+.precioItem {
+  font-size: 1.2rem; }
+
 @media only screen and (max-width: 992px) {
-  .detalle-text, .precio {
+  .item-text, .precioItem {
+    font-size: 1.1rem; }
+  .detalle-text, .precioItem {
     font-size: 0.9rem; } }
 
 @media only screen and (max-width: 600px) {
-  .detalle-text, .precio {
+  .item-text, .precioItem {
+    font-size: 1rem; }
+  .imagenItem {
+    max-width: 40px; }
+  .detalle-text, .precioItem {
     font-size: 0.8rem; } }
-
-.fila-nombre {
-  margin-bottom: 0 !important; }
 
 /*@import "src/ragsystem/estadisticas/styles";*/
 footer.page-footer {

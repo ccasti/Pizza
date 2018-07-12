@@ -1,0 +1,53 @@
+.vegetal {
+	max-width: 50px;
+	border-radius: 50%;
+	margin: 0 10px;
+}
+
+.checkbox {
+	padding: 0 !important;
+	margin: 12px auto;
+}
+
+.imgCont {
+	padding: 0 !important;
+}
+
+.nameCont {
+	padding: 0 !important;
+}
+
+.ingName {
+	margin: 12px 0 !important;
+	font-size: 1.2rem;
+}
+
+.cursorHover:hover {
+	cursor: pointer;
+	cursor: hand;
+}
+
+.iconoCheck {
+	color: #1976d2;
+}
+
+@media #{$medium-and-down} {
+	.ingName {
+		font-size: 1.1rem;
+	}
+}
+
+@media #{$small-and-down} {
+	.vegetal {
+		max-width: 40px;
+	}
+
+	.ingName {
+		font-size: 1rem;
+		margin: 5px 0 !important;
+	}
+
+	.checkbox {
+		margin: 5px auto;
+	}
+}

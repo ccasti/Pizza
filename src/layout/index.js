@@ -70,6 +70,35 @@ module.exports = function layout (content) {
 				</div>
 			</div>
 		</div>
+		<div id="modal8" class="modal">
+			<div class="modal-content">
+				<h4>Nuestra Pizza a tu gusto</h4>
+				<div class="row boxIng">
+					<div class="col s12">
+						<div class="row filaIng">
+							<div class="col s8">
+								Base
+							</div>
+							<div class="col s4">
+								$ 6990.-
+							</div>
+						</div>
+					</div>
+					<div id="ingCustom" class="col s12">
+					</div>
+					<div class="col s12">
+						<div class="row filaIng">
+							<div class="col s8 totales">
+								Total
+							</div>
+							<div class="col s4">
+								<h4 class="totales" id="totalIngredientes"></h4>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div>
 			<img class="pic-ini" src="abajo.png" />
 		</div>

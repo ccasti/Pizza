@@ -4804,11 +4804,11 @@ var header = require('../header');
 var footer = require('../footer');
 var request = require('superagent');
 
-page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, loadPiadinas, loadPacks, loadItems, footer, function (ctx, next) {
+page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas, loadPacks, loadItems, footer, function (ctx, next) {
 	title('Ragustino - Carta');
 	var main = document.getElementById('main-container');
 
-	empty(main).appendChild(template(ctx.pizzas, ctx.vegetales, ctx.carnes, ctx.calzones, ctx.piadinas, ctx.packs, ctx.items));
+	empty(main).appendChild(template(ctx.pizzas, ctx.calzones, ctx.piadinas, ctx.ingredientes, ctx.packs, ctx.items));
 
 	function Carrito() {
 		var catalogo = [];
@@ -4868,7 +4868,6 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 			registroPack.cantidad = 1;
 			this.getCarrito.push(registroPack);
 			localStorage.setItem("carrito", JSON.stringify(this.getCarrito));
-			console.log(carrito.getCarrito);
 		};
 
 		this.selectOption = function (idPack, idOpt, idItem) {
@@ -4886,8 +4885,6 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 									n.selec = true;
 									let eleccion = i.itemname;
 									let tipo = n.tipo;
-									console.log(eleccion);
-									console.log(idOpt);
 									document.getElementById(idOpt).innerHTML = '- ' + tipo + ': ' + eleccion;
 									document.getElementById(idOpt + idOpt).style.display = "none";
 								}
@@ -4981,16 +4978,121 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 		};
 	}
 
+	function Armar_Pizza() {
+		var ingredientes = ctx.ingredientes;
+
+		this.constructor = function () {
+			if (!localStorage.getItem("ingredientes")) {
+				localStorage.setItem('ingredientes', '[]');
+			}
+			if (this.getIngredientes.length > 0) {
+				localStorage.setItem('ingredientes', '[]');
+			}
+		};
+
+		this.getIngredientes = JSON.parse(localStorage.getItem("ingredientes"));
+
+		this.cambiarIcono = function (item) {
+			for (i of ingredientes) {
+				if (i.id === item) {
+					document.getElementById(item).classList.toggle('hide');
+					document.getElementById(item + item).classList.toggle('hide');
+				}
+			}
+		};
+
+		this.agregarIngrediente = function (item) {
+			for (var i in this.getIngredientes) {
+				if (this.getIngredientes[i].id === item) {
+					this.getIngredientes.splice(i, 1);
+					localStorage.setItem("ingredientes", JSON.stringify(this.getIngredientes));
+					Materialize.toast('Se eliminó un ingrediente', 2500, 'rounded');
+					return;
+				}
+			}
+
+			for (n of ingredientes) {
+				if (n.id === item) {
+					var ingrediente = n;
+				}
+			}
+			if (!ingrediente) {
+				return;
+			}
+			this.getIngredientes.push(ingrediente);
+			localStorage.setItem("ingredientes", JSON.stringify(this.getIngredientes));
+			Materialize.toast('Se agregó un ingrediente', 2500, 'rounded');
+		};
+
+		this.agregarCustom = function () {
+			let n = 0;
+			for (i of this.getIngredientes) {
+				if (i.control) {
+					n++;
+				}
+			}
+			if (n < 3) {
+				alert("Para ofrecerte una verdadera experiencia gourmet, debes seleccionar un mínimo de 3 ingredientes, recuerda que las especias no son consideradas ;-)");
+				return;
+			}
+			if (n > 5) {
+				alert("Nuestra masa de fermentación lenta se romperá con más de 5 ingredientes, seleciona un máximo de 5 ingredientes ;-)");
+				return;
+			}
+			let itemCustom = { id: '100100', name: 'Pizza a tu gusto', price: this.getTotal(), cantidad: 1, ingredientes: this.getIngredientes };
+			carrito.getCarrito.push(itemCustom);
+			localStorage.setItem("carrito", JSON.stringify(carrito.getCarrito));
+			Materialize.toast('Se agregó un producto', 2500, 'rounded');
+			localStorage.setItem('ingredientes', '[]');
+			carrito_view.totalProductos();
+			carrito_view.renderCarrito();
+			$('#modal9').modal('open');
+			setTimeout('document.location.reload()', 2000);
+
+			console.log(carrito.getCarrito);
+			console.log(this.getIngredientes);
+		};
+
+		this.getTotal = function () {
+			var total = 6990;
+			for (i of this.getIngredientes) {
+				total += parseFloat(i.price);
+			}
+			return total;
+		};
+	}
+
+	function Custom_View() {
+		this.renderCustom = function () {
+			templateIngredientes = ``;
+			for (i of armar_pizza.getIngredientes) {
+				templateIngredientes += `<div class="row filaIng">
+					<div class="col s8">
+						${i.name}
+					</div>
+					<div class="col s4">
+						$ ${i.price}.-
+					</div>
+				</div>`;
+			}
+			document.getElementById('ingCustom').innerHTML = templateIngredientes;
+			document.getElementById('totalIngredientes').innerHTML = "$ " + armar_pizza.getTotal() + ".-";
+		};
+	}
+
+	var armar_pizza = new Armar_Pizza();
 	var carrito = new Carrito();
 	var carrito_view = new Carrito_View();
+	var armar_pizza = new Armar_Pizza();
+	var custom_view = new Custom_View();
 
 	$(document).ready(function () {
 		$('.collapsible').collapsible();
-		$('select').material_select();
 
+		carrito.constructor();
+		armar_pizza.constructor();
 		carrito_view.renderCarrito();
 		carrito_view.totalProductos();
-		carrito.constructor();
 
 		document.getElementById('catalogo').addEventListener("click", function (ev) {
 			ev.preventDefault();
@@ -5007,7 +5109,7 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 			if (ev.target.id === "addItem") {
 				var id = ev.target.dataset.id;
 				carrito.agregarItem(id);
-				Materialize.toast('Se agregó un producto al carro', 2500, 'rounded');
+				Materialize.toast('Se agregó un producto', 2500, 'rounded');
 				carrito_view.totalProductos();
 				carrito_view.renderCarrito();
 				$('#modal9').modal('open');
@@ -5019,7 +5121,7 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 			if (ev.target.id === "addItemPack") {
 				var id = ev.target.dataset.id;
 				carrito.agregarItemPack(id);
-				Materialize.toast('Se agregó un producto al carro', 2500, 'rounded');
+				Materialize.toast('Se agregó un producto', 2500, 'rounded');
 				carrito_view.totalProductos();
 				carrito_view.renderCarrito();
 				$('#modal9').modal('open');
@@ -5030,10 +5132,25 @@ page('/carta', header, loadPizzas, loadVegetales, loadCarnes, loadCalzones, load
 			ev.preventDefault();
 			if (ev.target.id === "deleteItem") {
 				carrito.eliminarItem(ev.target.dataset.id);
-				Materialize.toast('Se eliminó un producto del carro', 2500, 'rounded');
+				Materialize.toast('Se eliminó un producto', 2500, 'rounded');
 				carrito_view.totalProductos();
 				carrito_view.renderCarrito();
 			}
+		});
+
+		document.getElementById('ingredientes').addEventListener("click", function (ev) {
+			if (ev.target.id === "addIngrediente") {
+				var id = ev.target.dataset.id;
+				armar_pizza.cambiarIcono(id);
+				armar_pizza.agregarIngrediente(id);
+				custom_view.renderCustom();
+				$('#modal8').modal('open');
+			}
+		});
+
+		document.getElementById('agPizzaCustom').addEventListener("click", function (ev) {
+			ev.preventDefault();
+			armar_pizza.agregarCustom();
 		});
 	});
 });
@@ -5047,20 +5164,11 @@ function loadPizzas(ctx, next) {
 	});
 }
 
-function loadVegetales(ctx, next) {
-	request.get('/api/vegetales').end(function (err, res) {
+function loadIngredientes(ctx, next) {
+	request.get('/api/ingredientes').end(function (err, res) {
 		if (err) return console.log(err);
 
-		ctx.vegetales = res.body;
-		next();
-	});
-}
-
-function loadCarnes(ctx, next) {
-	request.get('/api/carnes').end(function (err, res) {
-		if (err) return console.log(err);
-
-		ctx.carnes = res.body;
+		ctx.ingredientes = res.body;
 		next();
 	});
 }
@@ -5105,14 +5213,45 @@ function loadItems(ctx, next) {
 var yo = require('yo-yo');
 var layout = require('../layout');
 var pizza = require('../products/pizza');
-var vegetal = require('../products/vegetal');
-var carne = require('../products/carne');
+var ingrediente = require('../products/ingrediente');
 var calzon = require('../products/calzon');
 var piadina = require('../products/piadina');
 var item = require('../products/item');
 var pack = require('../products/pack');
 
-module.exports = function (pizzas, vegetales, carnes, calzones, piadinas, packs, items) {
+module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, items) {
+	let mixs = ingredientes;
+	var quesos = mixs.filter(function (obj) {
+		if (obj.tipo === 'queso') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var carnes = mixs.filter(function (obj) {
+		if (obj.tipo === 'carne') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var embus = mixs.filter(function (obj) {
+		if (obj.tipo === 'embu') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var espec = mixs.filter(function (obj) {
+		if (obj.tipo === 'espec') {
+			return true;
+		} else {
+			return false;
+		}
+	});
 
 	var el = yo`<div class="col s12 seccion">
 		<div class="row">
@@ -5188,46 +5327,71 @@ module.exports = function (pizzas, vegetales, carnes, calzones, piadinas, packs,
 					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Arma tu Pizza</p>
 					    </div>
 					    <div class="collapsible-body">
-					    	<div class="row">
+					    	<div class="row" id="ingredientes">
 						   		<div class="col s12 white">
 						   			<div class="row principal2">
-						   				<div class="col s12">
+						   				<div class="col s12 separar">
 						   					<p class="menu-text grey-text text-darken-4 center-align">Preparada en Masa Napolitana Clásica de Fermentación Lenta, más sanas y livianas para nuestro organismo.</p>
 						   				</div>
 						   			</div>
-						   			<form action="#">
-						   				<div class="row">
-						   					<div class="col s12">
-						   						<p class="menu-text paddingl grey-text text-darken-4">Vegetales</p>
-						   					</div>
+						   			<div class="divider"></div>
+						   			<div class="row ingContenedor">
+						   				<div class="col s12 separar">
+						   					<p class="menu-text paddingl grey-text text-darken-4">Quesos</p>
 						   				</div>
 						   				<div class="row">
-						   				    <div class="col s12 ajuste-menu-store">
-						   						${vegetales.map(function (pic) {
-		return vegetal(pic);
+						   					<div class="col s12 ajuste-menu-store">
+						   						${quesos.map(function (pic) {
+		return ingrediente(pic);
 	})}
 						   					</div>
 						   				</div>
-						   				<div class="divider"></div>
-						   				<div class="row">
-						   					<div class="col s12">
-						   						<p class="menu-text paddingl grey-text text-darken-4">Carnes</p>
-						   					</div>
+						   			</div>
+						   			<div class="divider"></div>
+						   			<div class="row ingContenedor">
+						   				<div class="col s12 separar">
+						   					<p class="menu-text paddingl grey-text text-darken-4">Carnes</p>
 						   				</div>
 						   				<div class="row">
-						   				    <div class="col s12 ajuste-menu-store">
-						   				    	${carnes.map(function (pic) {
-		return carne(pic);
+						   					<div class="col s12 ajuste-menu-store">
+						   						${carnes.map(function (pic) {
+		return ingrediente(pic);
 	})}
 						   					</div>
 						   				</div>
-						   				<div class="divider"></div>
-						   				<div class="row top">
-						   					<div class="col s10 offset-s1 m4 offset-m4 center-align">
-						   						<a class="waves-effect waves-light btn blue darken-2">Subir al carro</a>
+						   			</div>
+						   			<div class="divider"></div>
+						   			<div class="row ingContenedor">
+						   				<div class="col s12 separar">
+						   					<p class="menu-text paddingl grey-text text-darken-4">Embutidos</p>
+						   				</div>
+						   				<div class="row">
+						   					<div class="col s12 ajuste-menu-store">
+						   						${embus.map(function (pic) {
+		return ingrediente(pic);
+	})}
 						   					</div>
 						   				</div>
-						   			</form>
+						   			</div>
+						   			<div class="divider"></div>
+						   			<div class="row ingContenedor">
+						   				<div class="col s12 separar">
+						   					<p class="menu-text paddingl grey-text text-darken-4">Especias</p>
+						   				</div>
+						   				<div class="row">
+						   					<div class="col s12 ajuste-menu-store">
+						   						${espec.map(function (pic) {
+		return ingrediente(pic);
+	})}
+						   					</div>
+						   				</div>
+						   			</div>
+						   			<div class="divider"></div>
+						   			<div class="row top">
+						   				<div class="col s10 offset-s1 m4 offset-m4 center-align">
+						   					<a id="agPizzaCustom" class="waves-effect waves-light btn blue darken-2">Subir al carro</a>
+						   				</div>
+						   			</div>
 						   		</div>
 						   	</div>
 					    </div>
@@ -5380,17 +5544,15 @@ module.exports = function (pizzas, vegetales, carnes, calzones, piadinas, packs,
 					    <div class="collapsible-body">
 					       	<div class="row">
 						       	<div class="col s12 white">
+							       	<div class="row">
+							       		<div class="col s12">
+							       			<p class="menu-text paddingl grey-text text-darken-4">Quesos</p>
+							       		</div>
+							       	</div>
 						       		<div class="row">
-						       			<div class="col s12">
-					       					<p class="menu-text">Accesorios</p>
-						           		</div>	
-					           		</div>
-						           	<div class="row">
-					       		    	${items.map(function (pic) {
-		return item(pic);
-	})}
-						       		</div>
-						       	</div>
+						           		
+						           	</div>
+							    </div>
 						    </div>
 					    </div>
 					</li>
@@ -5402,7 +5564,7 @@ module.exports = function (pizzas, vegetales, carnes, calzones, piadinas, packs,
 	return layout(el);
 };
 
-},{"../layout":35,"../products/calzon":36,"../products/carne":37,"../products/item":38,"../products/pack":39,"../products/piadina":43,"../products/pizza":44,"../products/vegetal":45,"yo-yo":21}],25:[function(require,module,exports){
+},{"../layout":33,"../products/calzon":34,"../products/ingrediente":35,"../products/item":36,"../products/pack":37,"../products/piadina":41,"../products/pizza":42,"yo-yo":21}],25:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -5457,7 +5619,7 @@ var signinForm = yo`<div class="col s10 push-s1 m6 push-m3 l4 push-l4">
 
 module.exports = landing(signinForm);
 
-},{"../../landing":34,"yo-yo":21}],27:[function(require,module,exports){
+},{"../../landing":32,"yo-yo":21}],27:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -5530,7 +5692,7 @@ var signupForm = yo`<div class="col s10 push-s1 m6 push-m3 l4 push-l4">
 
 module.exports = landing(signupForm);
 
-},{"../../landing":34,"yo-yo":21}],29:[function(require,module,exports){
+},{"../../landing":32,"yo-yo":21}],29:[function(require,module,exports){
 var yo = require('yo-yo');
 var empty = require('empty-element');
 
@@ -5619,48 +5781,19 @@ module.exports = function header(ctx, next) {
 
 },{"empty-element":4,"yo-yo":21}],31:[function(require,module,exports){
 var page = require('page');
-var empty = require('empty-element');
-var template = require('./template');
-var title = require('title');
-var header = require('../header');
-var footer = require('../footer');
-var request = require('superagent');
 
-page('/', header, footer, function (ctx, next) {
-	title('Ragustino');
-	var main = document.getElementById('main-container');
-
-	empty(main).appendChild(template());
-});
-
-},{"../footer":29,"../header":30,"./template":32,"empty-element":4,"page":12,"superagent":15,"title":20}],32:[function(require,module,exports){
-var yo = require('yo-yo');
-var layout = require('../layout');
-
-module.exports = function () {
-
-	var el = yo`<div class="content">
-		
-	</div>`;
-
-	return layout(el);
-};
-
-},{"../layout":35,"yo-yo":21}],33:[function(require,module,exports){
-var page = require('page');
-
-require('./homepage');
+/*require('./homepage');*/
 require('./carta');
 require('./clients/signup');
 require('./clients/signin');
 require('./ragsystem/homesystem');
 require('./ragsystem/estadisticas');
 require('./ragsystem/adm_productos');
-/*require('./ragsystem/adm_equipo');*/
+require('./ragsystem/adm_equipo');
 
 page();
 
-},{"./carta":23,"./clients/signin":25,"./clients/signup":27,"./homepage":31,"./ragsystem/adm_productos":46,"./ragsystem/estadisticas":48,"./ragsystem/homesystem":51,"page":12}],34:[function(require,module,exports){
+},{"./carta":23,"./clients/signin":25,"./clients/signup":27,"./ragsystem/adm_equipo":43,"./ragsystem/adm_productos":44,"./ragsystem/estadisticas":46,"./ragsystem/homesystem":49,"page":12}],32:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function landing(box) {
@@ -5675,7 +5808,7 @@ module.exports = function landing(box) {
 	</div>`;
 };
 
-},{"yo-yo":21}],35:[function(require,module,exports){
+},{"yo-yo":21}],33:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function layout(content) {
@@ -5748,13 +5881,42 @@ module.exports = function layout(content) {
 				</div>
 			</div>
 		</div>
+		<div id="modal8" class="modal">
+			<div class="modal-content">
+				<h4>Nuestra Pizza a tu gusto</h4>
+				<div class="row boxIng">
+					<div class="col s12">
+						<div class="row filaIng">
+							<div class="col s8">
+								Base
+							</div>
+							<div class="col s4">
+								$ 6990.-
+							</div>
+						</div>
+					</div>
+					<div id="ingCustom" class="col s12">
+					</div>
+					<div class="col s12">
+						<div class="row filaIng">
+							<div class="col s8 totales">
+								Total
+							</div>
+							<div class="col s4">
+								<h4 class="totales" id="totalIngredientes"></h4>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div>
 			<img class="pic-ini" src="abajo.png" />
 		</div>
 	</div>`;
 };
 
-},{"yo-yo":21}],36:[function(require,module,exports){
+},{"yo-yo":21}],34:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function pictureCard(pic) {
@@ -5793,26 +5955,37 @@ module.exports = function pictureCard(pic) {
 	return el;
 };
 
-},{"yo-yo":21}],37:[function(require,module,exports){
+},{"yo-yo":21}],35:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (pic) {
-	return yo`<div class="item">
-		<input type="checkbox" class="filled-in" id="filled-in-box${pic.carid}" />
-		<label for="filled-in-box${pic.carid}">${pic.carname}</label>
-		<img src="${pic.carurl}" class="vegetal" />
-		<span class="precio">$${pic.carprice}.-</span>
+	return yo`<div class="col s12 m6">
+		<div class="row cursorHover">
+			<div id="addIngrediente" data-id="${pic.id}" class="col s1 checkbox">
+				<span id="${pic.id}" class=""><i id="addIngrediente" data-id="${pic.id}" class="small material-icons">check_box_outline_blank</i></span>
+				<span id="${pic.id}${pic.id}" class="hide"><i id="addIngrediente" data-id="${pic.id}" class="small material-icons iconoCheck">check_box</i></span>
+			</div>
+			<div id="addIngrediente" data-id="${pic.id}" class="col s2 imgCont">
+				<img src="${pic.url}" id="addIngrediente" data-id="${pic.id}" class="vegetal" />
+			</div>
+			<div id="addIngrediente" data-id="${pic.id}" class="col s7 m6 nameCont">
+				<p id="addIngrediente" data-id="${pic.id}" class="ingName">${pic.name}</p>
+			</div>
+			<div id="addIngrediente" data-id="${pic.id}" class="col s2">
+				<p id="addIngrediente" data-id="${pic.id}" class="ingName">$${pic.price}.-</p>
+			</div>
+		</div>
 	</div>`;
 };
 
-},{"yo-yo":21}],38:[function(require,module,exports){
+},{"yo-yo":21}],36:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (pic) {
 	return yo`<div class="col s12 m6">
 		<div class="row">
 			<div class="col s2 l2 offset-l1">
-				<img src="${pic.url}" class="vegetal" />
+				<img src="${pic.url}" class="imagenItem" />
 			</div>
 			<div class="col s6 l5 col-text">
 				<div class="row fila-nombre">
@@ -5827,7 +6000,7 @@ module.exports = function (pic) {
 				</div>
 			</div>
 			<div class="col s2">
-				<span class="precio">$${pic.price}.-</span>
+				<span class="precioItem">$${pic.price}.-</span>
 			</div>
 			<div class="col s2">
 				<a class="btn-floating left waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-id="${pic.id}">add</i></a>
@@ -5836,7 +6009,7 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"yo-yo":21}],39:[function(require,module,exports){
+},{"yo-yo":21}],37:[function(require,module,exports){
 var yo = require('yo-yo');
 var itemopt = require('./item-opt');
 var itemoptt = require('./item-opt-opt');
@@ -5882,7 +6055,7 @@ module.exports = function pictureCard(pic) {
 	return el;
 };
 
-},{"./item-opt":42,"./item-opt-opt":40,"yo-yo":21}],40:[function(require,module,exports){
+},{"./item-opt":40,"./item-opt-opt":38,"yo-yo":21}],38:[function(require,module,exports){
 var yo = require('yo-yo');
 var option = require('./option');
 
@@ -5900,14 +6073,14 @@ module.exports = function (optt) {
 	</div>`;
 };
 
-},{"./option":41,"yo-yo":21}],41:[function(require,module,exports){
+},{"./option":39,"yo-yo":21}],39:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (item) {
 	return yo`<li class="itemOpt hover" id="itemSelect" data-idpack="${item.idpack}" data-idopt="${item.idopt}" data-id="${item.iditem}"><a href="#" id="itemSelect" class="opcionElejida" data-idpack="${item.idpack}" data-idopt="${item.idopt}" data-id="${item.iditem}">- ${item.itemname}</a></li>`;
 };
 
-},{"yo-yo":21}],42:[function(require,module,exports){
+},{"yo-yo":21}],40:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (opt) {
@@ -5916,7 +6089,7 @@ module.exports = function (opt) {
 	</div>`;
 };
 
-},{"yo-yo":21}],43:[function(require,module,exports){
+},{"yo-yo":21}],41:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function pictureCard(pic) {
@@ -5955,7 +6128,7 @@ module.exports = function pictureCard(pic) {
 	return el;
 };
 
-},{"yo-yo":21}],44:[function(require,module,exports){
+},{"yo-yo":21}],42:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function pictureCard(pic) {
@@ -5994,19 +6167,9 @@ module.exports = function pictureCard(pic) {
 	return el;
 };
 
-},{"yo-yo":21}],45:[function(require,module,exports){
-var yo = require('yo-yo');
+},{"yo-yo":21}],43:[function(require,module,exports){
 
-module.exports = function (pic) {
-	return yo`<div class="item">
-		<input type="checkbox" class="filled-in" id="filled-in-box${pic.vegid}" />
-		<label for="filled-in-box${pic.vegid}">${pic.vegname}</label>
-		<img src="${pic.vegurl}" class="vegetal" />
-		<span class="precio">$${pic.vegprice}.-</span>
-	</div>`;
-};
-
-},{"yo-yo":21}],46:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -6080,7 +6243,7 @@ function loadAdicionales(ctx, next) {
 	});
 }
 
-},{"../headersystem":50,"./template":47,"empty-element":4,"page":12,"superagent":15,"title":20}],47:[function(require,module,exports){
+},{"../headersystem":48,"./template":45,"empty-element":4,"page":12,"superagent":15,"title":20}],45:[function(require,module,exports){
 var yo = require('yo-yo');
 var pizza = require('../products_system/pizzasystem');
 /*var vegetal = require('../products_system/vegetalsystem');
@@ -6175,7 +6338,7 @@ module.exports = function (pizzas, /*vegetales, carnes, */ensaladas, adicionales
 	</div>`;
 };
 
-},{"../products_system/adicionalsystem":53,"../products_system/ensaladasystem":54,"../products_system/pizzasystem":55,"yo-yo":21}],48:[function(require,module,exports){
+},{"../products_system/adicionalsystem":51,"../products_system/ensaladasystem":52,"../products_system/pizzasystem":53,"yo-yo":21}],46:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -6188,7 +6351,7 @@ page('/estadisticas', header, function (ctx, next) {
 	empty(main).appendChild(template());
 });
 
-},{"../headersystem":50,"./template":49,"empty-element":4,"page":12,"title":20}],49:[function(require,module,exports){
+},{"../headersystem":48,"./template":47,"empty-element":4,"page":12,"title":20}],47:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function () {
@@ -6203,7 +6366,7 @@ module.exports = function () {
 	</div>`;
 };
 
-},{"yo-yo":21}],50:[function(require,module,exports){
+},{"yo-yo":21}],48:[function(require,module,exports){
 var yo = require('yo-yo');
 var empty = require('empty-element');
 
@@ -6256,7 +6419,7 @@ module.exports = function header(ctx, next) {
 	next();
 };
 
-},{"empty-element":4,"yo-yo":21}],51:[function(require,module,exports){
+},{"empty-element":4,"yo-yo":21}],49:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -6269,7 +6432,7 @@ page('/ragsystem', header, function (ctx, next) {
 	empty(main).appendChild(template());
 });
 
-},{"../headersystem":50,"./template":52,"empty-element":4,"page":12,"title":20}],52:[function(require,module,exports){
+},{"../headersystem":48,"./template":50,"empty-element":4,"page":12,"title":20}],50:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function () {
@@ -6316,7 +6479,7 @@ module.exports = function () {
 	</div>`;
 };
 
-},{"yo-yo":21}],53:[function(require,module,exports){
+},{"yo-yo":21}],51:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (pic) {
@@ -6328,7 +6491,7 @@ module.exports = function (pic) {
 	</li>`;
 };
 
-},{"yo-yo":21}],54:[function(require,module,exports){
+},{"yo-yo":21}],52:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (pic) {
@@ -6340,7 +6503,7 @@ module.exports = function (pic) {
 	</li>`;
 };
 
-},{"yo-yo":21}],55:[function(require,module,exports){
+},{"yo-yo":21}],53:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (pic) {
@@ -6352,4 +6515,4 @@ module.exports = function (pic) {
 	</li>`;
 };
 
-},{"yo-yo":21}]},{},[33]);
+},{"yo-yo":21}]},{},[31]);
