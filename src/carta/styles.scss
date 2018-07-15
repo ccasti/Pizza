@@ -30,18 +30,6 @@
 	flex-direction: row;
 }
 
-@media #{$medium-and-down} {
-    .menu-text, .precio {
-    	font-size: 1.1rem;
-    }
-}
-
-@media #{$small-and-down} {
-	.menu-text, .precio {
-		font-size: 1rem;
-	}
-}
-
 .top {
 	margin-top: 2rem;
 }
@@ -56,4 +44,24 @@
 
 .ingContenedor {
 	margin-bottom: 0 !important;
+}
+
+@media #{$medium-and-down} {
+    .menu-text, .precio {
+    	font-size: 1.1rem;
+    }
+}
+
+@media #{$small-and-down} {
+	.menu-text, .precio {
+		font-size: 1rem;
+	}
+
+	.collapsible.popout > li {
+		margin-bottom: 2rem;
+	}
+
+	.collapsible-header {
+		padding: 0;
+	}
 }

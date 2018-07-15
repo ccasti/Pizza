@@ -152,6 +152,16 @@ page('/carta',
 			}
 			localStorage.setItem("carrito",JSON.stringify(this.getCarrito));
 		}
+
+		this.iraComprar = function() {
+			if(this.getCarrito.length <= 0) {
+				alert("No tienes productos en tu carrito :-(");
+				return
+			}else{
+				$('#modal9').modal('close');
+				page.redirect('/compra');
+			}
+		}
 	}
 
 	function Carrito_View() {
@@ -299,7 +309,6 @@ page('/carta',
 		}
 	}
 
-	var armar_pizza = new Armar_Pizza();	
 	var carrito = new Carrito();
 	var carrito_view = new Carrito_View();
 	var armar_pizza = new Armar_Pizza();
@@ -370,6 +379,11 @@ page('/carta',
 		document.getElementById('agPizzaCustom').addEventListener("click", function(ev) {
 			ev.preventDefault();
 			armar_pizza.agregarCustom();
+		});
+
+		document.getElementById('comprando').addEventListener("click", function(ev) {
+			ev.preventDefault();
+			carrito.iraComprar();
 		})
 	});
 });

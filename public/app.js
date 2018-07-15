@@ -4933,6 +4933,16 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 			}
 			localStorage.setItem("carrito", JSON.stringify(this.getCarrito));
 		};
+
+		this.iraComprar = function () {
+			if (this.getCarrito.length <= 0) {
+				alert("No tienes productos en tu carrito :-(");
+				return;
+			} else {
+				$('#modal9').modal('close');
+				page.redirect('/compra');
+			}
+		};
 	}
 
 	function Carrito_View() {
@@ -5080,7 +5090,6 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 		};
 	}
 
-	var armar_pizza = new Armar_Pizza();
 	var carrito = new Carrito();
 	var carrito_view = new Carrito_View();
 	var armar_pizza = new Armar_Pizza();
@@ -5152,6 +5161,11 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 			ev.preventDefault();
 			armar_pizza.agregarCustom();
 		});
+
+		document.getElementById('comprando').addEventListener("click", function (ev) {
+			ev.preventDefault();
+			carrito.iraComprar();
+		});
 	});
 });
 
@@ -5209,7 +5223,7 @@ function loadItems(ctx, next) {
 	});
 }
 
-},{"../footer":29,"../header":30,"./template":24,"empty-element":4,"page":12,"superagent":15,"title":20}],24:[function(require,module,exports){
+},{"../footer":31,"../header":32,"./template":24,"empty-element":4,"page":12,"superagent":15,"title":20}],24:[function(require,module,exports){
 var yo = require('yo-yo');
 var layout = require('../layout');
 var pizza = require('../products/pizza');
@@ -5265,6 +5279,11 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 					    <div class="collapsible-body">
 					    	<div class="row">
 						    	<div class="col s12 white">
+						    		<div class="row principal2">
+						    			<div class="col s12 separar">
+						    				<p class="menu-text grey-text text-darken-4 center-align">"Pizzas 100% artesanales, siguiendo la receta que aprendimos en Bagnoli, Nápoles.  Fermentamos la masa por más de 24 horas  para conseguir una pizza esponjosa, liviana y fácil de digerir.  Todas son cocinadas en horno de leña con ingredientes frescos y preparados con pasión, cariño y el toque RAGUSTINO."</p>
+						    			</div>
+						    		</div>
 						    		<div class="row">
 										<div class="col s12 ajuste-menu-store">
 								    		${pizzas.map(function (pic) {
@@ -5564,7 +5583,7 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 	return layout(el);
 };
 
-},{"../layout":33,"../products/calzon":34,"../products/ingrediente":35,"../products/item":36,"../products/pack":37,"../products/piadina":41,"../products/pizza":42,"yo-yo":21}],25:[function(require,module,exports){
+},{"../layout":37,"../products/calzon":38,"../products/ingrediente":39,"../products/item":40,"../products/pack":41,"../products/piadina":45,"../products/pizza":46,"yo-yo":21}],25:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -5577,7 +5596,7 @@ page('/signin', header, function (ctx, next) {
 	empty(main).appendChild(template);
 });
 
-},{"../../header":30,"./template":26,"empty-element":4,"page":12,"title":20}],26:[function(require,module,exports){
+},{"../../header":32,"./template":26,"empty-element":4,"page":12,"title":20}],26:[function(require,module,exports){
 var yo = require('yo-yo');
 var landing = require('../../landing');
 
@@ -5619,7 +5638,7 @@ var signinForm = yo`<div class="col s10 push-s1 m6 push-m3 l4 push-l4">
 
 module.exports = landing(signinForm);
 
-},{"../../landing":32,"yo-yo":21}],27:[function(require,module,exports){
+},{"../../landing":36,"yo-yo":21}],27:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -5632,7 +5651,7 @@ page('/signup', header, function (ctx, next) {
 	empty(main).appendChild(template);
 });
 
-},{"../../header":30,"./template":28,"empty-element":4,"page":12,"title":20}],28:[function(require,module,exports){
+},{"../../header":32,"./template":28,"empty-element":4,"page":12,"title":20}],28:[function(require,module,exports){
 var yo = require('yo-yo');
 var landing = require('../../landing');
 
@@ -5692,30 +5711,318 @@ var signupForm = yo`<div class="col s10 push-s1 m6 push-m3 l4 push-l4">
 
 module.exports = landing(signupForm);
 
-},{"../../landing":32,"yo-yo":21}],29:[function(require,module,exports){
+},{"../../landing":36,"yo-yo":21}],29:[function(require,module,exports){
+var page = require('page');
+var empty = require('empty-element');
+var template = require('./template');
+var title = require('title');
+var header = require('../header');
+var footer = require('../footer');
+
+page('/compra', header, footer, function (ctx, next) {
+	title('Ragustino - Carro');
+	var main = document.getElementById('main-container');
+
+	empty(main).appendChild(template());
+
+	function Carrito() {
+		this.getCarrito = JSON.parse(localStorage.getItem("carrito"));
+
+		this.getTotal = function () {
+			var total = 0;
+			for (i of this.getCarrito) {
+				total += parseFloat(i.cantidad) * parseFloat(i.price);
+			}
+			return total;
+		};
+
+		this.eliminarItem = function (item) {
+			for (var i in this.getCarrito) {
+				if (this.getCarrito[i].id === item) {
+					this.getCarrito.splice(i, 1);
+				}
+			}
+			localStorage.setItem("carrito", JSON.stringify(this.getCarrito));
+		};
+	}
+
+	function Carrito_View() {
+		this.renderCarrito = function () {
+			if (carrito.getCarrito.length <= 0) {
+				templateNoItems = `<div class="row">
+					<div class="col s12 center-align">
+						No tienes productos en tu carro
+					</div>
+				</div>`;
+				document.getElementById('productosCarrito').innerHTML = templateNoItems;
+			} else {
+				templateItems = ``;
+				for (i of carrito.getCarrito) {
+					templateItems += `<li class="collection-item">
+						<div class="row itemCarrito">
+							<div class="col s8 m4">
+								${i.name}
+							</div>
+							<div class="col s4 m2 center-align">
+								${i.price}
+							</div>
+							<div class="col s3 offset-s3 m2 center-align">
+								${i.cantidad}
+							</div>
+							<div class="col s3 m2 center-align">
+								${i.cantidad * i.price}
+							</div>
+							<div class="col s3 m2 center-align">
+								<a href="#"><i class="material-icons iconoBorrar" id="deleteItem" data-id="${i.id}">delete_forever</i></a>
+							</div>
+						</div>
+					</li>`;
+				}
+				document.getElementById('productosCarrito').innerHTML = templateItems;
+			}
+			document.getElementById('totalCarrito').innerHTML = "$ " + carrito.getTotal();
+		};
+
+		this.totalProductos = function () {
+			var total = carrito.getCarrito.length;
+			document.getElementById('totalProductos').innerHTML = total;
+		};
+	}
+
+	function Comprando() {
+		this.getDelivey = function () {
+			var delivery = 0;
+			var checkear = carrito.getTotal();
+			if (checkear < 30000) {
+				delivery += 1500;
+			}
+			return parseFloat(delivery);
+		};
+	}
+
+	function Comprando_View() {
+		this.renderCompra = function () {
+			if (carrito.getCarrito.length <= 0) {
+				templateNoItemsCompra = `<div class="row center-align">
+					<div class="col s12">
+						No tienes productos en tu carro
+					</div>
+				</div>`;
+				document.getElementById('pintandoCompra').innerHTML = templateNoItemsCompra;
+			} else {
+				templateComprando = ``;
+				for (i of carrito.getCarrito) {
+					if (i.excep) {
+						let opcionPack = i;
+						console.log(i);
+						templateComprando += `<div class="row itemComprando">
+							<div class="col s9">
+								${opcionPack.name}
+							</div>
+							<div class="col s3 right-align">
+								$ ${opcionPack.price}
+							</div>
+							<div class="col s9">
+								${opcionPack.contents.opciones.map(function (pic) {
+							if (pic.idpack === opcionPack.id) {
+								for (p of pic.items) {
+									if (p.selected) {
+										console.log(p.itemname);
+										document.innerHTML = p.itemname;
+									}
+								}
+							}
+						})}
+							</div>
+						</div>`;
+					} else {
+						templateComprando += `<div class="row itemComprando">
+							<div class="col s9">
+								${i.name}
+							</div>
+							<div class="col s3 right-align">
+								$ ${i.price}
+							</div>
+						</div>`;
+					}
+				}
+				document.getElementById('pintandoCompra').innerHTML = templateComprando;
+			}
+			document.getElementById('deliveryCost').innerHTML = "$ " + comprando.getDelivey();
+			let total = carrito.getTotal() + comprando.getDelivey();
+			document.getElementById('totalCompra').innerHTML = "$ " + total;
+		};
+	}
+
+	function Programando_Compra() {
+		this.determinarAbierto = function () {
+			var hoy = new Date();
+			var dia = hoy.getDay();
+			var hora = hoy.getHours();
+			if (dia === 1 || dia === 2 || dia === 3) {
+				document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, hoy no atendemos :-(</p>`;
+			} else {
+				if (dia === 0) {
+					if (hora > 13 && hora < 20) {
+						document.getElementById('templateParaAhora').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;
+					} else {
+						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, atendemos de 13:00 a 21:00 horas</p>`;
+					}
+				}
+				if (dia === 4) {
+					if (hora > 18 && hora < 24) {
+						document.getElementById('templateParaAhora').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;
+					} else {
+						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, atendemos de 18:00 a 00:00 horas</p>`;
+					}
+				}
+				if (dia === 5) {
+					if (hora > 0 && hora < 18) {
+						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, atendemos de 18:00 a 00:00 horas</p>`;
+					} else {
+						document.getElementById('templateParaAhora').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;
+					}
+				}
+				if (dia === 5) {
+					if (hora > 0 && hora < 18) {
+						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, atendemos de 18:00 a 00:00 horas</p>`;
+					} else {
+						document.getElementById('templateParaAhora').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;
+					}
+				}
+			}
+
+			/*console.log(hoy);
+   console.log(hoy.getDate());
+   console.log(hoy.getDay());
+   console.log(hoy.getHours());*/
+		};
+	}
+
+	var carrito = new Carrito();
+	var carrito_view = new Carrito_View();
+	var comprando = new Comprando();
+	var comprando_view = new Comprando_View();
+	var programando_compra = new Programando_Compra();
+
+	$(document).ready(function () {
+		carrito_view.renderCarrito();
+		carrito_view.totalProductos();
+		comprando_view.renderCompra();
+
+		document.getElementById('productosCarrito').addEventListener("click", function (ev) {
+			ev.preventDefault();
+			if (ev.target.id === "deleteItem") {
+				carrito.eliminarItem(ev.target.dataset.id);
+				Materialize.toast('Se eliminó un producto', 2500, 'rounded');
+				carrito_view.totalProductos();
+				carrito_view.renderCarrito();
+				comprando.getDelivey();
+				comprando_view.renderCompra();
+			}
+		});
+
+		document.getElementById('paraAhora').addEventListener("click", function () {
+			programando_compra.determinarAbierto();
+		});
+	});
+});
+
+},{"../footer":31,"../header":32,"./template":30,"empty-element":4,"page":12,"title":20}],30:[function(require,module,exports){
+var yo = require('yo-yo');
+var layout = require('../layout');
+
+module.exports = function () {
+	var el = yo`<div class="col s12 seccion">
+		<div class="row nobottom">
+			<div class="col s12 center-align">
+				<h3 class="compraTit">RAGUSTINO FOOD EXPERIENCE</h3>
+			</div>
+		</div>
+		<div class="row nobottom">
+			<div class="col s12 center-align">
+				<p class="detalleCompra">Detalle de tu compra</p>
+			</div>
+		</div>
+		<div class="row">
+			<div id="pintandoCompra" class="col s12 m6 offset-m3">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 m6 offset-m3">
+				<div class="row itemComprando">
+					<div class="col s9">
+						Delivey
+					</div>
+					<div id="deliveryCost" class="col s3 right-align">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 m6 offset-m3">
+				<div class="row itemComprando totales">
+					<div class="col s9">
+						Total Compra
+					</div>
+					<div id="totalCompra" class="col s3 right-align">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row nobottom">
+			<div class="col s12 center-align">
+				<p class="detalleCompra">Programa la Entrega</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s8 offset-s2 m4 offset-m4">
+				<ul class="collapsible">
+					<li>
+						<div id="paraAhora" class="collapsible-header disabled">Tan pronto sea posible</div>
+						<div id="templateParaAhora" class="collapsible-body center-align"></div>
+					</li>
+					<li>
+						<div class="collapsible-header">Para más tarde</div>
+						<div class="collapsible-body">
+						</div>
+					</li>
+					<li>
+						<div class="collapsible-header">Para otro día</div>
+						<div class="collapsible-body">
+						</div>
+					</li>					
+				</ul>
+			</div>
+		</div>
+	</div>`;
+
+	return layout(el);
+};
+
+},{"../layout":37,"yo-yo":21}],31:[function(require,module,exports){
 var yo = require('yo-yo');
 var empty = require('empty-element');
 
 var el = yo`<footer class="page-footer grey lighten-2">
     <div class="container">
-        <div class="row">
+        <div class="row nobottom">
 		    <div class="col l6 s12">
-                <h5 class="grey-text text-darken-4">Contenido del Footer</h5>
-                <p class="grey-text text-darken-4">Espacio para información de la empresa u otra relevante, se podrá organizar por columnas u otro...</p>
+                <h5 class="grey-text text-darken-4">RAGUSTINO FOOD EXPERIENCE</h5>
+                <p class="grey-text text-darken-4">Es una empresa perteneciente a SERVICIOS GASTRONÓMICOS GRC LTDA.</p>
             </div>
             <div class="col l4 offset-l2 s12">
-                <h5 class="grey-text text-darken-4">Ragustino</h5>
+                <h5 class="grey-text text-darken-4">Redes Sociales</h5>
                 <ul>
-	                <li><a class="grey-text text-darken-4" href="/">Inicio</a></li>
-	                <li><a class="grey-text text-darken-4" href="/carro">Carro</a></li>
+	                <li><a class="grey-text text-darken-4" href="http://www.facebook.com/ragustinofoodexperience" target="_blank">Facebook</a></li>
+	                <li><a class="grey-text text-darken-4" href="http://www.instagram.com/ragustinofoodexperience" target="_blank">Instagram</a></li>
 	            </ul>
         	</div>
         </div>
   	</div>
   	<div class="footer-copyright">
         <div class="grey-text text-darken-4 container">
-        	© 2018 Copyright Texto
-        	<a class="grey-text text-darken-4 right" href="#!">Más Links</a>
+        	© 2018 Ragustino. Todos los derechos reservados. Diseñado por Casti
         </div>
   	</div>
 </footer>`;
@@ -5726,7 +6033,7 @@ module.exports = function footer(ctx, next) {
     next();
 };
 
-},{"empty-element":4,"yo-yo":21}],30:[function(require,module,exports){
+},{"empty-element":4,"yo-yo":21}],32:[function(require,module,exports){
 var yo = require('yo-yo');
 var empty = require('empty-element');
 
@@ -5743,7 +6050,7 @@ var el = yo`<nav class="header grey lighten-3">
 						<div class="row piso-nav">
 							<div class="col s2 m4 l2 sp">
 							  	<a href="/" class="brand-logo">RAGUSTINO</a>
-							  	<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+							  	<a href="/carta" class="hide-on-large-only center-align"><i class="material-icons">store</i></a>
 							</div>
 							<div class="col l6 hide-on-med-and-down">
 								<ul class="right">
@@ -5762,10 +6069,6 @@ var el = yo`<nav class="header grey lighten-3">
 							</div>
 						</div>
 					</div>
-					<ul class="side-nav" id="mobile-demo">
-						<li><a href="/">INICIO</a></li>
-					  	<li><a href="/carta">NUESTROS PRODUCTOS</a></li>
-					</ul>
 				</div>
 			</div>
 		</div>
@@ -5779,11 +6082,114 @@ module.exports = function header(ctx, next) {
 	next();
 };
 
-},{"empty-element":4,"yo-yo":21}],31:[function(require,module,exports){
+},{"empty-element":4,"yo-yo":21}],33:[function(require,module,exports){
+var page = require('page');
+var empty = require('empty-element');
+var template = require('./template');
+var title = require('title');
+var header = require('../header');
+var footer = require('../footer');
+
+page('/', header, footer, function (ctx, next) {
+	title('Ragustino');
+	var main = document.getElementById('main-container');
+
+	empty(main).appendChild(template());
+});
+
+},{"../footer":31,"../header":32,"./template":34,"empty-element":4,"page":12,"title":20}],34:[function(require,module,exports){
+var yo = require('yo-yo');
+var layout = require('../layout');
+
+module.exports = function () {
+	var el = yo`<div class="col s12 seccion">
+		<div class="row nobottom">
+			<div class="col s12 center-align">
+				<h2 class="tituloHome">RAGUSTINO FOOD EXPERIENCE</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 center-align">
+				<p>Es un nuevo concepto de negocio, innovador, diferenciado y acorde a los tiempos actuales. Somos parte del cambio radical que ha experimentado la industria gastronómica desde la expansión sin precedentes de internet y las redes sociales. Somos un DELI GOURMET o un PORTAL WEB DE PEDIDOS GASTRONÓMICOS, pero queremos ir mucho más allá y darle un salto de calidad al ya clásico e irregular servicio de “pedido a domicilio”. Nuestro principal objetivo es entregar una experiencia gastronómica integral, moderna y de excelencia. Para ello contamos con una cocina creativa y versátil, procesos completamente digitalizados para pagos online, rastreo interactivo de reparto y programación de pedidos por horas o días. Cocinamos con pasión y trabajamos con energía porque NOS ENCANTA LO QUE HACEMOS! Queremos crecer e innovar pero por sobre todo queremos hacer la diferencia entregando siempre un servicio de calidad orientado al cliente. Te invitamos a disfrutar hoy de una nueva experiencia gourmet a domicilio. TE ESPERAMOS!!!</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 center-align">
+				<a href="/carta" class="waves-effect waves-light btn blue darken-2"><i class="material-icons left">store</i>Nuestra Carta</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 m4">
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="programa">En RAGUSTINO FOOD EXPERIENCE puedes agendar fácilmente el DIA y HORA que quieres recibir tu pedido.   Entra a nuestra carta, selecciona tus favoritos y PROGRAMA para el mismo día o cuando quieras, SIN COBROS ADICIONALES</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s12 center-align">
+						<p>Disfruta de la comida más deliciosa, equilibrada y nutritiva a tu puerta sin esperas ni retrasos...</p>
+					</div>
+				</div>
+			</div>
+			<div class="col s12 m4 centroIm">
+				<img class="fotoCentro" src="centroinfo.png" />
+			</div>
+			<div class="col s12 m4 center-align">
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horario"></p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">HORARIO: RAGUSTINO</p>
+					</div>
+				</div><div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">Realiza repartos sólo de jueves a domingo:</p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">Jueves 18:00 - 0:00</p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">Viernes 18:00 - 1:00</p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">Sábado 18:00 - 1:00</p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">Domingo 13:00 -20:00hrs</p>
+					</div>
+				</div>
+				<div class="row programa">
+					<div class="col s2 offset-s4 l2 offset-l4 face center-align">
+						<a href="http://www.facebook.com/ragustinofoodexperience" target="_blank" class="icon-facebook iconoRedes"></a>
+					</div>
+					<div class="col s2 l2 center-align insta">
+						<a href="http://www.instagram.com/ragustinofoodexperience" target="_blank" class="icon-instagram iconoRedes"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>`;
+
+	return layout(el);
+};
+
+},{"../layout":37,"yo-yo":21}],35:[function(require,module,exports){
 var page = require('page');
 
-/*require('./homepage');*/
+require('./homepage');
 require('./carta');
+require('./compra');
 require('./clients/signup');
 require('./clients/signin');
 require('./ragsystem/homesystem');
@@ -5793,7 +6199,7 @@ require('./ragsystem/adm_equipo');
 
 page();
 
-},{"./carta":23,"./clients/signin":25,"./clients/signup":27,"./ragsystem/adm_equipo":43,"./ragsystem/adm_productos":44,"./ragsystem/estadisticas":46,"./ragsystem/homesystem":49,"page":12}],32:[function(require,module,exports){
+},{"./carta":23,"./clients/signin":25,"./clients/signup":27,"./compra":29,"./homepage":33,"./ragsystem/adm_equipo":47,"./ragsystem/adm_productos":48,"./ragsystem/estadisticas":50,"./ragsystem/homesystem":53,"page":12}],36:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function landing(box) {
@@ -5808,7 +6214,7 @@ module.exports = function landing(box) {
 	</div>`;
 };
 
-},{"yo-yo":21}],33:[function(require,module,exports){
+},{"yo-yo":21}],37:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function layout(content) {
@@ -5874,7 +6280,7 @@ module.exports = function layout(content) {
 							</ul>
 						</div>
 						<div class="modal-footer">
-							<a class="waves-effect waves-light btn blue darken-2">Comprar</a>
+							<a id="comprando" class="waves-effect waves-light btn blue darken-2">Comprar</a>
 							<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cerrar</a>
 						</div>
 					</div>
@@ -5916,7 +6322,7 @@ module.exports = function layout(content) {
 	</div>`;
 };
 
-},{"yo-yo":21}],34:[function(require,module,exports){
+},{"yo-yo":21}],38:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function pictureCard(pic) {
@@ -5955,7 +6361,7 @@ module.exports = function pictureCard(pic) {
 	return el;
 };
 
-},{"yo-yo":21}],35:[function(require,module,exports){
+},{"yo-yo":21}],39:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (pic) {
@@ -5978,7 +6384,7 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"yo-yo":21}],36:[function(require,module,exports){
+},{"yo-yo":21}],40:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (pic) {
@@ -6009,7 +6415,7 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"yo-yo":21}],37:[function(require,module,exports){
+},{"yo-yo":21}],41:[function(require,module,exports){
 var yo = require('yo-yo');
 var itemopt = require('./item-opt');
 var itemoptt = require('./item-opt-opt');
@@ -6055,7 +6461,7 @@ module.exports = function pictureCard(pic) {
 	return el;
 };
 
-},{"./item-opt":40,"./item-opt-opt":38,"yo-yo":21}],38:[function(require,module,exports){
+},{"./item-opt":44,"./item-opt-opt":42,"yo-yo":21}],42:[function(require,module,exports){
 var yo = require('yo-yo');
 var option = require('./option');
 
@@ -6073,14 +6479,14 @@ module.exports = function (optt) {
 	</div>`;
 };
 
-},{"./option":39,"yo-yo":21}],39:[function(require,module,exports){
+},{"./option":43,"yo-yo":21}],43:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (item) {
 	return yo`<li class="itemOpt hover" id="itemSelect" data-idpack="${item.idpack}" data-idopt="${item.idopt}" data-id="${item.iditem}"><a href="#" id="itemSelect" class="opcionElejida" data-idpack="${item.idpack}" data-idopt="${item.idopt}" data-id="${item.iditem}">- ${item.itemname}</a></li>`;
 };
 
-},{"yo-yo":21}],40:[function(require,module,exports){
+},{"yo-yo":21}],44:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (opt) {
@@ -6089,7 +6495,7 @@ module.exports = function (opt) {
 	</div>`;
 };
 
-},{"yo-yo":21}],41:[function(require,module,exports){
+},{"yo-yo":21}],45:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function pictureCard(pic) {
@@ -6128,7 +6534,7 @@ module.exports = function pictureCard(pic) {
 	return el;
 };
 
-},{"yo-yo":21}],42:[function(require,module,exports){
+},{"yo-yo":21}],46:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function pictureCard(pic) {
@@ -6139,7 +6545,7 @@ module.exports = function pictureCard(pic) {
 				<img class="activator responsive" src="${picture.url}">
 			</div>
 			<div class="card-content">
-				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.name}</span>
+				<span class="pizza-text card-title activator grey-text text-darken-2">Pizza ${picture.name}</span>
 				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-id="${picture.id}">add</i></a>
 				<p class="likes-content">
 					<a class="left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
@@ -6148,7 +6554,7 @@ module.exports = function pictureCard(pic) {
 				</p>
 			</div>
 			<div class="card-reveal">
-			    <span class="pizza-text card-title blue-text text-darken-2">${picture.name}<i class="material-icons right">close</i></span>
+			    <span class="pizza-text card-title blue-text text-darken-2">Pizza ${picture.name}<i class="material-icons right">close</i></span>
 			    <p class="pizza-content-text">${picture.content}</p>
 			    <span class="left likes blue-text text-darken-2">Valor: $${picture.price}</span>
 			</div>
@@ -6167,9 +6573,9 @@ module.exports = function pictureCard(pic) {
 	return el;
 };
 
-},{"yo-yo":21}],43:[function(require,module,exports){
+},{"yo-yo":21}],47:[function(require,module,exports){
 
-},{}],44:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -6243,7 +6649,7 @@ function loadAdicionales(ctx, next) {
 	});
 }
 
-},{"../headersystem":48,"./template":45,"empty-element":4,"page":12,"superagent":15,"title":20}],45:[function(require,module,exports){
+},{"../headersystem":52,"./template":49,"empty-element":4,"page":12,"superagent":15,"title":20}],49:[function(require,module,exports){
 var yo = require('yo-yo');
 var pizza = require('../products_system/pizzasystem');
 /*var vegetal = require('../products_system/vegetalsystem');
@@ -6338,7 +6744,7 @@ module.exports = function (pizzas, /*vegetales, carnes, */ensaladas, adicionales
 	</div>`;
 };
 
-},{"../products_system/adicionalsystem":51,"../products_system/ensaladasystem":52,"../products_system/pizzasystem":53,"yo-yo":21}],46:[function(require,module,exports){
+},{"../products_system/adicionalsystem":55,"../products_system/ensaladasystem":56,"../products_system/pizzasystem":57,"yo-yo":21}],50:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -6351,7 +6757,7 @@ page('/estadisticas', header, function (ctx, next) {
 	empty(main).appendChild(template());
 });
 
-},{"../headersystem":48,"./template":47,"empty-element":4,"page":12,"title":20}],47:[function(require,module,exports){
+},{"../headersystem":52,"./template":51,"empty-element":4,"page":12,"title":20}],51:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function () {
@@ -6366,7 +6772,7 @@ module.exports = function () {
 	</div>`;
 };
 
-},{"yo-yo":21}],48:[function(require,module,exports){
+},{"yo-yo":21}],52:[function(require,module,exports){
 var yo = require('yo-yo');
 var empty = require('empty-element');
 
@@ -6419,7 +6825,7 @@ module.exports = function header(ctx, next) {
 	next();
 };
 
-},{"empty-element":4,"yo-yo":21}],49:[function(require,module,exports){
+},{"empty-element":4,"yo-yo":21}],53:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -6432,7 +6838,7 @@ page('/ragsystem', header, function (ctx, next) {
 	empty(main).appendChild(template());
 });
 
-},{"../headersystem":48,"./template":50,"empty-element":4,"page":12,"title":20}],50:[function(require,module,exports){
+},{"../headersystem":52,"./template":54,"empty-element":4,"page":12,"title":20}],54:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function () {
@@ -6479,7 +6885,7 @@ module.exports = function () {
 	</div>`;
 };
 
-},{"yo-yo":21}],51:[function(require,module,exports){
+},{"yo-yo":21}],55:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (pic) {
@@ -6491,7 +6897,7 @@ module.exports = function (pic) {
 	</li>`;
 };
 
-},{"yo-yo":21}],52:[function(require,module,exports){
+},{"yo-yo":21}],56:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (pic) {
@@ -6503,7 +6909,7 @@ module.exports = function (pic) {
 	</li>`;
 };
 
-},{"yo-yo":21}],53:[function(require,module,exports){
+},{"yo-yo":21}],57:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (pic) {
@@ -6515,4 +6921,4 @@ module.exports = function (pic) {
 	</li>`;
 };
 
-},{"yo-yo":21}]},{},[31]);
+},{"yo-yo":21}]},{},[35]);

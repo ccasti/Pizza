@@ -63,7 +63,7 @@ module.exports = function layout (content) {
 							</ul>
 						</div>
 						<div class="modal-footer">
-							<a class="waves-effect waves-light btn blue darken-2">Comprar</a>
+							<a id="comprando" class="waves-effect waves-light btn blue darken-2">Comprar</a>
 							<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cerrar</a>
 						</div>
 					</div>

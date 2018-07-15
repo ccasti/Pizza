@@ -1,7 +1,8 @@
 var page = require('page');
 
-/*require('./homepage');*/
+require('./homepage');
 require('./carta');
+require('./compra');
 require('./clients/signup');
 require('./clients/signin');
 require('./ragsystem/homesystem');

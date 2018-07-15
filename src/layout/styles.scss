@@ -16,13 +16,6 @@
 	padding: 1.5rem;
 }
 
-@media #{$medium-and-down} {
-	.principal {
-		margin: 0 0 !important;
-		min-width: 100%;
-	}
-}
-
 .principal2 {
 	margin: 0 !important;
 }
@@ -33,18 +26,6 @@
 
 .tituloCarro {
 	font-size: 2rem !important;
-}
-
-@media #{$medium-and-down} {
-	.tituloCarro {
-		font-size: 1.8rem !important;
-	}	
-}
-
-@media #{$small-and-down} {
-	.tituloCarro {
-		font-size: 1.6rem !important;
-	}	
 }
 
 .itemCarrito {
@@ -70,4 +51,21 @@
 .totales {
 	font-size: 20px;
 	font-weight: bold;
+}
+
+@media #{$medium-and-down} {
+	.principal {
+		margin: 0 0 !important;
+		min-width: 100%;
+	}
+
+	.tituloCarro {
+		font-size: 1.8rem !important;
+	}	
+}
+
+@media #{$small-and-down} {
+	.tituloCarro {
+		font-size: 1.6rem !important;
+	}	
 }

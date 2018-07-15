@@ -22,6 +22,10 @@ app.get('/carta', function (req, res) {
 	res.render('index', { title: 'Ragustino - Carta' });
 })
 
+app.get('/compra', function (req, res) {
+	res.render('index', { title: 'Ragustino - Carro' });
+})
+
 app.get('/ragsystem', function (req, res) {
 	res.render('index', { title: 'Sistema Interno' });
 })
@@ -42,8 +46,8 @@ app.get('/api/pizzas', function(req, res) {
 	var pizzas = [
 		{
 			id: '100001',
-			name: 'PIZZA PRIMERA',
-			url: 'pizza.png',
+			name: 'Campesina',
+			url: 'campesina.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 			likes: 101,
 			liked: false,
@@ -51,8 +55,8 @@ app.get('/api/pizzas', function(req, res) {
 		},
 		{
 			id: '100002',
-			name: 'PIZZA SEGUNDA',
-			url: 'pizza2.png',
+			name: 'Caprese',
+			url: 'caprese.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 			likes: 102,
 			liked: false,
@@ -60,8 +64,8 @@ app.get('/api/pizzas', function(req, res) {
 		},
 		{
 			id: '100003',
-			name: 'PIZZA TERCERA',
-			url: 'pizza3.png',
+			name: 'Caprichosa',
+			url: 'caprichosa.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 			likes: 103,
 			liked: false,
@@ -69,8 +73,8 @@ app.get('/api/pizzas', function(req, res) {
 		},
 		{
 			id: '100004',
-			name: 'PIZZA CUARTA',
-			url: 'pizza.png',
+			name: 'Carnívora',
+			url: 'carnivora.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 			likes: 104,
 			liked: false,
@@ -78,8 +82,8 @@ app.get('/api/pizzas', function(req, res) {
 		},
 		{
 			id: '100005',
-			name: 'PIZZA QUINTA',
-			url: 'pizza2.png',
+			name: 'Ibérica',
+			url: 'iberica.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 			likes: 105,
 			liked: false,
@@ -87,8 +91,8 @@ app.get('/api/pizzas', function(req, res) {
 		},
 		{
 			id: '100006',
-			name: 'PIZZA SEXTA',
-			url: 'pizza3.png',
+			name: 'Prosciutto',
+			url: 'jamon.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 			likes: 105,
 			liked: true,
@@ -333,10 +337,12 @@ app.get('/api/packs', function(req, res) {
 			id: '510000',
 			name: 'PACK INDIVIDUAL A',
 			url: 'pack1.png',
+			excep: true,
 			contents: {
 				opciones: [
 					{
 						id: '511000',
+						idpack: '510000',
 						tipo: 'Pizza',
 						selec: false,
 						items: [
@@ -372,6 +378,7 @@ app.get('/api/packs', function(req, res) {
 					},
 					{
 						id: '512000',
+						idpack: '510000',
 						tipo: 'Líquido',
 						selec: false,
 						items: [
@@ -438,10 +445,12 @@ app.get('/api/packs', function(req, res) {
 			id: '520000',
 			name: 'PACK INDIVIDUAL B',
 			url: 'pack2.png',
+			excep: true,
 			contents: {
 				opciones: [
 					{
 						id: '521000',
+						idpack: '520000',
 						tipo: 'Pizza',
 						selec: false,
 						items: [
@@ -512,6 +521,7 @@ app.get('/api/packs', function(req, res) {
 					},
 					{
 						id: '522000',
+						idpack: '520000',
 						tipo: 'Líquido',
 						selec: false,
 						items: [
@@ -581,10 +591,12 @@ app.get('/api/packs', function(req, res) {
 			id: '530000',
 			name: 'PACK INDIVIDUAL C',
 			url: 'pack3.png',
+			excep: true,
 			contents: {
 				opciones: [
 					{
 						id: '531000',
+						idpack: '530000',
 						tipo: 'Pizza',
 						selec: false,
 						items: [
@@ -697,34 +709,184 @@ app.get('/api/packs', function(req, res) {
 					},
 					{
 						id: '532000',
-						tipo: 'Líquido',
+						idpack: '530000',
+						tipo: 'Pizza',
 						selec: false,
 						items: [
 							{
 								idpack: '530000',
 								idopt: '532000',
 								iditem: '532001',
-								itemname: 'Opción 1',
+								itemname: 'Margarita',
 								selected: false
 							},
 							{
 								idpack: '530000',
 								idopt: '532000',
 								iditem: '532002',
-								itemname: 'Opción 2',
+								itemname: 'Zucchini Parmesano',
 								selected: false
 							},
 							{
 								idpack: '530000',
 								idopt: '532000',
 								iditem: '532003',
-								itemname: 'Opción 3',
+								itemname: 'Caprese',
 								selected: false
 							},
 							{
 								idpack: '530000',
 								idopt: '532000',
 								iditem: '532004',
+								itemname: 'Pollo al pesto',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '532000',
+								iditem: '532005',
+								itemname: 'Prosciutto',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '532000',
+								iditem: '532006',
+								itemname: 'Pimentón',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '532000',
+								iditem: '532007',
+								itemname: 'Campesina',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '532000',
+								iditem: '532008',
+								itemname: 'Capricciosa',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '532000',
+								iditem: '532009',
+								itemname: 'Silvestre',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '532000',
+								iditem: '532010',
+								itemname: 'Carnivora',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '532000',
+								iditem: '532011',
+								itemname: 'Ibérica',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '532000',
+								iditem: '532012',
+								itemname: 'Pollo, Jamón y Rucula',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '532000',
+								iditem: '532013',
+								itemname: 'Patagónica',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '532000',
+								iditem: '532014',
+								itemname: '4 Quesos',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '532000',
+								iditem: '532015',
+								itemname: 'Mar y Tierra',
+								selected: false
+							}
+						]
+					},
+					{
+						id: '533000',
+						idpack: '530000',
+						tipo: 'Líquido',
+						selec: false,
+						items: [
+							{
+								idpack: '530000',
+								idopt: '533000',
+								iditem: '533001',
+								itemname: 'Opción 1',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '533000',
+								iditem: '533002',
+								itemname: 'Opción 2',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '533000',
+								iditem: '533003',
+								itemname: 'Opción 3',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '533000',
+								iditem: '533004',
+								itemname: 'Opción 4',
+								selected: false
+							},
+						]
+					},
+					{
+						id: '534000',
+						idpack: '530000',
+						tipo: 'Líquido',
+						selec: false,
+						items: [
+							{
+								idpack: '530000',
+								idopt: '534000',
+								iditem: '534001',
+								itemname: 'Opción 1',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '534000',
+								iditem: '534002',
+								itemname: 'Opción 2',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '534000',
+								iditem: '534003',
+								itemname: 'Opción 3',
+								selected: false
+							},
+							{
+								idpack: '530000',
+								idopt: '534000',
+								iditem: '534004',
 								itemname: 'Opción 4',
 								selected: false
 							},
@@ -774,84 +936,36 @@ app.get('/api/packs', function(req, res) {
 app.get('/api/items', function(req, res) {
 	var items = [
 		{
-			id: '600001',
-			queso: true,
-			name: 'Mozzarella',
-			url: 'mozzarella.jpg',
-			gramo: 100,
-			price: 2190
+			id: '400001',
+			beber: true,
+			name: 'Fanta Individual',
+			content: 'Lata Individual 350ml',
+			url: 'fantal.png',
+			price: 1750
 		},
 		{
-			id: '600002',
-			queso: true,
-			name: 'Gruyere',
-			url: 'gruyere.jpg',
-			gramo: 80,
-			price: 2190
+			id: '400002',
+			beber: true,
+			name: 'Fanta Individual Zero',
+			content: 'Lata Individual 350ml',
+			url: 'fantalz.png',
+			price: 1750
 		},
 		{
-			id: '600003',
-			queso: true,
-			name: 'Azul',
-			url: 'azul.jpg',
-			gramo: 30,
-			price: 2190
+			id: '400003',
+			beber: true,
+			name: 'Coca Cola Individual',
+			content: 'Lata Individual 350ml',
+			url: 'cocal.png',
+			price: 1750
 		},
 		{
-			id: '600004',
-			queso: true,
-			name: 'Parmesano',
-			url: 'parmesano.jpg',
-			gramo: 50,
-			price: 2190
-		},
-		{
-			id: '600005',
-			carne: true,
-			name: 'Pavo a las Finas Hiervas',
-			url: 'pavo.jpg',
-			gramo: 150,
-			price: 1890
-		},
-		{
-			id: '600006',
-			carne: true,
-			name: 'Pollo al Curry',
-			url: 'pollo.jpg',
-			gramo: 150,
-			price: 1890
-		},
-		{
-			id: '600007',
-			carne: true,
-			name: 'Pollo al Grill',
-			url: 'pollo.jpg',
-			gramo: 150,
-			price: 1890
-		},
-		{
-			id: '600008',
-			carne: true,
-			name: 'Pollo al Pesto',
-			url: 'pollo.jpg',
-			gramo: 150,
-			price: 1890
-		},
-		{
-			id: '600009',
-			carne: true,
-			name: 'Pollo a la Plancha',
-			url: 'pollo.jpg',
-			gramo: 150,
-			price: 1890
-		},
-		{
-			id: '600010',
-			carne: true,
-			name: 'Codero Salteado',
-			url: 'cordero.jpg',
-			gramo: 150,
-			price: 2190
+			id: '400004',
+			beber: true,
+			name: 'Coca Cola Individual Zero',
+			content: 'Lata Individual 350ml',
+			url: 'cocalz.png',
+			price: 1750
 		}
 	];
 

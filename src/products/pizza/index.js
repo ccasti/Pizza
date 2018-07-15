@@ -8,7 +8,7 @@ module.exports = function pictureCard (pic) {
 				<img class="activator responsive" src="${picture.url}">
 			</div>
 			<div class="card-content">
-				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.name}</span>
+				<span class="pizza-text card-title activator grey-text text-darken-2">Pizza ${picture.name}</span>
 				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-id="${picture.id}">add</i></a>
 				<p class="likes-content">
 					<a class="left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
@@ -17,7 +17,7 @@ module.exports = function pictureCard (pic) {
 				</p>
 			</div>
 			<div class="card-reveal">
-			    <span class="pizza-text card-title blue-text text-darken-2">${picture.name}<i class="material-icons right">close</i></span>
+			    <span class="pizza-text card-title blue-text text-darken-2">Pizza ${picture.name}<i class="material-icons right">close</i></span>
 			    <p class="pizza-content-text">${picture.content}</p>
 			    <span class="left likes blue-text text-darken-2">Valor: $${picture.price}</span>
 			</div>
