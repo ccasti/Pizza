@@ -4,12 +4,13 @@ var template = require('./template');
 var title = require('title');
 var header = require('../header');
 var footer = require('../footer');
+var noUiSlider = require('nouislider');
 
-page('/compra', header, footer, function (ctx, next) {
+page('/compra', header, loadCarrito, footer, function (ctx, next) {
 	title('Ragustino - Carro');
 	var main = document.getElementById('main-container');
 
-	empty(main).appendChild(template());
+	empty(main).appendChild(template(ctx.itemsCarrito));
 
 	function Carrito() {
 		this.getCarrito = JSON.parse(localStorage.getItem("carrito"));
@@ -21,61 +22,17 @@ page('/compra', header, footer, function (ctx, next) {
 			}
 			return total;
 		}
-
-		this.eliminarItem = function(item) {
-			for(var i in this.getCarrito) {
-				if(this.getCarrito[i].id === item) {
-					this.getCarrito.splice(i,1);
-				}
-			}
-			localStorage.setItem("carrito",JSON.stringify(this.getCarrito));
-		}
-	}
-
-	function Carrito_View() {
-		this.renderCarrito = function() {
-			if(carrito.getCarrito.length <= 0) {
-				templateNoItems = `<div class="row">
-					<div class="col s12 center-align">
-						No tienes productos en tu carro
-					</div>
-				</div>`;
-				document.getElementById('productosCarrito').innerHTML = templateNoItems;
-			}else{
-				templateItems = ``;
-				for(i of carrito.getCarrito) {
-					templateItems += `<li class="collection-item">
-						<div class="row itemCarrito">
-							<div class="col s8 m4">
-								${i.name}
-							</div>
-							<div class="col s4 m2 center-align">
-								${i.price}
-							</div>
-							<div class="col s3 offset-s3 m2 center-align">
-								${i.cantidad}
-							</div>
-							<div class="col s3 m2 center-align">
-								${i.cantidad * i.price}
-							</div>
-							<div class="col s3 m2 center-align">
-								<a href="#"><i class="material-icons iconoBorrar" id="deleteItem" data-id="${i.id}">delete_forever</i></a>
-							</div>
-						</div>
-					</li>`;
-				}
-				document.getElementById('productosCarrito').innerHTML = templateItems;
-			}
-			document.getElementById('totalCarrito').innerHTML = "$ "+carrito.getTotal();
-		}
-
-		this.totalProductos = function() {
-			var total = carrito.getCarrito.length;
-			document.getElementById('totalProductos').innerHTML = total;
-		}
 	}
 
 	function Comprando() {
+		this.constructor = function() {
+			if(!localStorage.getItem("comprando")){
+				localStorage.setItem('comprando','[]');
+			}
+		}
+
+		this.getComprando = JSON.parse(localStorage.getItem("comprando"));
+
 		this.getDelivey = function() {
 			var delivery = 0;
 			var checkear = carrito.getTotal();
@@ -84,55 +41,40 @@ page('/compra', header, footer, function (ctx, next) {
 			}
 			return parseFloat(delivery);
 		}
+
+		this.crearCompra = function() {
+			if(!this.getComprando.length > 0) {
+				let compra = {
+					cliente: '',
+					direccion: '',
+					mail: '',
+					fono: '',
+					content: [],
+					monto: '',
+					pago: '',
+					delivery: '',
+					repartidor: '',
+					fecha: '',
+					hora: '',
+					minutos: '',
+					cocina: false,
+					reparto: false,
+					ok: false
+				};
+				console.log(compra);
+				this.getComprando.push(compra);
+				localStorage.setItem("comprando",JSON.stringify(this.getComprando));
+				console.log(this.getComprando);
+			}
+		}
 	}
 
 	function Comprando_View() {
 		this.renderCompra = function() {
+			document.getElementById('todoHeader').classList.toggle('hide');
 			if(carrito.getCarrito.length <= 0) {
-				templateNoItemsCompra = `<div class="row center-align">
-					<div class="col s12">
-						No tienes productos en tu carro
-					</div>
-				</div>`;
+				templateNoItemsCompra = `<p>No tienes productos en tu carro</p>`;
 				document.getElementById('pintandoCompra').innerHTML = templateNoItemsCompra;
-			}else{
-				templateComprando = ``;
-				for(i of carrito.getCarrito) {
-					if(i.excep) {
-						let opcionPack = i;
-						console.log(i);
-						templateComprando += `<div class="row itemComprando">
-							<div class="col s9">
-								${opcionPack.name}
-							</div>
-							<div class="col s3 right-align">
-								$ ${opcionPack.price}
-							</div>
-							<div class="col s9">
-								${opcionPack.contents.opciones.map(function (pic) {
-									if(pic.idpack === opcionPack.id) {
-										for(p of pic.items) {
-											if(p.selected) {
-												console.log(p.itemname);
-												document.innerHTML = p.itemname;
-											}
-										}
-									}
-								})}
-							</div>
-						</div>`;
-					}else{
-						templateComprando += `<div class="row itemComprando">
-							<div class="col s9">
-								${i.name}
-							</div>
-							<div class="col s3 right-align">
-								$ ${i.price}
-							</div>
-						</div>`;
-					}
-				}
-				document.getElementById('pintandoCompra').innerHTML = templateComprando;
 			}
 			document.getElementById('deliveryCost').innerHTML = "$ "+comprando.getDelivey();
 			let total = carrito.getTotal() + comprando.getDelivey();
@@ -141,77 +83,140 @@ page('/compra', header, footer, function (ctx, next) {
 	}
 
 	function Programando_Compra() {
-		this.determinarAbierto = function() {
-			var hoy = new Date();
-			var dia = hoy.getDay();
-			var hora = hoy.getHours();
-			if(dia === 1 || dia === 2 || dia === 3) {
+		this.determinarAbierto = function(dia, hora) {
+			if(dia === 1 || dia === 0 || dia === 3) {
+				document.getElementById('paraAhora').classList.toggle('hide');
 				document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, hoy no atendemos :-(</p>`;
 			}else{
-				if(dia === 0) {
-					if(hora > 13 && hora < 20) {
-						document.getElementById('templateParaAhora').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;
+				if(dia === 2) {
+					if(/*hora > 13 && */hora < 20) {
+						programando_compra.tiendaAbierta();
 					}else{
-						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, atendemos de 13:00 a 21:00 horas</p>`;
+						document.getElementById('paraAhora').classList.toggle('hide');
+						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, atendemos de 13:00 a 20:00 horas ;-)</p>`;
 					}
 				}
 				if(dia === 4) {
 					if(hora > 18 && hora < 24) {
-						document.getElementById('templateParaAhora').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;
+						programando_compra.tiendaAbierta();
 					}else{
-						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, atendemos de 18:00 a 00:00 horas</p>`;
+						document.getElementById('paraAhora').classList.toggle('hide');
+						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, atendemos de 18:00 a 00:00 horas ;-)</p>`;
 					}
 				}
-				if(dia === 5) {
+				if(dia === 5 || dia === 6) {
 					if(hora > 0 && hora < 18) {
-						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, atendemos de 18:00 a 00:00 horas</p>`;
+						document.getElementById('paraAhora').classList.toggle('hide');
+						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, atendemos de 18:00 a 00:00 horas ;-)</p>`;
 					}else{
-						document.getElementById('templateParaAhora').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;	
+						programando_compra.tiendaAbierta();
 					}
-				}
-				if(dia === 5) {
-					if(hora > 0 && hora < 18) {
-						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, atendemos de 18:00 a 00:00 horas</p>`;
-					}else{
-						document.getElementById('templateParaAhora').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;	
-					}
-					
 				}
 			}
-			
-			/*console.log(hoy);
-			console.log(hoy.getDate());
-			console.log(hoy.getDay());
-			console.log(hoy.getHours());*/
+		}
+
+		this.tiendaAbierta = function() {
+			document.getElementById('paraAhora').classList.toggle('hide');
+			document.getElementById('templateParaAhora').innerHTML = `<div class="container">
+				<div class="row">
+					<div class="col s12 center-align">
+						<i class="medium material-icons blue-text text-darken-2">check</i>
+					</div>
+				</div>
+				<div id="contConfirmar" class="row nobottom">
+					<div class="col s12 center-align">
+						<a href="#" id="confirmandoAhora" class="waves-effect waves-light btn blue darken-2">Confirmar</a>
+					</div>
+				</div>
+			</div>`;
+			document.getElementById('confirmandoAhora').addEventListener("click", function(ev) {
+				ev.preventDefault();
+				document.getElementById('listaMasTarde').classList.toggle('hide');
+				document.getElementById('listaOtroDia').classList.toggle('hide');
+				document.getElementById('contConfirmar').classList.toggle('hide');
+				comprando.crearCompra();
+				var chequeando = comprando.getComprando;
+				chequeando[0].delivery = 'ahora';
+				console.log(chequeando);
+			})
+		}
+
+		this.programandoHoy = function(dia, hora) {
+			if(dia === 0 || dia === 2 || dia === 3) {
+				document.getElementById('templateMasTarde').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, hoy no atendemos :-(</p>`;
+			}else{
+				/*document.getElementById('templateMasTarde').innerHTML = ``;*/
+				if(dia === 1) {
+					var sliderH = document.getElementById('sliderHora');
+					/*var sliderHoraValue = document.getElementById('sliderHora-span');*/
+
+					noUiSlider.create(sliderH, {
+						start: 13,
+						step: 1,
+						orientation: 'horizontal',
+						range: {
+							min: 13,
+							max: 20
+						}/*,
+						format: wNumb({
+							decimals: 0
+						})*/
+					});
+					
+					/*sliderHora.noUiSlider.on('update', function(sliderHoraValue, sliderHora){
+						sliderHoraValue.innerHTML = sliderHoraValue[sliderHora];
+					});*/
+
+					/*var sliderMinutos = document.getElementById('sliderMinutos');
+					var sliderMinutosValue = document.getElementById('sliderMinutos-span');
+					noUiSlider.create(sliderMinutos, {
+						start: 1,
+
+						animate: false,
+						step: 5,
+						orientation: 'horizontal',
+						range: {
+							min: 0,
+							max: 60
+						}
+					});
+					sliderMinutos.noUiSlider.on('update', function(sliderMinutosValue, sliderMinutos){
+						sliderMinutosValue.innerHTML = sliderMinutosValue[sliderMinutos];
+					});*/
+				}
+			}
 		}
 	}
 
-
 	var carrito = new Carrito();
-	var carrito_view = new Carrito_View();
 	var comprando = new Comprando();
 	var comprando_view = new Comprando_View();
 	var programando_compra = new Programando_Compra();
 
 	$(document).ready(function(){
-		carrito_view.renderCarrito();
-		carrito_view.totalProductos();
+		$('.collapsible').collapsible();
 		comprando_view.renderCompra();
-
-		document.getElementById('productosCarrito').addEventListener("click", function(ev) {
+		comprando.constructor();
+		
+		document.getElementById('paraAhora').addEventListener("click", function(ev) {
 			ev.preventDefault();
-			if(ev.target.id === "deleteItem") {
-				carrito.eliminarItem(ev.target.dataset.id);
-				Materialize.toast('Se eliminó un producto', 2500, 'rounded')
-				carrito_view.totalProductos();
-				carrito_view.renderCarrito();
-				comprando.getDelivey();
-				comprando_view.renderCompra();
-			}
+			var hoy = new Date();
+			var dia = hoy.getDay();
+			var hora = hoy.getHours();
+			programando_compra.determinarAbierto(dia, hora);
 		});
 
-		document.getElementById('paraAhora').addEventListener("click", function() {
-			programando_compra.determinarAbierto();
+		document.getElementById('listaMasTarde').addEventListener("click", function(ev) {
+			var hoy = new Date();
+			var dia = hoy.getDay();
+			var hora = hoy.getHours();
+			programando_compra.programandoHoy(dia, hora);
 		})
 	});
 });
+
+function loadCarrito (ctx, next) {
+	var itemsCarrito = JSON.parse(localStorage.getItem("carrito"));
+	ctx.itemsCarrito = itemsCarrito;
+	next();
+}

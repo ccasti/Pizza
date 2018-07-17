@@ -50,7 +50,7 @@ app.get('/api/pizzas', function(req, res) {
 			url: 'campesina.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 			likes: 101,
-			liked: false,
+			liked: 0,
 			price: 9000
 		},
 		{
@@ -59,7 +59,7 @@ app.get('/api/pizzas', function(req, res) {
 			url: 'caprese.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 			likes: 102,
-			liked: false,
+			liked: 0,
 			price: 8500
 		},
 		{
@@ -68,7 +68,7 @@ app.get('/api/pizzas', function(req, res) {
 			url: 'caprichosa.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 			likes: 103,
-			liked: false,
+			liked: 0,
 			price: 9000
 		},
 		{
@@ -77,7 +77,7 @@ app.get('/api/pizzas', function(req, res) {
 			url: 'carnivora.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 			likes: 104,
-			liked: false,
+			liked: 0,
 			price: 10000
 		},
 		{
@@ -86,7 +86,7 @@ app.get('/api/pizzas', function(req, res) {
 			url: 'iberica.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
 			likes: 105,
-			liked: false,
+			liked: 0,
 			price: 9000
 		},
 		{
@@ -94,8 +94,8 @@ app.get('/api/pizzas', function(req, res) {
 			name: 'Prosciutto',
 			url: 'jamon.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 105,
-			liked: true,
+			likes: 106,
+			liked: 1,
 			price: 9000
 		}
 	];

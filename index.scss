@@ -26,6 +26,12 @@ Body {
 	margin-bottom: 0;
 }
 
+/*@import "src/header/styles";
+@import "src/layout/styles";
+@import "src/prueba/styles";
+@import "src/products/pizza/styles";
+@import "src/footer/styles";*/
+
 @import "src/header/styles";
 @import "src/clients/signup/styles";
 @import "src/clients/signin/styles";
@@ -40,5 +46,5 @@ Body {
 @import "src/ragsystem/homesystem/styles";
 @import "src/ragsystem/adm_productos/styles";
 @import "src/products/item/styles";
-/*@import "src/ragsystem/estadisticas/styles";*/
+@import "src/ragsystem/estadisticas/styles";
 @import "src/footer/styles";

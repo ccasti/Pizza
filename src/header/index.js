@@ -10,7 +10,7 @@ var el = yo`<nav class="header grey lighten-3">
 		<div class="row piso-nav">
 			<div class="col s12 sp">
 				<div class="nav-wrapper">
-					<div class="container barra">
+					<div id="todoHeader" class="container barra">
 						<div class="row piso-nav">
 							<div class="col s2 m4 l2 sp">
 							  	<a href="/" class="brand-logo">RAGUSTINO</a>

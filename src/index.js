@@ -1,5 +1,6 @@
 var page = require('page');
 
+/*require('./prueba');*/
 require('./homepage');
 require('./carta');
 require('./compra');

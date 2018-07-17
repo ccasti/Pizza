@@ -47,7 +47,7 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 				<ul class="collapsible popout" data-collapsible="accordion">
 					<p class="menu-text pack-text grey-text text-darken-4 center-align">Conoce las recetas que hemos preparado especialmente para ti con productos de primera selección</p>
 					<li>
-					    <div class="collapsible-header grey lighten-2">
+					    <div class="collapsible-header grey lighten-2 itemsCarta">
 					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pizzas</p>
 					    </div>
 					    <div class="collapsible-body">

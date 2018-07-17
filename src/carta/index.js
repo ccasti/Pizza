@@ -31,6 +31,7 @@ page('/carta',
 
 	function Carrito() {
 		var catalogo = [];
+		var contChequeo = [];
 		
 		for (i of ctx.pizzas) {
 			catalogo.push(i);
@@ -55,6 +56,15 @@ page('/carta',
 		}
 			
 		this.getCarrito = JSON.parse(localStorage.getItem("carrito"));
+
+		this.mantenedorChequeo = function() {
+			if(this.getCarrito.length > 0) {
+				for(i of this.getCarrito) {
+					var manChequeo = i;
+					contChequeo.push({ id: manChequeo.id, price: manChequeo.price });
+				}
+			}
+		}
 
 		this.agregarItemPack = function(item) {
 			for(i of catalogo) {
@@ -84,6 +94,7 @@ page('/carta',
 				}	
 			}
 
+			contChequeo.push({ id: registroPack.id, price: registroPack.price });
 			registroPack.cantidad = 1;
 			this.getCarrito.push(registroPack);
 			localStorage.setItem("carrito",JSON.stringify(this.getCarrito));
@@ -131,9 +142,38 @@ page('/carta',
 					return;
 				}
 			}
+			contChequeo.push({ id: registro.id, price: registro.price });
 			registro.cantidad = 1;
 			this.getCarrito.push(registro);
 			localStorage.setItem("carrito",JSON.stringify(this.getCarrito));
+		}
+
+		this.agregarCustom = function() {
+			let n = 0;
+			for(i of armar_pizza.getIngredientes) {
+				if(i.control) {
+					n++;
+				}
+			}
+			if(n < 3) {
+				alert("Para ofrecerte una verdadera experiencia gourmet, debes seleccionar un mínimo de 3 ingredientes, recuerda que las especias no son consideradas ;-)");
+				return
+			}
+			if(n > 5) {
+				alert("Nuestra masa de fermentación lenta se romperá con más de 5 ingredientes, seleciona un máximo de 5 ingredientes ;-)");
+				return
+			}
+			contChequeo.push({ id: '100100', price: armar_pizza.getTotal() });
+			console.log(contChequeo);
+			let itemCustom = { id: '100100', name: 'Pizza a tu gusto', price: armar_pizza.getTotal(), cantidad: 1, custom: true, ingredientes: armar_pizza.getIngredientes }
+			this.getCarrito.push(itemCustom);
+			localStorage.setItem("carrito",JSON.stringify(this.getCarrito));
+			Materialize.toast('Se agregó un producto', 2500, 'rounded')
+			localStorage.setItem('ingredientes','[]');
+			carrito_view.totalProductos();
+			carrito_view.renderCarrito();
+			$('#modal9').modal('open');
+			setTimeout('document.location.reload()',2000);
 		}
 
 		this.getTotal = function() {
@@ -151,6 +191,11 @@ page('/carta',
 				}
 			}
 			localStorage.setItem("carrito",JSON.stringify(this.getCarrito));
+			for(var i in contChequeo) {
+				if(contChequeo[i].id === item) {
+					contChequeo.splice(i,1);
+				}
+			}
 		}
 
 		this.iraComprar = function() {
@@ -158,8 +203,14 @@ page('/carta',
 				alert("No tienes productos en tu carrito :-(");
 				return
 			}else{
-				$('#modal9').modal('close');
-				page.redirect('/compra');
+				var totalChequeo = 0;
+				for(i of contChequeo) {
+					totalChequeo += parseFloat(i.price);
+				}
+				if(totalChequeo === this.getTotal()) {
+					$('#modal9').modal('close');
+					page.redirect('/compra');
+				}
 			}
 		}
 	}
@@ -213,9 +264,10 @@ page('/carta',
 		this.constructor = function() {
 			if(!localStorage.getItem("ingredientes")){
 				localStorage.setItem('ingredientes','[]');
-			}
-			if(this.getIngredientes.length > 0) {
-				localStorage.setItem('ingredientes','[]');
+			}else{
+				if(this.getIngredientes.length > 0) {
+					localStorage.setItem('ingredientes','[]');
+				}
 			}
 		}
 		
@@ -251,35 +303,6 @@ page('/carta',
 			this.getIngredientes.push(ingrediente);
 			localStorage.setItem("ingredientes",JSON.stringify(this.getIngredientes));
 			Materialize.toast('Se agregó un ingrediente', 2500, 'rounded')
-		}
-
-		this.agregarCustom = function() {
-			let n = 0;
-			for(i of this.getIngredientes) {
-				if(i.control) {
-					n++;
-				}
-			}
-			if(n < 3) {
-				alert("Para ofrecerte una verdadera experiencia gourmet, debes seleccionar un mínimo de 3 ingredientes, recuerda que las especias no son consideradas ;-)");
-				return
-			}
-			if(n > 5) {
-				alert("Nuestra masa de fermentación lenta se romperá con más de 5 ingredientes, seleciona un máximo de 5 ingredientes ;-)");
-				return
-			}
-			let itemCustom = { id: '100100', name: 'Pizza a tu gusto', price: this.getTotal(), cantidad: 1, ingredientes: this.getIngredientes }
-			carrito.getCarrito.push(itemCustom);
-			localStorage.setItem("carrito",JSON.stringify(carrito.getCarrito));
-			Materialize.toast('Se agregó un producto', 2500, 'rounded')
-			localStorage.setItem('ingredientes','[]');
-			carrito_view.totalProductos();
-			carrito_view.renderCarrito();
-			$('#modal9').modal('open');
-			setTimeout('document.location.reload()',2000);
-			
-			console.log(carrito.getCarrito);
-			console.log(this.getIngredientes);
 		}
 
 		this.getTotal = function() {
@@ -318,7 +341,7 @@ page('/carta',
 		$('.collapsible').collapsible();
 		
 		carrito.constructor();
-		armar_pizza.constructor();
+		carrito.mantenedorChequeo();
 		carrito_view.renderCarrito();
 		carrito_view.totalProductos();
 				
@@ -368,6 +391,7 @@ page('/carta',
 
 		document.getElementById('ingredientes').addEventListener("click", function(ev) {
 			if(ev.target.id === "addIngrediente"){
+				armar_pizza.constructor();
 				var id = ev.target.dataset.id;
 				armar_pizza.cambiarIcono(id);
 				armar_pizza.agregarIngrediente(id);
@@ -378,7 +402,7 @@ page('/carta',
 
 		document.getElementById('agPizzaCustom').addEventListener("click", function(ev) {
 			ev.preventDefault();
-			armar_pizza.agregarCustom();
+			carrito.agregarCustom();
 		});
 
 		document.getElementById('comprando').addEventListener("click", function(ev) {
