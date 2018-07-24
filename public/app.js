@@ -7151,12 +7151,20 @@ var title = require('title');
 var header = require('../header');
 var footer = require('../footer');
 var request = require('superagent');
+var aPesos = require('../utilities/aPesos');
+var wNumb = require('../utilities/aPesos/wNumb');
 
-page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas, loadPacks, loadItems, footer, function (ctx, next) {
+page('/carta', header, loadPizzas, loadIngredientes,
+/*loadCalzones,
+loadPiadinas,*/
+loadPacks, loadItems, footer, function (ctx, next) {
 	title('Ragustino - Carta');
 	var main = document.getElementById('main-container');
 
-	empty(main).appendChild(template(ctx.pizzas, ctx.calzones, ctx.piadinas, ctx.ingredientes, ctx.packs, ctx.items));
+	empty(main).appendChild(template(ctx.pizzas,
+	/*ctx.calzones,
+ ctx.piadinas,*/
+	ctx.ingredientes, ctx.packs, ctx.items));
 
 	function Carrito() {
 		var catalogo = [];
@@ -7165,15 +7173,19 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 		for (i of ctx.pizzas) {
 			catalogo.push(i);
 		}
-		for (i of ctx.calzones) {
-			catalogo.push(i);
-		}
-		for (i of ctx.piadinas) {
-			catalogo.push(i);
-		}
+
+		/*for(i of ctx.calzones) {
+  	catalogo.push(i);
+  }
+  
+  for(i of ctx.piadinas) {
+  	catalogo.push(i);
+  }*/
+
 		for (i of ctx.packs) {
 			catalogo.push(i);
 		}
+
 		for (i of ctx.items) {
 			catalogo.push(i);
 		}
@@ -7187,7 +7199,7 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 		this.getCarrito = JSON.parse(localStorage.getItem("carrito"));
 
 		this.mantenedorChequeo = function () {
-			if (this.getCarrito.length > 0) {
+			if (JSON.parse(localStorage.getItem("carrito")).length > 0) {
 				for (i of this.getCarrito) {
 					var manChequeo = i;
 					contChequeo.push({ id: manChequeo.id, price: manChequeo.price });
@@ -7264,7 +7276,7 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 				return;
 			}
 
-			for (i of this.getCarrito) {
+			for (i of localStorage.getItem("carrito")) {
 				if (i.id === item) {
 					i.cantidad++;
 					localStorage.setItem("carrito", JSON.stringify(this.getCarrito));
@@ -7277,10 +7289,34 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 			localStorage.setItem("carrito", JSON.stringify(this.getCarrito));
 		};
 
+		this.agergarOferta = function () {
+			var ventaOferta = { pizname: '', bebname: '', id: '900001', price: '11990' };
+			var pOferta = document.getElementById('pizzaOferta').value;
+			var bOferta = document.getElementById('bebidaOferta').value;
+
+			var opcPizOf = [{ id: '101', name: 'Pizza Margherita' }, { id: '102', name: 'Pizza Caprese' }, { id: '103', name: 'Pizza Pollo al Pesto' }, { id: '104', name: 'Pizza Zuchinni Parmesano' }];
+
+			var opcBebOf = [{ id: '201', name: 'Coca Cola Normal' }, { id: '202', name: 'Coca Cola Zero' }, { id: '203', name: 'Fanta Normal' }, { id: '204', name: 'Fanta Zero' }, { id: '205', name: 'Sprite Normal' }, { id: '206', name: 'Sprite Zero' }];
+
+			for (p of opcPizOf) {
+				if (pOferta === p.id) {
+					ventaOferta.pizname = p.name;
+				}
+			}
+
+			for (b of opcBebOf) {
+				if (bOferta === b.id) {
+					ventaOferta.bebname = b.name;
+				}
+			}
+
+			console.log(ventaOferta);
+		};
+
 		this.agregarCustom = function () {
 			let n = 0;
 			for (i of armar_pizza.getIngredientes) {
-				if (i.control) {
+				if (i.control === 1) {
 					n++;
 				}
 			}
@@ -7297,7 +7333,7 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 			let itemCustom = { id: '100100', name: 'Pizza a tu gusto', price: armar_pizza.getTotal(), cantidad: 1, custom: true, ingredientes: armar_pizza.getIngredientes };
 			this.getCarrito.push(itemCustom);
 			localStorage.setItem("carrito", JSON.stringify(this.getCarrito));
-			Materialize.toast('Se agregó un producto', 2500, 'rounded');
+			Materialize.toast('Se agregó un producto', 1500, 'rounded');
 			localStorage.setItem('ingredientes', '[]');
 			carrito_view.totalProductos();
 			carrito_view.renderCarrito();
@@ -7307,7 +7343,7 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 
 		this.getTotal = function () {
 			var total = 0;
-			for (i of this.getCarrito) {
+			for (i of JSON.parse(localStorage.getItem("carrito"))) {
 				total += parseFloat(i.cantidad) * parseFloat(i.price);
 			}
 			return total;
@@ -7328,8 +7364,8 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 		};
 
 		this.iraComprar = function () {
-			if (this.getCarrito.length <= 0) {
-				alert("No tienes productos en tu carrito :-(");
+			if (JSON.parse(localStorage.getItem("carrito")).length <= 0) {
+				alert("No tienes productos en tu carro");
 				return;
 			} else {
 				var totalChequeo = 0;
@@ -7346,7 +7382,7 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 
 	function Carrito_View() {
 		this.renderCarrito = function () {
-			if (carrito.getCarrito.length <= 0) {
+			if (JSON.parse(localStorage.getItem("carrito")).length <= 0) {
 				templateNoItems = `<div class="row">
 					<div class="col s12 center-align">
 						No tienes productos en tu carro
@@ -7358,19 +7394,19 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 				for (i of carrito.getCarrito) {
 					templateItems += `<li class="collection-item">
 						<div class="row itemCarrito">
-							<div class="col s8 m4">
+							<div class="col s4 m4 titCarro">
 								${i.name}
 							</div>
-							<div class="col s4 m2 center-align">
-								$${i.price}
+							<div class="col s3 m2 center-align titCarro">
+								${aPesos(i.price)}.-
 							</div>
-							<div class="col s3 offset-s3 m2 center-align">
+							<div class="col s1 m2 center-align titCarro">
 								${i.cantidad}
 							</div>
-							<div class="col s3 m2 center-align">
-								${i.cantidad * i.price}
+							<div class="col s3 m2 center-align titCarro">
+								${aPesos(i.cantidad * i.price)}.-
 							</div>
-							<div class="col s3 m2 center-align">
+							<div class="col s1 m2 center-align titCarro">
 								<a href="#"><i class="material-icons iconoBorrar" id="deleteItem" data-id="${i.id}">delete_forever</i></a>
 							</div>
 						</div>
@@ -7378,11 +7414,11 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 				}
 				document.getElementById('productosCarrito').innerHTML = templateItems;
 			}
-			document.getElementById('totalCarrito').innerHTML = "$ " + carrito.getTotal();
+			document.getElementById('totalCarrito').innerHTML = aPesos(carrito.getTotal()) + ".-";
 		};
 
 		this.totalProductos = function () {
-			var total = carrito.getCarrito.length;
+			var total = JSON.parse(localStorage.getItem("carrito")).length;
 			document.getElementById('totalProductos').innerHTML = total;
 		};
 	}
@@ -7394,7 +7430,7 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 			if (!localStorage.getItem("ingredientes")) {
 				localStorage.setItem('ingredientes', '[]');
 			} else {
-				if (this.getIngredientes.length > 0) {
+				if (JSON.parse(localStorage.getItem("ingredientes")).length > 0) {
 					localStorage.setItem('ingredientes', '[]');
 				}
 			}
@@ -7416,7 +7452,7 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 				if (this.getIngredientes[i].id === item) {
 					this.getIngredientes.splice(i, 1);
 					localStorage.setItem("ingredientes", JSON.stringify(this.getIngredientes));
-					Materialize.toast('Se eliminó un ingrediente', 2500, 'rounded');
+					Materialize.toast('Se eliminó un ingrediente', 1500, 'rounded');
 					return;
 				}
 			}
@@ -7431,7 +7467,7 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 			}
 			this.getIngredientes.push(ingrediente);
 			localStorage.setItem("ingredientes", JSON.stringify(this.getIngredientes));
-			Materialize.toast('Se agregó un ingrediente', 2500, 'rounded');
+			Materialize.toast('Se agregó un ingrediente', 1500, 'rounded');
 		};
 
 		this.getTotal = function () {
@@ -7452,59 +7488,68 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 						${i.name}
 					</div>
 					<div class="col s4">
-						$ ${i.price}.-
+						${aPesos(i.price)}.-
 					</div>
 				</div>`;
 			}
 			document.getElementById('ingCustom').innerHTML = templateIngredientes;
-			document.getElementById('totalIngredientes').innerHTML = "$ " + armar_pizza.getTotal() + ".-";
+			document.getElementById('totalIngredientes').innerHTML = aPesos(armar_pizza.getTotal()) + ".-";
+		};
+	}
+
+	function Comprando() {
+		this.constructor = function () {
+			if (!localStorage.getItem("comprando")) {
+				localStorage.setItem('comprando', '[]');
+			}
 		};
 	}
 
 	var carrito = new Carrito();
 	var carrito_view = new Carrito_View();
 	var armar_pizza = new Armar_Pizza();
+	var comprando = new Comprando();
 	var custom_view = new Custom_View();
 
 	$(document).ready(function () {
 		$('.collapsible').collapsible();
-
+		$('select').material_select();
 		carrito.constructor();
 		carrito.mantenedorChequeo();
+		comprando.constructor();
+		armar_pizza.constructor();
 		carrito_view.renderCarrito();
 		carrito_view.totalProductos();
-
-		document.getElementById('catalogo').addEventListener("click", function (ev) {
-			ev.preventDefault();
-			if (ev.target.id === "itemSelect") {
-				var idPack = ev.target.dataset.idpack;
-				var idOpt = ev.target.dataset.idopt;
-				var idItem = ev.target.dataset.id;
-				carrito.selectOption(idPack, idOpt, idItem);
-			}
-		});
 
 		document.getElementById('catalogo').addEventListener("click", function (ev) {
 			ev.preventDefault();
 			if (ev.target.id === "addItem") {
 				var id = ev.target.dataset.id;
 				carrito.agregarItem(id);
-				Materialize.toast('Se agregó un producto', 2500, 'rounded');
+				Materialize.toast('Se agregó un producto', 1500, 'rounded');
 				carrito_view.totalProductos();
 				carrito_view.renderCarrito();
 				$('#modal9').modal('open');
 			}
-		});
 
-		document.getElementById('catalogo').addEventListener("click", function (ev) {
-			ev.preventDefault();
+			if (ev.target.id === "itemSelect") {
+				var idPack = ev.target.dataset.idpack;
+				var idOpt = ev.target.dataset.idopt;
+				var idItem = ev.target.dataset.id;
+				carrito.selectOption(idPack, idOpt, idItem);
+			}
+
 			if (ev.target.id === "addItemPack") {
 				var id = ev.target.dataset.id;
 				carrito.agregarItemPack(id);
-				Materialize.toast('Se agregó un producto', 2500, 'rounded');
+				Materialize.toast('Se agregó un producto', 1500, 'rounded');
 				carrito_view.totalProductos();
 				carrito_view.renderCarrito();
 				$('#modal9').modal('open');
+			}
+
+			if (ev.target.id === "addOferta") {
+				carrito.agergarOferta();
 			}
 		});
 
@@ -7512,7 +7557,7 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 			ev.preventDefault();
 			if (ev.target.id === "deleteItem") {
 				carrito.eliminarItem(ev.target.dataset.id);
-				Materialize.toast('Se eliminó un producto', 2500, 'rounded');
+				Materialize.toast('Se eliminó un producto', 1500, 'rounded');
 				carrito_view.totalProductos();
 				carrito_view.renderCarrito();
 			}
@@ -7542,7 +7587,8 @@ page('/carta', header, loadPizzas, loadIngredientes, loadCalzones, loadPiadinas,
 });
 
 function loadPizzas(ctx, next) {
-	request.get('/api/pizzas').end(function (err, res) {
+	request.get('https://www.ragustino.cl/js/Conector.php') ///api/pizzas
+	.end(function (err, res) {
 		if (err) return console.log(err);
 
 		ctx.pizzas = res.body;
@@ -7551,7 +7597,8 @@ function loadPizzas(ctx, next) {
 }
 
 function loadIngredientes(ctx, next) {
-	request.get('/api/ingredientes').end(function (err, res) {
+	request.get('https://www.ragustino.cl/js/ingredientes.php') ///api/ingredientes
+	.end(function (err, res) {
 		if (err) return console.log(err);
 
 		ctx.ingredientes = res.body;
@@ -7559,26 +7606,31 @@ function loadIngredientes(ctx, next) {
 	});
 }
 
-function loadCalzones(ctx, next) {
-	request.get('/api/calzones').end(function (err, res) {
-		if (err) return console.log(err);
+/*function loadCalzones (ctx, next) {
+	request
+		.get('/api/calzones')
+		.end(function (err, res) {
+			if (err) return console.log(err);
 
-		ctx.calzones = res.body;
-		next();
-	});
+			ctx.calzones = res.body;
+			next();
+		})
 }
 
-function loadPiadinas(ctx, next) {
-	request.get('/api/piadinas').end(function (err, res) {
-		if (err) return console.log(err);
+function loadPiadinas (ctx, next) {
+	request
+		.get('/api/piadinas')
+		.end(function (err, res) {
+			if (err) return console.log(err);
 
-		ctx.piadinas = res.body;
-		next();
-	});
-}
+			ctx.piadinas = res.body;
+			next();
+		})
+}*/
 
 function loadPacks(ctx, next) {
-	request.get('/api/packs').end(function (err, res) {
+	request.get('https://www.ragustino.cl/js/pack') ///api/packs
+	.end(function (err, res) {
 		if (err) return console.log(err);
 
 		ctx.packs = res.body;
@@ -7587,7 +7639,8 @@ function loadPacks(ctx, next) {
 }
 
 function loadItems(ctx, next) {
-	request.get('/api/items').end(function (err, res) {
+	request.get('https://www.ragustino.cl/js/items.php') ///api/items
+	.end(function (err, res) {
 		if (err) return console.log(err);
 
 		ctx.items = res.body;
@@ -7595,19 +7648,21 @@ function loadItems(ctx, next) {
 	});
 }
 
-},{"../footer":38,"../header":39,"./template":25,"empty-element":4,"page":13,"superagent":16,"title":21}],25:[function(require,module,exports){
+},{"../footer":34,"../header":36,"../utilities/aPesos":48,"../utilities/aPesos/wNumb":49,"./template":25,"empty-element":4,"page":13,"superagent":16,"title":21}],25:[function(require,module,exports){
 var yo = require('yo-yo');
 var layout = require('../layout');
 var pizza = require('../products/pizza');
 var ingrediente = require('../products/ingrediente');
-var calzon = require('../products/calzon');
-var piadina = require('../products/piadina');
+/*var calzon = require('../products/calzon');
+var piadina = require('../products/piadina');*/
 var item = require('../products/item');
 var pack = require('../products/pack');
+var aPesos = require('../utilities/aPesos');
+var wNumb = require('../utilities/aPesos/wNumb');
 
-module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, items) {
-	let mixs = ingredientes;
-	var quesos = mixs.filter(function (obj) {
+module.exports = function (pizzas, /*calzones, piadinas, */ingredientes, packs, items) {
+	let mixsIng = ingredientes;
+	var quesos = mixsIng.filter(function (obj) {
 		if (obj.tipo === 'queso') {
 			return true;
 		} else {
@@ -7615,7 +7670,7 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 		}
 	});
 
-	var carnes = mixs.filter(function (obj) {
+	var carnes = mixsIng.filter(function (obj) {
 		if (obj.tipo === 'carne') {
 			return true;
 		} else {
@@ -7623,15 +7678,15 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 		}
 	});
 
-	var embus = mixs.filter(function (obj) {
-		if (obj.tipo === 'embu') {
+	var embus = mixsIng.filter(function (obj) {
+		if (obj.tipo === 'embus') {
 			return true;
 		} else {
 			return false;
 		}
 	});
 
-	var espec = mixs.filter(function (obj) {
+	var espec = mixsIng.filter(function (obj) {
 		if (obj.tipo === 'espec') {
 			return true;
 		} else {
@@ -7639,9 +7694,226 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 		}
 	});
 
-	var el = yo`<div class="col s12 seccion">
+	var marinos = mixsIng.filter(function (obj) {
+		if (obj.tipo === 'mar') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var veget = mixsIng.filter(function (obj) {
+		if (obj.tipo === 'verdu') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	let mixsPac = packs;
+	var single = mixsPac.filter(function (obj) {
+		if (obj.tipo === 'single') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var four = mixsPac.filter(function (obj) {
+		if (obj.tipo === 'four') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var six = mixsPac.filter(function (obj) {
+		if (obj.tipo === 'six') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var eight = mixsPac.filter(function (obj) {
+		if (obj.tipo === 'eight') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	let mixsIte = items;
+	var queso = mixsIte.filter(function (obj) {
+		if (obj.tipo === 'queso') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var aceitunas = mixsIte.filter(function (obj) {
+		if (obj.tipo === 'aceit') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var secos = mixsIte.filter(function (obj) {
+		if (obj.tipo === 'secos') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var papas = mixsIte.filter(function (obj) {
+		if (obj.tipo === 'papas') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var chocos = mixsIte.filter(function (obj) {
+		if (obj.tipo === 'choco') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var galletas = mixsIte.filter(function (obj) {
+		if (obj.tipo === 'galle') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var acces = mixsIte.filter(function (obj) {
+		if (obj.tipo === 'acces') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var latas = mixsIte.filter(function (obj) {
+		if (obj.tipo === 'beblata') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var medias = mixsIte.filter(function (obj) {
+		if (obj.tipo === 'bebgra') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var bigs = mixsIte.filter(function (obj) {
+		if (obj.tipo === 'bebext') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var cervezas = mixsIte.filter(function (obj) {
+		if (obj.tipo === 'cerveza') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var secos = mixsIte.filter(function (obj) {
+		if (obj.tipo === 'secos') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var aguas = mixsIte.filter(function (obj) {
+		if (obj.tipo === 'agua') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var jugos = mixsIte.filter(function (obj) {
+		if (obj.tipo === 'jugo') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var jugos = mixsIte.filter(function (obj) {
+		if (obj.tipo === 'jugo') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var el = yo`<div id="catalogo" class="col s12 seccion">
 		<div class="row">
-			<div class="col s12" id="catalogo">
+			<div class="col s12 center-align topOf">
+				<img class="pic-ini" src="oferta.png" />
+			</div>
+		</div>	
+		<div class="row nobottom">
+			<div class="col s8 offset-s2 m4 offset-m4 center-align">
+				<ul class="collapsible popout" data-collapsible="accordion">
+					<li class="nobottom">
+					    <div class="collapsible-header blue darken-2 itemsOferta">
+					    	<p class="menu-text padding1 white-text center-align">Comprar Oferta</p>
+					    </div>
+					    <div class="collapsible-body padding1">
+					    	<div class="row nobottom">
+						    	<div class="input-field col s12">
+						    		<select id="pizzaOferta">
+						    			<option value="" disabled selected>Elije tu Pizza</option>
+						    			<option value="101">Margherita</option>
+						    			<option value="102">Caprese</option>
+						    			<option value="103">Pollo al Pesto</option>
+						    			<option value="104">Zuchinni Parmesano</option>
+						    		</select>
+						    	</div>
+							</div>
+					    	<div class="row">
+						    	<div class="input-field col s12">
+						    		<select id="bebidaOferta">
+						    			<option value="" disabled selected>Elije tu Bebida</option>
+						    			<option value="201">Coca Cola Normal</option>
+						    			<option value="202">Coca Cola zero</option>
+						    			<option value="203">Fanta Normal</option>
+						    			<option value="204">Fanta Zero</option>
+						    			<option value="205">Sprite Normal</option>
+						    			<option value="206">Sprite Zero</option>
+						    		</select>
+						    	</div>
+							</div>
+					    	<div class="row">
+						    	<div class="input-field col s12 offset-s2 btnOferta">
+						    		<a href="#" id="addOferta" class="waves-effect waves-light btn blue darken-2">Confirmar</a>
+						    	</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12">
 				<ul class="collapsible popout" data-collapsible="accordion">
 					<p class="menu-text pack-text grey-text text-darken-4 center-align">Conoce las recetas que hemos preparado especialmente para ti con productos de primera selección</p>
 					<li>
@@ -7668,53 +7940,7 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 						</div>
 					</li>
 					<li>
-					    <div class="collapsible-header grey lighten-2">
-					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pizzas Calzones</p>
-					    </div>
-					    <div class="collapsible-body">
-					    	<div class="row">
-						   		<div class="col s12 white">
-						   			<div class="row">
-						   				<div class="col s12">
-						   					<p class="menu-text">Pizza Calzones (2 Unidades)</p>
-						   				</div>	
-						   			</div>
-						   			<div class="row">
-						   				<div class="col s12 ajuste-menu-store">
-						   	    			${calzones.map(function (pic) {
-		return calzon(pic);
-	})}
-						   				</div>
-						   			</div>
-						   		</div>
-						   	</div>
-					    </div>
-					</li>
-					<li>
-					    <div class="collapsible-header grey lighten-2">
-					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Piadinas</p>
-					    </div>
-					    <div class="collapsible-body">
-					    	<div class="row">
-						   		<div class="col s12 white">
-						   			<div class="row">
-						   				<div class="col s12">
-						   					<p class="menu-text">Piadinas (2 Unidades)</p>
-						   				</div>	
-						   			</div>
-						   			<div class="row">
-						   				<div class="col s12 ajuste-menu-store">
-						   	    			${piadinas.map(function (pic) {
-		return piadina(pic);
-	})}
-						   				</div>
-						   			</div>
-						   		</div>
-						   	</div>
-					    </div>
-					</li>
-					<li>
-					    <div class="collapsible-header grey lighten-2">
+					    <div class="collapsible-header grey lighten-2 itemsCarta">
 					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Arma tu Pizza</p>
 					    </div>
 					    <div class="collapsible-body">
@@ -7722,7 +7948,7 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 						   		<div class="col s12 white">
 						   			<div class="row principal2">
 						   				<div class="col s12 separar">
-						   					<p class="menu-text grey-text text-darken-4 center-align">Preparada en Masa Napolitana Clásica de Fermentación Lenta, más sanas y livianas para nuestro organismo.</p>
+						   					<p class="menu-text grey-text text-darken-4 center-align">Preparada en Masa Napolitana Clásica de Fermentación Lenta, más sanas y livianas para nuestro organismo. Para entregarte una verdadera experiencia gourmet, debes seleccionar entre 3 y 5 ingredientes, las especias no mestarán consideradas.</p>
 						   				</div>
 						   			</div>
 						   			<div class="divider"></div>
@@ -7767,6 +7993,32 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 						   			<div class="divider"></div>
 						   			<div class="row ingContenedor">
 						   				<div class="col s12 separar">
+						   					<p class="menu-text paddingl grey-text text-darken-4">Pescados y Mariscos</p>
+						   				</div>
+						   				<div class="row">
+						   					<div class="col s12 ajuste-menu-store">
+						   						${marinos.map(function (pic) {
+		return ingrediente(pic);
+	})}
+						   					</div>
+						   				</div>
+						   			</div>
+						   			<div class="divider"></div>
+						   			<div class="row ingContenedor">
+						   				<div class="col s12 separar">
+						   					<p class="menu-text paddingl grey-text text-darken-4">Vegetales</p>
+						   				</div>
+						   				<div class="row">
+						   					<div class="col s12 ajuste-menu-store">
+						   						${veget.map(function (pic) {
+		return ingrediente(pic);
+	})}
+						   					</div>
+						   				</div>
+						   			</div>
+						   			<div class="divider"></div>
+						   			<div class="row ingContenedor">
+						   				<div class="col s12 separar">
 						   					<p class="menu-text paddingl grey-text text-darken-4">Especias</p>
 						   				</div>
 						   				<div class="row">
@@ -7788,7 +8040,7 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 					    </div>
 					</li>
 					<li>
-					    <div class="collapsible-header grey lighten-2">
+					    <div class="collapsible-header grey lighten-2 itemsCarta">
 					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Para Beber</p>
 					    </div>
 					    <div class="collapsible-body">
@@ -7796,11 +8048,44 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 						       	<div class="col s12 white">
 						       		<div class="row">
 						       			<div class="col s12">
-						       				<p class="menu-text">Bebidas</p>
+						       				<p class="menu-text">Bebidas en Lata</p>
 						           		</div>	
 						           	</div>
 						           	<div class="row">
-						       		   	${items.map(function (pic) {
+						       		   	${latas.map(function (pic) {
+		return item(pic);
+	})}
+						       		</div>
+						       		<div class="divider separar"></div>
+						       		   <div class="row">
+						       		   	<div class="col s12">
+						       		   		<p class="menu-text">Bebida de 1,5 Litros</p>
+						       		   	</div>	
+						       		</div>
+						           	<div class="row">
+						       			${medias.map(function (pic) {
+		return item(pic);
+	})}
+						       		</div>
+						       		<div class="divider separar"></div>
+						       		   <div class="row">
+						       		   	<div class="col s12">
+						       		   		<p class="menu-text">Bebida de 3,0 Litros</p>
+						       		   	</div>	
+						       		</div>
+						           	<div class="row">
+						       			${bigs.map(function (pic) {
+		return item(pic);
+	})}
+						       		</div>
+						       		<div class="divider separar"></div>
+						       		   <div class="row">
+						       		   	<div class="col s12">
+						       		   		<p class="menu-text">Cervezas sin Alcohol</p>
+						       		   	</div>	
+						       		</div>
+						           	<div class="row">
+						       			${cervezas.map(function (pic) {
 		return item(pic);
 	})}
 						       		</div>
@@ -7811,7 +8096,18 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 						       		   	</div>	
 						       		</div>
 						           	<div class="row">
-						       			${items.map(function (pic) {
+						       			${jugos.map(function (pic) {
+		return item(pic);
+	})}
+						       		</div>
+						       		<div class="divider separar"></div>
+						       		   <div class="row">
+						       		   	<div class="col s12">
+						       		   		<p class="menu-text">Aguas</p>
+						       		   	</div>	
+						       		</div>
+						           	<div class="row">
+						       			${aguas.map(function (pic) {
 		return item(pic);
 	})}
 						       		</div>
@@ -7820,7 +8116,7 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 					    </div>
 					</li>
 					<li>
-					    <div class="collapsible-header grey lighten-2">
+					    <div class="collapsible-header grey lighten-2 itemsCarta">
 					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Para Picar</p>
 					    </div>
 					    <div class="collapsible-body">
@@ -7832,18 +8128,62 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 						           		</div>	
 					           		</div>
 						           	<div class="row">
-					       		    	${items.map(function (pic) {
+					       		    	${queso.map(function (pic) {
 		return item(pic);
 	})}
 						       		</div>
 						       		<div class="divider separar"></div>
 						       		<div class="row">
 						     			<div class="col s12">
-						       				<p class="menu-text">Papas</p>
+						       				<p class="menu-text">Aceitunas</p>
 						       			</div>	
 						       		</div>
 						           	<div class="row">
-						       			${items.map(function (pic) {
+						       			${aceitunas.map(function (pic) {
+		return item(pic);
+	})}
+						       		</div>
+						       		<div class="divider separar"></div>
+						       		<div class="row">
+						     			<div class="col s12">
+						       				<p class="menu-text">Papas Fritas</p>
+						       			</div>	
+						       		</div>
+						           	<div class="row">
+						       			${papas.map(function (pic) {
+		return item(pic);
+	})}
+						       		</div>
+						       		<div class="divider separar"></div>
+						       		<div class="row">
+						     			<div class="col s12">
+						       				<p class="menu-text">Frutos Secos</p>
+						       			</div>	
+						       		</div>
+						           	<div class="row">
+						       			${secos.map(function (pic) {
+		return item(pic);
+	})}
+						       		</div>
+						       		<div class="divider separar"></div>
+						       		<div class="row">
+						     			<div class="col s12">
+						       				<p class="menu-text">Chocolates</p>
+						       			</div>	
+						       		</div>
+						           	<div class="row">
+						       			${chocos.map(function (pic) {
+		return item(pic);
+	})}
+						       		</div>
+						       		<div class="divider separar"></div>
+						       		<div class="row">
+						     			<div class="col s12">
+						       				<p class="menu-text">Galletas</p>
+						       			</div>	
+						       		</div>
+						           	<div class="row">
+						       			${galletas.map(function (pic) {
 		return item(pic);
 	})}
 						       		</div>
@@ -7852,7 +8192,7 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 					    </div>
 					</li>
 					<li>
-					    <div class="collapsible-header grey lighten-2">
+					    <div class="collapsible-header grey lighten-2 itemsCarta">
 					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pack Regalo</p>
 					    </div>
 					    <div class="collapsible-body">
@@ -7865,7 +8205,7 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 					           		</div>
 						           	<div class="row">
 						           		<div class="col s12 ajuste-menu-store">
-						       		    	${packs.map(function (pic) {
+						       		    	${single.map(function (pic) {
 		return pack(pic);
 	})}
 						        		</div>	
@@ -7875,7 +8215,7 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 					    </div>
 					</li>
 					<li>
-					    <div class="collapsible-header grey lighten-2">
+					    <div class="collapsible-header grey lighten-2 itemsCarta">
 					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pack Fiesta</p>
 					    </div>
 					    <div class="collapsible-body">
@@ -7893,7 +8233,7 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 					           		</div>
 					           		<div class="row">
 						           		<div class="col s12 ajuste-menu-store">
-						       		    	${packs.map(function (pic) {
+						       		    	${four.map(function (pic) {
 		return pack(pic);
 	})}
 						        		</div>	
@@ -7906,7 +8246,7 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 					           		</div>
 					           		<div class="row">
 						           		<div class="col s12 ajuste-menu-store">
-						       		    	${packs.map(function (pic) {
+						       		    	${six.map(function (pic) {
 		return pack(pic);
 	})}
 						        		</div>	
@@ -7919,7 +8259,7 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 					           		</div>
 					           		<div class="row">
 						           		<div class="col s12 ajuste-menu-store">
-						       		    	${packs.map(function (pic) {
+						       		    	${eight.map(function (pic) {
 		return pack(pic);
 	})}
 						        		</div>	
@@ -7929,20 +8269,19 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 					    </div>
 					</li>
 					<li>
-					    <div class="collapsible-header grey lighten-2">
+					    <div class="collapsible-header grey lighten-2 itemsCarta">
 					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Accesorios</p>
 					    </div>
 					    <div class="collapsible-body">
 					       	<div class="row">
 						       	<div class="col s12 white">
 							       	<div class="row">
-							       		<div class="col s12">
-							       			<p class="menu-text paddingl grey-text text-darken-4">Quesos</p>
-							       		</div>
-							       	</div>
-						       		<div class="row">
-						           		
-						           	</div>
+						       			<div class="col s12 ajuste-menu-store">
+						       				${acces.map(function (pic) {
+		return item(pic);
+	})}
+						       			</div>
+						       		</div>
 							    </div>
 						    </div>
 					    </div>
@@ -7954,136 +8293,56 @@ module.exports = function (pizzas, calzones, piadinas, ingredientes, packs, item
 
 	return layout(el);
 };
-
-},{"../layout":44,"../products/calzon":45,"../products/ingrediente":46,"../products/item":47,"../products/pack":48,"../products/piadina":52,"../products/pizza":53,"yo-yo":22}],26:[function(require,module,exports){
-var page = require('page');
-var empty = require('empty-element');
-var template = require('./template');
-var title = require('title');
-var header = require('../../header');
-
-page('/signin', header, function (ctx, next) {
-	title('Signin');
-	var main = document.getElementById('main-container');
-	empty(main).appendChild(template);
-});
-
-},{"../../header":39,"./template":27,"empty-element":4,"page":13,"title":21}],27:[function(require,module,exports){
-var yo = require('yo-yo');
-var landing = require('../../landing');
-
-var signinForm = yo`<div class="col s10 push-s1 m6 push-m3 l4 push-l4">
-    <div class="row">
-        <div class="signin-box">
-            <form class="signin-form">
-                <div class="row">
-                    <div class="col s12">
-                        <h2 class="center-align">Inicia sesión</h2>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 input-field">
-                        <input id="email" type="email" class="validate" />
-                        <label for="email">Correo Electronico</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 input-field">
-                        <input id="password" type="password" class="validate">
-                        <label for="password">Contraseña</label>
-                    </div>
-                </div>
-                <div class="row signin-btn">
-                    <div class="col s12 center-align">
-                        <button class="btn waves-effect waves-light blue darken-2">Ingresar</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 center-align">
-                        ¿No estás registrado? <a class="indigo-text text-darken-4" href="/signup">Regístrate</a>
-                    </div>
-                </div>
-            </form>
-        </div>            
+/*
+<li>
+    <div class="collapsible-header grey lighten-2 itemsCarta">
+    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pizzas Calzones</p>
     </div>
-</div>`;
-
-module.exports = landing(signinForm);
-
-},{"../../landing":43,"yo-yo":22}],28:[function(require,module,exports){
-var page = require('page');
-var empty = require('empty-element');
-var template = require('./template');
-var title = require('title');
-var header = require('../../header');
-
-page('/signup', header, function (ctx, next) {
-	title('Signup');
-	var main = document.getElementById('main-container');
-	empty(main).appendChild(template);
-});
-
-},{"../../header":39,"./template":29,"empty-element":4,"page":13,"title":21}],29:[function(require,module,exports){
-var yo = require('yo-yo');
-var landing = require('../../landing');
-
-var signupForm = yo`<div class="col s10 push-s1 m6 push-m3 l4 push-l4">
-    <div class="row">
-        <div class="col s12 signup-box">
-            <form class="signup-form">
-                <div class="row item-form">
-                    <div class="col s12">
-                        <h2 class="center-align">Ingresa tus datos</h2>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 input-field">
-                        <input id="email" type="email" class="validate" />
-                        <label for="email">Correo Electronico</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 input-field">
-                        <input id="name" type="text" />
-                        <label for="name">Nombre y Apellidos</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 input-field">
-                        <input id="direccion" type="text" />
-                        <label for="direccion">Dirección</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 input-field">
-                        <input id="password" type="password" class="validate">
-                        <label for="password">Contraseña</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 input-field">
-                        <input id="check-password" type="password" class="validate">
-                        <label for="check-password">Repetir Contraseña</label>
-                    </div>
-                </div>
-                <div class="row signup-btn">
-                    <div class="col s12 center-align">
-                        <button class="btn waves-effect waves-light blue darken-2">Enviar</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12 center-align">
-                        ¿Ya estás registrado? <a class="indigo-text text-darken-4" href="/signin">Entrar</a>
-                    </div>
-                </div>
-            </form>
-        </div>            
+    <div class="collapsible-body">
+    	<div class="row">
+	   		<div class="col s12 white">
+	   			<div class="row">
+	   				<div class="col s12">
+	   					<p class="menu-text">Pizza Calzones (2 Unidades)</p>
+	   				</div>	
+	   			</div>
+	   			<div class="row">
+	   				<div class="col s12 ajuste-menu-store">
+	   	    			${calzones.map(function (pic) {
+	   						return calzon(pic);
+	   					})}
+	   				</div>
+	   			</div>
+	   		</div>
+	   	</div>
     </div>
-</div>`;
+</li>
+<li>
+    <div class="collapsible-header grey lighten-2 itemsCarta">
+    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Piadinas</p>
+    </div>
+    <div class="collapsible-body">
+    	<div class="row">
+	   		<div class="col s12 white">
+	   			<div class="row">
+	   				<div class="col s12">
+	   					<p class="menu-text">Piadinas (2 Unidades)</p>
+	   				</div>	
+	   			</div>
+	   			<div class="row">
+	   				<div class="col s12 ajuste-menu-store">
+	   	    			${piadinas.map(function (pic) {
+	   						return piadina(pic);
+	   					})}
+	   				</div>
+	   			</div>
+	   		</div>
+	   	</div>
+    </div>
+</li>
+*/
 
-module.exports = landing(signupForm);
-
-},{"../../landing":43,"yo-yo":22}],30:[function(require,module,exports){
+},{"../layout":40,"../products/ingrediente":41,"../products/item":42,"../products/pack":43,"../products/pizza":47,"../utilities/aPesos":48,"../utilities/aPesos/wNumb":49,"yo-yo":22}],26:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -8091,6 +8350,8 @@ var title = require('title');
 var header = require('../header');
 var footer = require('../footer');
 var noUiSlider = require('nouislider');
+var aPesos = require('../utilities/aPesos');
+var wNumb = require('../utilities/aPesos/wNumb');
 
 page('/compra', header, loadCarrito, footer, function (ctx, next) {
 	title('Ragustino - Carro');
@@ -8127,32 +8388,6 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 			}
 			return parseFloat(delivery);
 		};
-
-		this.crearCompra = function () {
-			if (!this.getComprando.length > 0) {
-				let compra = {
-					cliente: '',
-					direccion: '',
-					mail: '',
-					fono: '',
-					content: [],
-					monto: '',
-					pago: '',
-					delivery: '',
-					repartidor: '',
-					fecha: '',
-					hora: '',
-					minutos: '',
-					cocina: false,
-					reparto: false,
-					ok: false
-				};
-				console.log(compra);
-				this.getComprando.push(compra);
-				localStorage.setItem("comprando", JSON.stringify(this.getComprando));
-				console.log(this.getComprando);
-			}
-		};
 	}
 
 	function Comprando_View() {
@@ -8162,46 +8397,46 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 				templateNoItemsCompra = `<p>No tienes productos en tu carro</p>`;
 				document.getElementById('pintandoCompra').innerHTML = templateNoItemsCompra;
 			}
-			document.getElementById('deliveryCost').innerHTML = "$ " + comprando.getDelivey();
+			document.getElementById('deliveryCost').innerHTML = aPesos(comprando.getDelivey()) + ".-";
 			let total = carrito.getTotal() + comprando.getDelivey();
-			document.getElementById('totalCompra').innerHTML = "$ " + total;
+			document.getElementById('totalCompra').innerHTML = aPesos(total) + ".-";
 		};
 	}
 
 	function Programando_Compra() {
-		this.determinarAbierto = function (dia, hora) {
-			if (dia === 1 || dia === 0 || dia === 3) {
+		var estaCompra = {};
+		this.determinarAbierto = function (año, mes, dia, diaM, hora) {
+			if (dia === 1 || dia === 2 || dia === 3) {
 				document.getElementById('paraAhora').classList.toggle('hide');
-				document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, hoy no atendemos :-(</p>`;
+				document.getElementById('templateParaAhora').innerHTML = `<div class="center-align blue-text text-darken-2">
+					<p>Lo sentimos, hoy no atendemos</p>
+					<p class="horariosCompra" >Nuestros Horarios</p>
+					<p class="horariosCompra" >Jueves 18:00 - 0:00</p>
+					<p class="horariosCompra" >Viernes 18:00 - 1:00</p>
+					<p class="horariosCompra" >Sábado 18:00 - 1:00</p>
+					<p class="horariosCompra" >Domingo 18:00 - 0:00</p>
+				</div>`;
 			} else {
-				if (dia === 2) {
-					if ( /*hora > 13 && */hora < 20) {
-						programando_compra.tiendaAbierta();
+				if (dia === 4 || dia === 0) {
+					if (hora >= 18 && hora <= 23) {
+						programando_compra.tiendaAbierta(año, mes, diaM);
 					} else {
 						document.getElementById('paraAhora').classList.toggle('hide');
-						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, atendemos de 13:00 a 20:00 horas ;-)</p>`;
-					}
-				}
-				if (dia === 4) {
-					if (hora > 18 && hora < 24) {
-						programando_compra.tiendaAbierta();
-					} else {
-						document.getElementById('paraAhora').classList.toggle('hide');
-						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, atendemos de 18:00 a 00:00 horas ;-)</p>`;
+						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, hoy atendemos de 18:00 a 00:00 horas</p>`;
 					}
 				}
 				if (dia === 5 || dia === 6) {
-					if (hora > 0 && hora < 18) {
-						document.getElementById('paraAhora').classList.toggle('hide');
-						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, atendemos de 18:00 a 00:00 horas ;-)</p>`;
+					if (hora >= 18 && hora <= 24) {
+						programando_compra.tiendaAbierta(año, mes, diaM);
 					} else {
-						programando_compra.tiendaAbierta();
+						document.getElementById('paraAhora').classList.toggle('hide');
+						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, hoy atendemos de 18:00 a 01:00 horas</p>`;
 					}
 				}
 			}
 		};
 
-		this.tiendaAbierta = function () {
+		this.tiendaAbierta = function (año, mes, diaM) {
 			document.getElementById('paraAhora').classList.toggle('hide');
 			document.getElementById('templateParaAhora').innerHTML = `<div class="container">
 				<div class="row">
@@ -8220,55 +8455,269 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 				document.getElementById('listaMasTarde').classList.toggle('hide');
 				document.getElementById('listaOtroDia').classList.toggle('hide');
 				document.getElementById('contConfirmar').classList.toggle('hide');
-				comprando.crearCompra();
-				var chequeando = comprando.getComprando;
-				chequeando[0].delivery = 'ahora';
-				console.log(chequeando);
+				programando_compra.setearAhora(año, mes, diaM);
 			});
 		};
 
-		this.programandoHoy = function (dia, hora) {
-			if (dia === 0 || dia === 2 || dia === 3) {
-				document.getElementById('templateMasTarde').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, hoy no atendemos :-(</p>`;
+		this.setearAhora = function (año, mes, diaM) {
+			estaCompra.delivery = '1';
+			estaCompra.año = año;
+			estaCompra.mes = mes;
+			estaCompra.diam = diaM;
+			console.log(estaCompra);
+		};
+
+		this.programandoHoy = function (año, mes, dia, diaM, hora, minuto) {
+			if (dia === 1 || dia === 2 || dia === 3) {
+				document.getElementById('masTarde').classList.toggle('hide');
+				document.getElementById('templateMasTarde').innerHTML = `<div class="center-align blue-text text-darken-2">
+					<p>Lo sentimos, hoy no atendemos</p>
+					<p class="horariosCompra" >Nuestros Horarios</p>
+					<p class="horariosCompra" >Jueves 18:00 - 0:00</p>
+					<p class="horariosCompra" >Viernes 18:00 - 1:00</p>
+					<p class="horariosCompra" >Sábado 18:00 - 1:00</p>
+					<p class="horariosCompra" >Domingo 18:00 - 0:00</p>
+				</div>`;
 			} else {
-				/*document.getElementById('templateMasTarde').innerHTML = ``;*/
-				if (dia === 1) {
-					var sliderH = document.getElementById('sliderHora');
-					/*var sliderHoraValue = document.getElementById('sliderHora-span');*/
+				if (dia === 5 || dia === 6) {
+					document.getElementById('masTarde').classList.toggle('hide');
+					document.getElementById('textoMasTarde').classList.toggle('hide');
+					document.getElementById('rangeMasTarde').classList.toggle('hide');
 
+					var sliderH = document.getElementById('slider-hora');
 					noUiSlider.create(sliderH, {
-						start: 13,
+						start: [18],
+						connect: [false, true],
 						step: 1,
-						orientation: 'horizontal',
 						range: {
-							min: 13,
-							max: 20 /*,
-               format: wNumb({
-               decimals: 0
-               })*/
-						} });
+							'min': 18,
+							'max': 24
+						},
+						format: wNumb({
+							decimals: 0
+						})
+					});
 
-					/*sliderHora.noUiSlider.on('update', function(sliderHoraValue, sliderHora){
-     	sliderHoraValue.innerHTML = sliderHoraValue[sliderHora];
-     });*/
+					var sliderHValueElement = document.getElementById('slider-hora-value');
+					sliderH.noUiSlider.on('update', function (val) {
+						sliderHValueElement.innerHTML = val;
+					});
 
-					/*var sliderMinutos = document.getElementById('sliderMinutos');
-     var sliderMinutosValue = document.getElementById('sliderMinutos-span');
-     noUiSlider.create(sliderMinutos, {
-     	start: 1,
-     			animate: false,
-     	step: 5,
-     	orientation: 'horizontal',
-     	range: {
-     		min: 0,
-     		max: 60
-     	}
-     });
-     sliderMinutos.noUiSlider.on('update', function(sliderMinutosValue, sliderMinutos){
-     	sliderMinutosValue.innerHTML = sliderMinutosValue[sliderMinutos];
-     });*/
+					var sliderM = document.getElementById('slider-minutos');
+					noUiSlider.create(sliderM, {
+						start: [10],
+						connect: [false, true],
+						step: 5,
+						range: {
+							'min': 0,
+							'max': 59
+						},
+						format: wNumb({
+							decimals: 0
+						})
+					});
+
+					var sliderMValueElement = document.getElementById('slider-minutos-value');
+					sliderM.noUiSlider.on('update', function (val) {
+						sliderMValueElement.innerHTML = val;
+					});
+				}
+				if (dia === 0 || dia === 4) {
+					document.getElementById('masTarde').classList.toggle('hide');
+					document.getElementById('textoMasTarde').classList.toggle('hide');
+					document.getElementById('rangeMasTarde').classList.toggle('hide');
+
+					var sliderH = document.getElementById('slider-hora');
+					noUiSlider.create(sliderH, {
+						start: [18],
+						connect: [false, true],
+						step: 1,
+						range: {
+							'min': 18,
+							'max': 23
+						},
+						format: wNumb({
+							decimals: 0
+						})
+					});
+
+					var sliderHValueElement = document.getElementById('slider-hora-value');
+					sliderH.noUiSlider.on('update', function (val) {
+						sliderHValueElement.innerHTML = val;
+					});
+
+					var sliderM = document.getElementById('slider-minutos');
+					noUiSlider.create(sliderM, {
+						start: [10],
+						connect: [false, true],
+						step: 5,
+						range: {
+							'min': 0,
+							'max': 59
+						},
+						format: wNumb({
+							decimals: 0
+						})
+					});
+
+					var sliderMValueElement = document.getElementById('slider-minutos-value');
+					sliderM.noUiSlider.on('update', function (val) {
+						sliderMValueElement.innerHTML = val;
+					});
 				}
 			}
+			document.getElementById('confirmandoMasTarde').addEventListener("click", function (ev) {
+				ev.preventDefault();
+				var checkHora = hora + 1;
+				if (minuto < 30) {
+					if (sliderH.noUiSlider.get() <= hora) {
+						alert("Nos parece que estás programando tu entrega para muy pronto, deberás escoger la opción de Tan pronto sea posible.");
+					} else {
+						var horaP = sliderH.noUiSlider.get();
+						var minP = sliderM.noUiSlider.get();
+						programando_compra.programarOk(año, mes, diaM, horaP, minP);
+					}
+				} else {
+					if (sliderH.noUiSlider.get() > checkHora) {
+						var horaP = sliderH.noUiSlider.get();
+						var minP = sliderM.noUiSlider.get();
+						programando_compra.programarOk(año, mes, diaM, horaP, minP);
+					} else {
+						if (sliderH.noUiSlider.get() > hora) {
+							if (sliderM.noUiSlider.get() < 30) {
+								alert("Nos parece que estás programando tu entrega para muy pronto, deberás escoger la opción de Tan pronto sea posible.");
+							} else {
+								var horaP = sliderH.noUiSlider.get();
+								var minP = sliderM.noUiSlider.get();
+								programando_compra.programarOk(año, mes, diaM, horaP, minP);
+							}
+						} else {
+							alert("Nos parece que estás programando tu entrega para muy pronto, deberás escoger un horario valido");
+						}
+					}
+				}
+			});
+		};
+
+		this.programarOk = function (año, mes, diaM, horaP, minP) {
+			document.getElementById('listaAhora').classList.toggle('hide');
+			document.getElementById('listaOtroDia').classList.toggle('hide');
+			document.getElementById('rangeContainer').classList.toggle('hide');
+			document.getElementById('confirmandoMasTarde').classList.toggle('hide');
+			programando_compra.setearHoy(año, mes, diaM, horaP, minP);
+		};
+
+		this.setearHoy = function (año, mes, diaM, horaP, minP) {
+			estaCompra.delivery = '2';
+			estaCompra.año = año;
+			estaCompra.mes = mes;
+			estaCompra.diam = diaM;
+			estaCompra.horap = horaP;
+			estaCompra.minutop = minP;
+			console.log(estaCompra);
+		};
+
+		this.setearOtro = function (fechaP, diaP, horaP, minP, año, mes, diaM) {
+			if (diaP <= diaM) {
+				alert("Estas seleccionando una fecha en el pasado");
+			} else {
+				if (!fechaP) {
+					alert("Tienes que seleccionar la fecha de entrega");
+					return;
+				}
+
+				if (!horaP) {
+					alert("Tienes que seleccionar la hora de entrega");
+					return;
+				}
+
+				if (!minP) {
+					alert("Tienes que seleccionar el minuto de entrega");
+					return;
+				}
+
+				document.getElementById('listaAhora').classList.toggle('hide');
+				document.getElementById('listaMasTarde').classList.toggle('hide');
+				document.getElementById('texto1OtroDia').classList.toggle('hide');
+				document.getElementById('texto2OtroDia').classList.toggle('hide');
+				document.getElementById('texto3OtroDia').classList.toggle('hide');
+				document.getElementById('paraOtro').classList.toggle('hide');
+				estaCompra.delivery = '3';
+				estaCompra.año = año;
+				estaCompra.mes = mes;
+				estaCompra.diam = diaM;
+				estaCompra.fechap = fechaP;
+				estaCompra.horap = horaP;
+				estaCompra.minutop = minP;
+				console.log(estaCompra);
+			}
+		};
+
+		this.formaPago = function (pago) {
+			if (pago == 1) {
+				estaCompra.pago = pago;
+				document.getElementById('pagoRedb').classList.toggle('hide');
+				document.getElementById('pagoTran').classList.toggle('hide');
+				document.getElementById('botonEfec').classList.toggle('hide');
+				document.getElementById('tempEfec').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;
+				console.log(estaCompra);
+			}
+
+			if (pago == 2) {
+				estaCompra.pago = pago;
+				document.getElementById('pagoEfec').classList.toggle('hide');
+				document.getElementById('pagoTran').classList.toggle('hide');
+				document.getElementById('botonRedb').classList.toggle('hide');
+				document.getElementById('tempRedb').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;
+				console.log(estaCompra);
+			}
+
+			if (pago == 3) {
+				estaCompra.pago = pago;
+				document.getElementById('pagoEfec').classList.toggle('hide');
+				document.getElementById('pagoRedb').classList.toggle('hide');
+				document.getElementById('botonTran').classList.toggle('hide');
+				document.getElementById('tempTran').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;
+				console.log(estaCompra);
+			}
+		};
+
+		this.setearDatos = function (client, address, email, fono) {
+			if (!client) {
+				alert("Debes ingresar nombre y apellido");
+				return;
+			}
+
+			if (!address) {
+				alert("Debes ingresar tu dirección");
+				return;
+			}
+
+			if (!email) {
+				alert("Debes ingresar tu correo electrónico");
+				return;
+			}
+
+			if (!fono) {
+				alert("Debes ingresar tu número de teléfono");
+				return;
+			}
+
+			estaCompra.client = client;
+			estaCompra.address = address;
+			estaCompra.email = email;
+			estaCompra.fono = fono;
+			document.getElementById('formCompra').classList.toggle('hide');
+			document.getElementById('contFormCompra').innerHTML = `<div class="row">
+				<div class="col s12 center-align">
+					<p>${client}</p>
+					<p>${address}</p>
+					<p>${email}</p>
+					<p>${fono}</p>
+				</div>	
+			</div>`;
+			document.getElementById('compraFinal').classList.toggle('hide');
+			console.log(estaCompra);
 		};
 	}
 
@@ -8279,22 +8728,66 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 
 	$(document).ready(function () {
 		$('.collapsible').collapsible();
+		$('select').material_select();
 		comprando_view.renderCompra();
 		comprando.constructor();
 
 		document.getElementById('paraAhora').addEventListener("click", function (ev) {
 			ev.preventDefault();
 			var hoy = new Date();
+			var año = hoy.getFullYear();
+			var mes = hoy.getMonth();
 			var dia = hoy.getDay();
+			var diaM = hoy.getDate();
 			var hora = hoy.getHours();
-			programando_compra.determinarAbierto(dia, hora);
+			programando_compra.determinarAbierto(año, mes, dia, diaM, hora);
 		});
 
-		document.getElementById('listaMasTarde').addEventListener("click", function (ev) {
+		document.getElementById('masTarde').addEventListener("click", function (ev) {
+			ev.preventDefault();
 			var hoy = new Date();
+			var año = hoy.getFullYear();
+			var mes = hoy.getMonth();
 			var dia = hoy.getDay();
+			var diaM = hoy.getDate();
 			var hora = hoy.getHours();
-			programando_compra.programandoHoy(dia, hora);
+			var minuto = hoy.getMinutes();
+			programando_compra.programandoHoy(año, mes, dia, diaM, hora, minuto);
+		});
+
+		document.getElementById('paraOtro').addEventListener("click", function (ev) {
+			ev.preventDefault();
+			var fechaP = document.getElementById("fechaOtro").value;
+			var diaP = document.getElementById("fechaOtro").value[8] + document.getElementById("fechaOtro").value[9];
+			var horaP = document.getElementById("horaOtro").value;
+			var minP = document.getElementById("minOtro").value;
+			var hoy = new Date();
+			var año = hoy.getFullYear();
+			var mes = hoy.getMonth();
+			var diaM = hoy.getDate();
+			programando_compra.setearOtro(fechaP, diaP, horaP, minP, año, mes, diaM);
+		});
+
+		document.getElementById('contPagos').addEventListener("click", function (ev) {
+			ev.preventDefault();
+			if (ev.target.id === "botonEfec" || ev.target.id === "botonRedb" || ev.target.id === "botonTran") {
+				var pago = ev.target.dataset.pago;
+				programando_compra.formaPago(pago);
+			}
+		});
+
+		document.getElementById('confDatos').addEventListener("click", function (ev) {
+			ev.preventDefault();
+			var client = document.getElementById("nomCompra").value;
+			var address = document.getElementById("dirCompra").value;
+			var email = document.getElementById("mailCompra").value;
+			var fono = document.getElementById("fonoCompra").value;
+			programando_compra.setearDatos(client, address, email, fono);
+		});
+
+		document.getElementById('compraFinal').addEventListener("click", function (ev) {
+			ev.preventDefault();
+			console.log("listos pal final");
 		});
 	});
 });
@@ -8305,16 +8798,17 @@ function loadCarrito(ctx, next) {
 	next();
 }
 
-},{"../footer":38,"../header":39,"./template":37,"empty-element":4,"nouislider":11,"page":13,"title":21}],31:[function(require,module,exports){
+},{"../footer":34,"../header":36,"../utilities/aPesos":48,"../utilities/aPesos/wNumb":49,"./template":33,"empty-element":4,"nouislider":11,"page":13,"title":21}],27:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (picC) {
 	return yo`<p class="itemPackOk">- ${picC.name}</p>`;
 };
 
-},{"yo-yo":22}],32:[function(require,module,exports){
+},{"yo-yo":22}],28:[function(require,module,exports){
 var yo = require('yo-yo');
 var opcionC = require('./customOp');
+var aPesos = require('../../../utilities/aPesos');
 
 module.exports = function (pic) {
 	return yo`<div class="row itemComprando">
@@ -8322,7 +8816,7 @@ module.exports = function (pic) {
 			${pic.name}
 		</div>
 		<div class="col s3 right-align">
-			$ ${pic.price}
+			${aPesos(pic.price)}.-
 		</div>
 		<div class="col s12">
 			${pic.ingredientes.map(function (picC) {
@@ -8332,9 +8826,10 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"./customOp":31,"yo-yo":22}],33:[function(require,module,exports){
+},{"../../../utilities/aPesos":48,"./customOp":27,"yo-yo":22}],29:[function(require,module,exports){
 var yo = require('yo-yo');
 var opcionI = require('./ipOpcion');
+var aPesos = require('../../../utilities/aPesos');
 
 module.exports = function (pic) {
 	return yo`<div class="row itemComprando">
@@ -8342,7 +8837,7 @@ module.exports = function (pic) {
 			${pic.name}
 		</div>
 		<div class="col s3 right-align">
-			$ ${pic.price}
+			${aPesos(pic.price)}.-
 		</div>
 		<div class="col s12">
 			${pic.contents.opciones.map(function (picI) {
@@ -8352,7 +8847,7 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"./ipOpcion":34,"yo-yo":22}],34:[function(require,module,exports){
+},{"../../../utilities/aPesos":48,"./ipOpcion":30,"yo-yo":22}],30:[function(require,module,exports){
 var yo = require('yo-yo');
 var opcionOk = require('./opcionCheck');
 
@@ -8366,15 +8861,16 @@ module.exports = function (picI) {
 	</div>`;
 };
 
-},{"./opcionCheck":35,"yo-yo":22}],35:[function(require,module,exports){
+},{"./opcionCheck":31,"yo-yo":22}],31:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (picOk) {
-	return yo`<p class="itemPackOk">- ${picOk.itemname}</p>`;
+	return yo`<p class="itemPackOk">${picOk.itemname}</p>`;
 };
 
-},{"yo-yo":22}],36:[function(require,module,exports){
+},{"yo-yo":22}],32:[function(require,module,exports){
 var yo = require('yo-yo');
+var aPesos = require('../../../utilities/aPesos');
 
 module.exports = function (pic) {
 	return yo`<div class="row itemComprando">
@@ -8382,12 +8878,12 @@ module.exports = function (pic) {
 			${pic.name}
 		</div>
 		<div class="col s3 right-align">
-			$ ${pic.price}
+			${aPesos(pic.price)}.-
 		</div>
 	</div>`;
 };
 
-},{"yo-yo":22}],37:[function(require,module,exports){
+},{"../../../utilities/aPesos":48,"yo-yo":22}],33:[function(require,module,exports){
 var yo = require('yo-yo');
 var layout = require('../layout');
 var itemS = require('./products/itemSingle');
@@ -8396,7 +8892,7 @@ var itemC = require('./products/itemCustom');
 
 module.exports = function (itemsCarrito) {
 	var singles = itemsCarrito.filter(function (obj) {
-		if (!obj.excep) {
+		if (!obj.excep && !obj.custom) {
 			return true;
 		} else {
 			return false;
@@ -8457,7 +8953,7 @@ module.exports = function (itemsCarrito) {
 			<div class="col s12 m6 offset-m3">
 				<div class="row itemComprando">
 					<div class="col s9">
-						Delivey
+						<i class="tiny material-icons">motorcycle</i>Delivery
 					</div>
 					<div id="deliveryCost" class="col s3 right-align">
 					</div>
@@ -8467,17 +8963,17 @@ module.exports = function (itemsCarrito) {
 		<div class="row">
 			<div class="col s12 m6 offset-m3">
 				<div class="row itemComprando totales">
-					<div class="col s9">
+					<div class="col s8">
 						Total Compra
 					</div>
-					<div id="totalCompra" class="col s3 right-align">
+					<div id="totalCompra" class="col s4 right-align">
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col s12 center-align">
-				<a href="http://localhost:3000/carta" class="waves-effect waves-light btn blue darken-2">Seguir Comprando</a>
+				<a href="https://www.ragustino.cl" class="waves-effect waves-light btn blue darken-2">Seguir Comprando</a>
 			</div>
 		</div>
 		<div class="row nobottom">
@@ -8486,36 +8982,202 @@ module.exports = function (itemsCarrito) {
 			</div>
 		</div>
 		<div class="row">
-			<div class="col s8 offset-s2 m4 offset-m4">
+			<div class="col s10 offset-s1 m4 offset-m4">
 				<ul class="collapsible" class="">
 					<li id="listaAhora">
 						<div class="collapsible-header">Tan pronto sea posible</div>
 						<div id="templateParaAhora" class="collapsible-body center-align">
-							<a href="#" id="paraAhora" class="waves-effect waves-light btn blue darken-2">Consultar ;-)</a>
+							<a href="#" id="paraAhora" class="waves-effect waves-light btn blue darken-2">Consultar</a>
 						</div>
 					</li>
 					<li id="listaMasTarde" class="">
 						<div class="collapsible-header">Para más tarde</div>
-						<div id="templateMasTarde" class="collapsible-body">
-							<div class="row nobottom">
+						<div id="templateMasTarde" class="collapsible-body center-align">
+							<a href="#" id="masTarde" class="waves-effect waves-light btn blue darken-2">Consultar</a>
+							<div id="textoMasTarde" class="hide row">
 								<div class="col s12 center-align">
 									<p class="blue-text text-darken-2">Selecciona Hora y Minutos</p>
 								</div>
 							</div>
-							<div class="row nobottom">
+							<div id="rangeMasTarde" class="hide row nobottom">
 								<div class="col s12 center-align">
-									<div id="sliderHora"></div>
-									<div id="sliderMinutos"></div>
+									<div id="rangeContainer" class="row">
+										<div class="col s12 center-align">
+											<div id="slider-hora"></div>
+											<div class="separador" id="slider-minutos"></div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col s12 center-align">
+											<span id="slider-hora-value"></span>:<span id="slider-minutos-value"></span> hrs.
+										</div>
+									</div>
+									<div class="row">
+										<div class="col s12 center-align">
+											<a href="#" id="confirmandoMasTarde" class="waves-effect waves-light btn blue darken-2">Confirmar</a>
+										</div>
+									</div>
 								</div>
-							</div>
+							</div>	
 						</div>
 					</li>
 					<li id="listaOtroDia" class="">
 						<div class="collapsible-header">Para otro día</div>
 						<div class="collapsible-body">
+							<div id="texto1OtroDia" class="row nobottom">
+								<div class="col s12 center-align">
+									<p class="blue-text text-darken-2">Indicanos la fecha de entrega en formato Día/Mes/Año</p>
+								</div>
+							</div>
+							<div class="row nobottom">
+								<div class="col s6 offset-s3">
+									<input id="fechaOtro" class="fechaFinal" type="date" required />
+								</div>
+							</div>
+							<div id="texto2OtroDia" class="row nobottom">
+								<div class="col s12 center-align">
+									<p class="blue-text text-darken-2">Indicanos la hora de entrega</p>
+								</div>
+							</div>
+							<div class="row nobottom">
+								<div class="col s6 offset-s3 center-align">
+									<div id="" class="row nobottom">
+										<div class="input-field col s5 horaFutura">
+											<select id="horaOtro">
+												<option value="" disabled selected>Hora</option>
+												<option value="18">18</option>
+												<option value="19">19</option>
+												<option value="20">20</option>
+												<option value="21">21</option>
+												<option value="22">22</option>
+												<option value="23">23</option>
+												<option value="24">24</option>
+											</select>
+										</div>
+										<div class="col s2 center-align separadorHora">
+											<span>:</span>
+										</div>
+										<div class="input-field col s5 horaFutura">
+											<select id="minOtro">
+												<option value="" disabled selected>Min.</option>
+												<option value="0">00</option>
+												<option value="10">10</option>
+												<option value="20">20</option>
+												<option value="30">30</option>
+												<option value="40">40</option>
+												<option value="50">50</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div id="texto3OtroDia" class="row">
+								<div class="col s12 center-align">
+									<p class="blue-text text-darken-2">Nuestro administrador se contactará contigo para confirmar factibilidad.</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col s12 center-align">
+									<a href="#" id="paraOtro" class="waves-effect waves-light btn blue darken-2">Confirmar</a>
+								</div>
+							</div>
 						</div>
 					</li>					
 				</ul>
+			</div>
+		</div>
+		<div class="row nobottom">
+			<div class="col s12 center-align">
+				<p class="programarCompra">Forma de Pago</p>
+			</div>
+		</div>
+		<div id="contPagos" class="row">
+			<div class="col s10 offset-s1 m4 offset-m4">
+				<ul class="collapsible" class="">
+					<li id="pagoEfec">
+						<div class="collapsible-header">Pago en Efectivo</div>
+						<div class="collapsible-body center-align">
+							<div class="row">
+								<div id="tempEfec" class="col s12 center-align">	
+									<a href="#" id="botonEfec" class="waves-effect waves-light btn blue darken-2" data-pago="1">Confirmar</a>
+								</div>
+							</div>
+						</div>
+					</li>
+					<li id="pagoRedb" class="">
+						<div class="collapsible-header">Pago Redbank</div>
+						<div id="tempRedb" class="collapsible-body center-align">
+							<a href="#" id="botonRedb" class="waves-effect waves-light btn blue darken-2" data-pago="2">Confirmar</a>
+						</div>
+					</li>
+					<li id="pagoTran" class="">
+						<div class="collapsible-header">Transferencia</div>
+						<div class="collapsible-body">
+							<div class="row">
+								<div class="col s12 center-align blue-text text-darken-2">
+									<p>Nuestros datos:</p>
+									<p class="horariosCompra" >Cuenta Corriente N° 1300242665</p>
+									<p class="horariosCompra" >Banco Estado</p>
+									<p class="horariosCompra" >Rut: 76.830.997-3</p>
+									<p class="horariosCompra" >Servicios Gastronómicos GRC Ltda.</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col s12 center-align">
+									<p class="blue-text text-darken-2">Una vez confirmada la transferencia procesaremos tu pedido.</p>
+								</div>
+							</div>
+							<div class="row">
+								<div id="tempTran" class="col s12 center-align">
+									<a href="#" id="botonTran" class="waves-effect waves-light btn blue darken-2" data-pago="3">Confirmar</a>
+								</div>
+							</div>
+						</div>
+					</li>					
+				</ul>
+			</div>
+		</div>
+		<div id="contFormCompra" class="">
+			<div id="formCompra" class="form">
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="programarCompra">Ingresa tus datos</p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="input-field col s10 offset-s1 m4 offset-m4">
+						<input id="nomCompra" type="text" class="validate formCompra">
+						<label for="nomCompra">Nombre y Apellido</label>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="input-field col s10 offset-s1 m4 offset-m4">
+						<input id="dirCompra" type="text" class="validate formCompra">
+						<label for="dirCompra">Dirección</label>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="input-field col s10 offset-s1 m4 offset-m4">
+						<input id="mailCompra" type="email" class="validate formCompra">
+						<label for="mailCompra">Email</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s10 offset-s1 m4 offset-m4">
+						<input id="fonoCompra" type="tel" class="validate formCompra">
+						<label for="fonoCompra">Teléfono</label>
+					</div>
+				</div>
+				<div class="row">
+					<div id="" class="col s12 center-align">
+						<a href="#" id="confDatos" class="waves-effect waves-light btn blue darken-2">Confirmar</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 center-align">
+				<a href="#" id="compraFinal" class="hide waves-effect waves-light btn blue darken-2">Confirmar Compra</a>
 			</div>
 		</div>
 	</div>`;
@@ -8523,7 +9185,7 @@ module.exports = function (itemsCarrito) {
 	return layout(el);
 };
 
-},{"../layout":44,"./products/itemCustom":32,"./products/itemPack":33,"./products/itemSingle":36,"yo-yo":22}],38:[function(require,module,exports){
+},{"../layout":40,"./products/itemCustom":28,"./products/itemPack":29,"./products/itemSingle":32,"yo-yo":22}],34:[function(require,module,exports){
 var yo = require('yo-yo');
 var empty = require('empty-element');
 
@@ -8539,6 +9201,7 @@ var el = yo`<footer class="page-footer grey lighten-2">
                 <ul>
 	                <li><a class="grey-text text-darken-4" href="http://www.facebook.com/ragustinofoodexperience" target="_blank">Facebook</a></li>
 	                <li><a class="grey-text text-darken-4" href="http://www.instagram.com/ragustinofoodexperience" target="_blank">Instagram</a></li>
+                    <li><a class="grey-text text-darken-4" href="/carta">--------</a></li>
 	            </ul>
         	</div>
         </div>
@@ -8556,13 +9219,54 @@ module.exports = function footer(ctx, next) {
     next();
 };
 
-},{"empty-element":4,"yo-yo":22}],39:[function(require,module,exports){
+},{"empty-element":4,"yo-yo":22}],35:[function(require,module,exports){
 var yo = require('yo-yo');
 var empty = require('empty-element');
 
-$(document).ready(function () {
-	$('.button-collapse').sideNav();
-});
+var el = yo`<nav class="header grey lighten-3">
+	<div class="container">
+		<div class="row piso-nav">
+			<div class="col s12 sp">
+				<div class="hide nav-wrapper">
+					<div id="todoHeader" class="container barra">
+						<div class="row piso-nav">
+							<div class="col s2 m4 l2 sp">
+							  	<a href="/" class="brand-logo">RAGUSTINO</a>
+							  	<a href="/carta" class="hide-on-large-only center-align"><i class="material-icons">store</i></a>
+							</div>
+							<div class="col l6 hide-on-med-and-down">
+								<ul class="right">
+									<li><a href="/">INICIO</a></li>
+									<li><a href="/carta">NUESTROS PRODUCTOS</a></li>
+								</ul>
+							</div>
+							<div class="col s2 m2 offset-m4 l2 center-align sp">
+								<a href="#" class="btn btn-flat dropdown-button chip-user" data-activates="drop-user"><i class="small material-icons carrito">perm_identity</i></a>
+								<ul id="drop-user" class="dropdown-content">
+									<li><a href="#">Salir</a></li>
+								</ul>
+							</div>
+							<div class="col s3 offset-s5 m2 l2 sp">
+								<a class="btn modal-trigger blue darken-2 chip-carro" href="#modal9"><i class="small material-icons left carrito">shopping_cart</i><span id="totalProductos">0</span></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</nav>`;
+
+module.exports = function header(ctx, next) {
+
+	var container = document.getElementById('header-container');
+	empty(container).appendChild(el);
+	next();
+};
+
+},{"empty-element":4,"yo-yo":22}],36:[function(require,module,exports){
+var yo = require('yo-yo');
+var empty = require('empty-element');
 
 var el = yo`<nav class="header grey lighten-3">
 	<div class="container">
@@ -8605,12 +9309,12 @@ module.exports = function header(ctx, next) {
 	next();
 };
 
-},{"empty-element":4,"yo-yo":22}],40:[function(require,module,exports){
+},{"empty-element":4,"yo-yo":22}],37:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
 var title = require('title');
-var header = require('../header');
+var header = require('../headerTest');
 var footer = require('../footer');
 
 page('/', header, footer, function (ctx, next) {
@@ -8630,7 +9334,7 @@ page('/', header, footer, function (ctx, next) {
 
 		this.getTotal = function () {
 			var total = 0;
-			for (i of this.getCarrito) {
+			for (i of JSON.parse(localStorage.getItem("carrito"))) {
 				total += parseFloat(i.cantidad) * parseFloat(i.price);
 			}
 			return total;
@@ -8647,7 +9351,7 @@ page('/', header, footer, function (ctx, next) {
 
 		this.iraComprar = function () {
 			if (this.getCarrito.length <= 0) {
-				alert("No tienes productos en tu carrito :-(");
+				alert("No tienes productos en tu carro");
 				return;
 			} else {
 				$('#modal9').modal('close');
@@ -8658,7 +9362,7 @@ page('/', header, footer, function (ctx, next) {
 
 	function Carrito_View() {
 		this.renderCarrito = function () {
-			if (carrito.getCarrito.length <= 0) {
+			if (JSON.parse(localStorage.getItem("carrito")).length <= 0) {
 				templateNoItems = `<div class="row">
 					<div class="col s12 center-align">
 						No tienes productos en tu carro
@@ -8694,7 +9398,7 @@ page('/', header, footer, function (ctx, next) {
 		};
 
 		this.totalProductos = function () {
-			var total = carrito.getCarrito.length;
+			var total = JSON.parse(localStorage.getItem("carrito")).length;
 			document.getElementById('totalProductos').innerHTML = total;
 		};
 	}
@@ -8703,6 +9407,10 @@ page('/', header, footer, function (ctx, next) {
 		this.constructor = function () {
 			if (!localStorage.getItem("ingredientes")) {
 				localStorage.setItem('ingredientes', '[]');
+			} else {
+				if (this.getIngredientes.length > 0) {
+					localStorage.setItem('ingredientes', '[]');
+				}
 			}
 		};
 		this.getIngredientes = JSON.parse(localStorage.getItem("ingredientes"));
@@ -8726,7 +9434,6 @@ page('/', header, footer, function (ctx, next) {
 		comprando.constructor();
 		armar_pizza.constructor();
 		carrito_view.renderCarrito();
-		carrito_view.totalProductos();
 
 		document.getElementById('productosCarrito').addEventListener("click", function (ev) {
 			ev.preventDefault();
@@ -8745,7 +9452,7 @@ page('/', header, footer, function (ctx, next) {
 	});
 });
 
-},{"../footer":38,"../header":39,"./template":41,"empty-element":4,"page":13,"title":21}],41:[function(require,module,exports){
+},{"../footer":34,"../headerTest":35,"./template":38,"empty-element":4,"page":13,"title":21}],38:[function(require,module,exports){
 var yo = require('yo-yo');
 var layout = require('../layout');
 
@@ -8753,17 +9460,22 @@ module.exports = function () {
 	var el = yo`<div class="col s12 seccion">
 		<div class="row nobottom">
 			<div class="col s12 center-align">
+				<h2 class="tituloHome">PAGINA EN CONSTRUCCION</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 center-align">
+				<p>... En unos días</p>
+			</div>
+		</div>
+		<div class="row nobottom">
+			<div class="col s12 center-align">
 				<h2 class="tituloHome">RAGUSTINO FOOD EXPERIENCE</h2>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col s12 center-align">
-				<p>Es un nuevo concepto de negocio, innovador, diferenciado y acorde a los tiempos actuales. Somos parte del cambio radical que ha experimentado la industria gastronómica desde la expansión sin precedentes de internet y las redes sociales. Somos un DELI GOURMET o un PORTAL WEB DE PEDIDOS GASTRONÓMICOS, pero queremos ir mucho más allá y darle un salto de calidad al ya clásico e irregular servicio de “pedido a domicilio”. Nuestro principal objetivo es entregar una experiencia gastronómica integral, moderna y de excelencia. Para ello contamos con una cocina creativa y versátil, procesos completamente digitalizados para pagos online, rastreo interactivo de reparto y programación de pedidos por horas o días. Cocinamos con pasión y trabajamos con energía porque NOS ENCANTA LO QUE HACEMOS! Queremos crecer e innovar pero por sobre todo queremos hacer la diferencia entregando siempre un servicio de calidad orientado al cliente. Te invitamos a disfrutar hoy de una nueva experiencia gourmet a domicilio. TE ESPERAMOS!!!</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col s12 center-align">
-				<a href="/carta" class="waves-effect waves-light btn blue darken-2"><i class="material-icons left">store</i>Nuestra Carta</a>
+				<p>completamente digital</p>
 			</div>
 		</div>
 		<div class="row">
@@ -8814,7 +9526,7 @@ module.exports = function () {
 				</div>
 				<div class="row nobottom">
 					<div class="col s12 center-align">
-						<p class="horas">Domingo 13:00 -20:00hrs</p>
+						<p class="horas">Domingo 18:00 - 0:00</p>
 					</div>
 				</div>
 				<div class="row programa">
@@ -8832,38 +9544,35 @@ module.exports = function () {
 	return layout(el);
 };
 
-},{"../layout":44,"yo-yo":22}],42:[function(require,module,exports){
+/*
+<div class="row">
+	<div class="col s12 center-align">
+		<p>Es un nuevo concepto de negocio, innovador, diferenciado y acorde a los tiempos actuales. Somos parte del cambio radical que ha experimentado la industria gastronómica desde la expansión sin precedentes de internet y las redes sociales. Somos un DELI GOURMET o un PORTAL WEB DE PEDIDOS GASTRONÓMICOS, pero queremos ir mucho más allá y darle un salto de calidad al ya clásico e irregular servicio de “pedido a domicilio”. Nuestro principal objetivo es entregar una experiencia gastronómica integral, moderna y de excelencia. Para ello contamos con una cocina creativa y versátil, procesos completamente digitalizados para pagos online, rastreo interactivo de reparto y programación de pedidos por horas o días. Cocinamos con pasión y trabajamos con energía porque NOS ENCANTA LO QUE HACEMOS! Queremos crecer e innovar pero por sobre todo queremos hacer la diferencia entregando siempre un servicio de calidad orientado al cliente. Te invitamos a disfrutar hoy de una nueva experiencia gourmet a domicilio. TE ESPERAMOS!!!</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col s12 center-align">
+		<a href="/carta" class="waves-effect waves-light btn blue darken-2"><i class="material-icons left">store</i>Nuestra Carta</a>
+	</div>
+</div>
+*/
+
+},{"../layout":40,"yo-yo":22}],39:[function(require,module,exports){
 var page = require('page');
 
-/*require('./prueba');*/
 require('./homepage');
 require('./carta');
 require('./compra');
-require('./clients/signup');
+/*require('./clients/signup');
 require('./clients/signin');
 require('./ragsystem/homesystem');
 require('./ragsystem/estadisticas');
 require('./ragsystem/adm_productos');
-require('./ragsystem/adm_equipo');
+require('./ragsystem/adm_equipo');*/
 
 page();
 
-},{"./carta":24,"./clients/signin":26,"./clients/signup":28,"./compra":30,"./homepage":40,"./ragsystem/adm_equipo":54,"./ragsystem/adm_productos":55,"./ragsystem/estadisticas":57,"./ragsystem/homesystem":60,"page":13}],43:[function(require,module,exports){
-var yo = require('yo-yo');
-
-module.exports = function landing(box) {
-  return yo`<div class="container">
-    	<div class="row">
-    	    <div class="col s12">
-     	       <div class="row landing-fondo">
-      		        ${box}
-            	</div>
-        	</div>
-    	</div>
-	</div>`;
-};
-
-},{"yo-yo":22}],44:[function(require,module,exports){
+},{"./carta":24,"./compra":26,"./homepage":37,"page":13}],40:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function layout(content) {
@@ -8888,8 +9597,8 @@ module.exports = function layout(content) {
 		<div id="modal9" class="modal bottom-sheet">
 			<div class="container">
 				<div class="row">
-					<div class="col s12">
-						<div class="modal-content">
+					<div class="col s12 titCarro">
+						<div class="modal-content carritoV">
 							<div class="row itemCarrito">
 								<div class="col s8">
 									<h4 class="tituloCarro">Tu Carro de Compras</h4>
@@ -8901,21 +9610,21 @@ module.exports = function layout(content) {
 							<ul class="collection">
 								<div class="row itemCarrito">
 									<div class="col s12">
-										<li class="collection-item">
+										<li class="collection-item arregloPad">
 											<div class="row itemCarrito">
-												<div class="col s8 m4">
+												<div class="col s3 m4 titCarro">
 													Nombre
 												</div>
-												<div class="col s4 m2 center-align">
+												<div class="col s3 m2 right-align titCarro">
 													Precio
 												</div>
-												<div class="col s3 offset-s3 m2 center-align">
-													Cantidad
+												<div class="col s2 m2 right-align titCarro">
+													Cant.
 												</div>
-												<div class="col s3 m2 center-align">
+												<div class="col s2 m2 center-align titCarro">
 													Total
 												</div>
-												<div class="col s3 m2 center-align">
+												<div class="col s2 m2 center-align titCarro">
 													Quitar
 												</div>
 											</div>
@@ -8971,50 +9680,12 @@ module.exports = function layout(content) {
 	</div>`;
 };
 
-},{"yo-yo":22}],45:[function(require,module,exports){
+},{"yo-yo":22}],41:[function(require,module,exports){
 var yo = require('yo-yo');
-
-module.exports = function pictureCard(pic) {
-	var el;
-	function render(picture) {
-		return yo`<div class="card pizza-card-content ${picture.liked ? 'liked' : ''}">
-			<div class="card-image waves-effect waves-block waves-light">
-				<img class="activator responsive" src="${picture.url}">
-			</div>
-			<div class="card-content">
-				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.name}</span>
-				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-id="${picture.id}">add</i></a>
-				<p class="likes-content">
-					<a class="left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
-					<a class="left" href="#" onclick=${like.bind(null, false)}><i class="material-icons favorite">favorite</i></a>
-					<span class="left likes">${picture.likes} me gusta</span>
-				</p>
-			</div>
-			<div class="card-reveal">
-			    <span class="pizza-text card-title blue-text text-darken-2">${picture.name}<i class="material-icons right">close</i></span>
-			    <p class="pizza-content-text">${picture.content}</p>
-			    <span class="left likes blue-text text-darken-2">Valor: $${picture.price}</span>
-			</div>
-		</div>`;
-	}
-
-	function like(liked) {
-		pic.liked = liked;
-		pic.likes += liked ? 1 : -1;
-		var newEl = render(pic);
-		yo.update(el, newEl);
-		return false;
-	}
-
-	el = render(pic);
-	return el;
-};
-
-},{"yo-yo":22}],46:[function(require,module,exports){
-var yo = require('yo-yo');
+var aPesos = require('../../utilities/aPesos');
 
 module.exports = function (pic) {
-	return yo`<div class="col s12 m6">
+	return yo`<div class="col s12 m6 contIng">
 		<div class="row cursorHover">
 			<div id="addIngrediente" data-id="${pic.id}" class="col s1 checkbox">
 				<span id="${pic.id}" class=""><i id="addIngrediente" data-id="${pic.id}" class="small material-icons">check_box_outline_blank</i></span>
@@ -9026,20 +9697,21 @@ module.exports = function (pic) {
 			<div id="addIngrediente" data-id="${pic.id}" class="col s7 m6 nameCont">
 				<p id="addIngrediente" data-id="${pic.id}" class="ingName">${pic.name}</p>
 			</div>
-			<div id="addIngrediente" data-id="${pic.id}" class="col s2">
-				<p id="addIngrediente" data-id="${pic.id}" class="ingName">$${pic.price}.-</p>
+			<div id="addIngrediente" data-id="${pic.id}" class="col s2 precioIng">
+				<p id="addIngrediente" data-id="${pic.id}" class="ingName">${aPesos(pic.price)}.-</p>
 			</div>
 		</div>
 	</div>`;
 };
 
-},{"yo-yo":22}],47:[function(require,module,exports){
+},{"../../utilities/aPesos":48,"yo-yo":22}],42:[function(require,module,exports){
 var yo = require('yo-yo');
+var aPesos = require('../../utilities/aPesos');
 
 module.exports = function (pic) {
-	return yo`<div class="col s12 m6">
+	return yo`<div class="col s12 m6 contItem">
 		<div class="row">
-			<div class="col s2 l2 offset-l1">
+			<div class="col s2 l2 offset-l1 contItem">
 				<img src="${pic.url}" class="imagenItem" />
 			</div>
 			<div class="col s6 l5 col-text">
@@ -9054,8 +9726,8 @@ module.exports = function (pic) {
 					</div>
 				</div>
 			</div>
-			<div class="col s2">
-				<span class="precioItem">$${pic.price}.-</span>
+			<div class="col s2 contItem">
+				<span class="precioItem">${aPesos(pic.price)}.-</span>
 			</div>
 			<div class="col s2">
 				<a class="btn-floating left waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-id="${pic.id}">add</i></a>
@@ -9064,53 +9736,35 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"yo-yo":22}],48:[function(require,module,exports){
+},{"../../utilities/aPesos":48,"yo-yo":22}],43:[function(require,module,exports){
 var yo = require('yo-yo');
 var itemopt = require('./item-opt');
 var itemoptt = require('./item-opt-opt');
+var aPesos = require('../../utilities/aPesos');
 
-module.exports = function pictureCard(pic) {
-	var el;
-	function render(picture) {
-		return yo`<div class="card pack-card-content ${picture.liked ? 'liked' : ''}">
-			<div class="card-image waves-effect waves-block waves-light">
-				<img class="activator responsive" src="${picture.url}">
-			</div>
-			<div class="card-content">
-				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.name}</span>
-				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItemPack" data-id="${picture.id}">add</i></a>
-				<p class="likes-content">
-					<a class="left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
-					<a class="left" href="#" onclick=${like.bind(null, false)}><i class="material-icons favorite">favorite</i></a>
-					<span class="left likes">${picture.likes} me gusta</span>
-				</p>
-			</div>
-			<div class="card-reveal">
-			    <span class="pizza-text card-title blue-text text-darken-2">${picture.name}<i class="material-icons right">close</i></span>
-			    ${picture.contents.opciones.map(function (optt) {
-			return itemoptt(optt);
-		})}
-			    ${picture.content.map(function (opt) {
-			return itemopt(opt);
-		})}
-				<span class="left pack-price blue-text text-darken-2">Valor: $${picture.price}</span>
-			</div>
-		</div>`;
-	}
-
-	function like(liked) {
-		pic.liked = liked;
-		pic.likes += liked ? 1 : -1;
-		var newEl = render(pic);
-		yo.update(el, newEl);
-		return false;
-	}
-
-	el = render(pic);
-	return el;
+module.exports = function (pic) {
+	return yo`<div class="card pack-card-content">
+		<div class="card-image waves-effect waves-block waves-light">
+			<img class="activator responsive" src="${pic.url}">
+		</div>
+		<div class="card-content">
+			<span class="pizza-text card-title activator grey-text text-darken-2">${pic.name}</span>
+			<a class="btn-floating right waves-effect waves-light blue darken-2 botonAgregar"><i class="material-icons" id="addItemPack" data-id="${pic.id}">add</i></a>
+		</div>
+		<div class="card-reveal">
+		    <span class="pizza-text card-title blue-text text-darken-2">${pic.name}<i class="material-icons right">close</i></span>
+		    ${pic.contents.opciones.map(function (optt) {
+		return itemoptt(optt);
+	})}
+		    ${pic.content.map(function (opt) {
+		return itemopt(opt);
+	})}
+			<span class="left pack-price blue-text text-darken-2">Valor: ${aPesos(pic.price)}.-</span>
+		</div>
+	</div>`;
 };
 
-},{"./item-opt":51,"./item-opt-opt":49,"yo-yo":22}],49:[function(require,module,exports){
+},{"../../utilities/aPesos":48,"./item-opt":46,"./item-opt-opt":44,"yo-yo":22}],44:[function(require,module,exports){
 var yo = require('yo-yo');
 var option = require('./option');
 
@@ -9128,14 +9782,14 @@ module.exports = function (optt) {
 	</div>`;
 };
 
-},{"./option":50,"yo-yo":22}],50:[function(require,module,exports){
+},{"./option":45,"yo-yo":22}],45:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (item) {
 	return yo`<li class="itemOpt hover" id="itemSelect" data-idpack="${item.idpack}" data-idopt="${item.idopt}" data-id="${item.iditem}"><a href="#" id="itemSelect" class="opcionElejida" data-idpack="${item.idpack}" data-idopt="${item.idopt}" data-id="${item.iditem}">- ${item.itemname}</a></li>`;
 };
 
-},{"yo-yo":22}],51:[function(require,module,exports){
+},{"yo-yo":22}],46:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (opt) {
@@ -9144,430 +9798,388 @@ module.exports = function (opt) {
 	</div>`;
 };
 
-},{"yo-yo":22}],52:[function(require,module,exports){
+},{"yo-yo":22}],47:[function(require,module,exports){
 var yo = require('yo-yo');
+var aPesos = require('../../utilities/aPesos');
 
-module.exports = function pictureCard(pic) {
-	var el;
-	function render(picture) {
-		return yo`<div class="card pizza-card-content ${picture.liked ? 'liked' : ''}">
-			<div class="card-image waves-effect waves-block waves-light">
-				<img class="activator responsive" src="${picture.url}">
-			</div>
-			<div class="card-content">
-				<span class="pizza-text card-title activator grey-text text-darken-2">${picture.name}</span>
-				<div class="likes-content">
-					<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-id="${picture.id}">add</i></a>
-					<a class="left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
-					<a class="left" href="#" onclick=${like.bind(null, false)}><i class="material-icons favorite">favorite</i></a>
-					<span class="left likes">${picture.likes} me gusta</span>
-				</div>
-			</div>
-			<div class="card-reveal">
-			    <span class="pizza-text card-title blue-text text-darken-2">${picture.name}<i class="material-icons right">close</i></span>
-			    <p class="pizza-content-text">${picture.content}</p>
-			    <span class="left likes blue-text text-darken-2">Valor: $${picture.price}</span>
-			</div>
-		</div>`;
-	}
-
-	function like(liked) {
-		pic.liked = liked;
-		pic.likes += liked ? 1 : -1;
-		var newEl = render(pic);
-		yo.update(el, newEl);
-		return false;
-	}
-
-	el = render(pic);
-	return el;
-};
-
-},{"yo-yo":22}],53:[function(require,module,exports){
-var yo = require('yo-yo');
-
-module.exports = function pictureCard(pic) {
-	var el;
-	function render(picture) {
-		return yo`<div class="card pizza-card-content ${picture.liked ? 'liked' : ''}">
-			<div class="card-image waves-effect waves-block waves-light">
-				<img class="activator responsive" src="${picture.url}">
-			</div>
-			<div class="card-content">
-				<span class="pizza-text card-title activator grey-text text-darken-2">Pizza ${picture.name}</span>
-				<a class="btn-floating right waves-effect waves-light blue darken-2"><i class="material-icons" id="addItem" data-id="${picture.id}">add</i></a>
-				<p class="likes-content">
-					<a class="left" href="#" onclick=${like.bind(null, true)}><i class="material-icons favorite_border">favorite_border</i></a>
-					<a class="left" href="#" onclick=${like.bind(null, false)}><i class="material-icons favorite">favorite</i></a>
-					<span class="left likes">${picture.likes} me gusta</span>
-				</p>
-			</div>
-			<div class="card-reveal">
-			    <span class="pizza-text card-title blue-text text-darken-2">Pizza ${picture.name}<i class="material-icons right">close</i></span>
-			    <p class="pizza-content-text">${picture.content}</p>
-			    <span class="left likes blue-text text-darken-2">Valor: $${picture.price}</span>
-			</div>
-		</div>`;
-	}
-
-	function like(liked) {
-		pic.liked = liked;
-		pic.likes += liked ? 1 : -1;
-		var newEl = render(pic);
-		yo.update(el, newEl);
-		return false;
-	}
-
-	el = render(pic);
-	return el;
-};
-
-},{"yo-yo":22}],54:[function(require,module,exports){
-
-},{}],55:[function(require,module,exports){
-var page = require('page');
-var empty = require('empty-element');
-var template = require('./template');
-var title = require('title');
-var header = require('../headersystem');
-var request = require('superagent');
-
-page('/adm_productos', header, loadPizzas,
-/*loadVegetales,
-loadCarnes,*/
-loadEnsaladas, loadAdicionales, function (ctx, next) {
-	title('Adm-Productos');
-	var main = document.getElementById('main-container');
-
-	$(document).ready(function () {
-		$('.collapsible').collapsible();
-	});
-
-	empty(main).appendChild(template(ctx.pizzas,
-	/*ctx.vegetales,
- ctx.carnes,*/
-	ctx.ensaladas, ctx.adicionales));
-});
-
-function loadPizzas(ctx, next) {
-	request.get('/api/pizzas').end(function (err, res) {
-		if (err) return console.log(err);
-
-		ctx.pizzas = res.body;
-		next();
-	});
-}
-
-/*function loadVegetales (ctx, next) {
-	request
-		.get('/api/vegetales')
-		.end(function (err, res) {
-			if (err) return console.log(err);
-
-			ctx.vegetales = res.body;
-			next();
-		})
-}
-
-function loadCarnes (ctx, next) {
-	request
-		.get('/api/carnes')
-		.end(function (err, res) {
-			if (err) return console.log(err);
-
-			ctx.carnes = res.body;
-			next();
-		})
-}*/
-
-function loadEnsaladas(ctx, next) {
-	request.get('/api/ensaladas').end(function (err, res) {
-		if (err) return console.log(err);
-
-		ctx.ensaladas = res.body;
-		next();
-	});
-}
-
-function loadAdicionales(ctx, next) {
-	request.get('/api/adicionales').end(function (err, res) {
-		if (err) return console.log(err);
-
-		ctx.adicionales = res.body;
-		next();
-	});
-}
-
-},{"../headersystem":59,"./template":56,"empty-element":4,"page":13,"superagent":16,"title":21}],56:[function(require,module,exports){
-var yo = require('yo-yo');
-var pizza = require('../products_system/pizzasystem');
-/*var vegetal = require('../products_system/vegetalsystem');
-var carne = require('../products_system/carnesystem');*/
-var ensalada = require('../products_system/ensaladasystem');
-var adicional = require('../products_system/adicionalsystem');
-/*var pack = require('../products_system/packsystem');
-var fiesta = require('../products_system/fiestasystem');*/
-
-module.exports = function (pizzas, /*vegetales, carnes, */ensaladas, adicionales) {
-	return yo`<div class="content">
-		<div class="container">
-			<div class="row">
-				<div class="col s12">
-					<ul class="collapsible popout" data-collapsible="accordion">
-						<p class="pack-text grey-text text-darken-4 center-align">Administación de Productos Ragustino</p>
-						<li>
-					    	<div class="collapsible-header grey lighten-2">
-					    		<p class="menu-text padding1 grey-text text-darken-4 center-align">Pizzas</p>
-					        </div>
-					    	<div class="collapsible-body">
-					    		<div class="col s12 white">
-					    			<form action="#">
-						    			<div class="row">
-											<div class="col s12">
-												<ul class="collection">
-													<div class="row">
-														<div class="col s6 center-align">
-															<span>Agregar Pizza <i class="material-icons edit-item">add_circle</i></span>
-														</div>
-														<div class="col s6 center-align">
-															<span class="edit-item">Eliminar Pizza <i class="material-icons">remove_circle</i></span>
-														</div>
-													</div>
-									    			${pizzas.map(function (pic) {
-		return pizza(pic);
-	})}
-												</ul>
-											</div>
-										</div>
-										<div class="divider separar"></div>
-									</form>
-								</div>
-							</div>
-					    </li>
-						<li>
-					    	<div class="collapsible-header grey lighten-2">
-					    		<p class="menu-text padding1 grey-text text-darken-4 center-align">Ensaladas</p>
-					        </div>
-					    	<div class="collapsible-body">
-					    		<div class="col s12 white">
-					    			<form action="#">
-						    			<div class="row">
-											<div class="col s12">
-												<ul class="collection">
-									    			${ensaladas.map(function (pic) {
-		return ensalada(pic);
-	})}
-												</ul>
-											</div>
-										</div>
-										<div class="divider separar"></div>
-									</form>
-								</div>
-							</div>
-					    </li>
-						<li>
-					    	<div class="collapsible-header grey lighten-2">
-					    		<p class="menu-text padding1 grey-text text-darken-4 center-align">Acompañamientos</p>
-					        </div>
-					    	<div class="collapsible-body">
-					    		<div class="col s12 white">
-					    			<form action="#">
-						    			<div class="row">
-											<div class="col s12">
-												<ul class="collection">
-									    			${adicionales.map(function (pic) {
-		return adicional(pic);
-	})}
-												</ul>
-											</div>
-										</div>
-										<div class="divider separar"></div>
-									</form>
-								</div>
-							</div>
-					    </li>
-					</ul>
-				</div>
-			</div>
+module.exports = function (pic) {
+	return yo`<div class="card pizza-card-content">
+		<div class="card-image waves-effect waves-block waves-light">
+			<img class="activator responsive" src="${pic.url}">
+		</div>
+		<div class="card-content">
+			<span class="pizza-text card-title activator grey-text text-darken-2">${pic.name}</span>
+			<a class="btn-floating right waves-effect waves-light blue darken-2 botonAgregar"><i class="material-icons" id="addItem" data-id="${pic.id}">add</i></a>
+		</div>
+		<div class="card-reveal">
+		    <span class="pizza-text card-title blue-text text-darken-2">${pic.name}<i class="material-icons right">close</i></span>
+		    <p class="pizza-content-text">${pic.content}</p>
+		    <span class="left blue-text text-darken-2 pricePizza">Valor: ${aPesos(pic.price)}.-</span>
 		</div>
 	</div>`;
 };
 
-},{"../products_system/adicionalsystem":62,"../products_system/ensaladasystem":63,"../products_system/pizzasystem":64,"yo-yo":22}],57:[function(require,module,exports){
-var page = require('page');
-var empty = require('empty-element');
-var template = require('./template');
-var title = require('title');
-var header = require('../headersystem');
+},{"../../utilities/aPesos":48,"yo-yo":22}],48:[function(require,module,exports){
+var wNumb = require('./wNumb');
 
-page('/estadisticas', header, function (ctx, next) {
-	title('Estadisticas');
-	var main = document.getElementById('main-container');
-	empty(main).appendChild(template());
+module.exports = function (val) {
+	var formatoPesos = wNumb({
+		decimals: 0,
+		thousand: '.',
+		prefix: '$ '
+	});
+
+	return formatoPesos.to(val);
+};
+
+},{"./wNumb":49}],49:[function(require,module,exports){
+(function (factory) {
+
+	if (typeof define === 'function' && define.amd) {
+
+		// AMD. Register as an anonymous module.
+		define([], factory);
+	} else if (typeof exports === 'object') {
+
+		// Node/CommonJS
+		module.exports = factory();
+	} else {
+
+		// Browser globals
+		window.wNumb = factory();
+	}
+})(function () {
+
+	'use strict';
+
+	var FormatOptions = ['decimals', 'thousand', 'mark', 'prefix', 'suffix', 'encoder', 'decoder', 'negativeBefore', 'negative', 'edit', 'undo'];
+
+	// General
+
+	// Reverse a string
+	function strReverse(a) {
+		return a.split('').reverse().join('');
+	}
+
+	// Check if a string starts with a specified prefix.
+	function strStartsWith(input, match) {
+		return input.substring(0, match.length) === match;
+	}
+
+	// Check is a string ends in a specified suffix.
+	function strEndsWith(input, match) {
+		return input.slice(-1 * match.length) === match;
+	}
+
+	// Throw an error if formatting options are incompatible.
+	function throwEqualError(F, a, b) {
+		if ((F[a] || F[b]) && F[a] === F[b]) {
+			throw new Error(a);
+		}
+	}
+
+	// Check if a number is finite and not NaN
+	function isValidNumber(input) {
+		return typeof input === 'number' && isFinite(input);
+	}
+
+	// Provide rounding-accurate toFixed method.
+	// Borrowed: http://stackoverflow.com/a/21323330/775265
+	function toFixed(value, exp) {
+		value = value.toString().split('e');
+		value = Math.round(+(value[0] + 'e' + (value[1] ? +value[1] + exp : exp)));
+		value = value.toString().split('e');
+		return (+(value[0] + 'e' + (value[1] ? +value[1] - exp : -exp))).toFixed(exp);
+	}
+
+	// Formatting
+
+	// Accept a number as input, output formatted string.
+	function formatTo(decimals, thousand, mark, prefix, suffix, encoder, decoder, negativeBefore, negative, edit, undo, input) {
+
+		var originalInput = input,
+		    inputIsNegative,
+		    inputPieces,
+		    inputBase,
+		    inputDecimals = '',
+		    output = '';
+
+		// Apply user encoder to the input.
+		// Expected outcome: number.
+		if (encoder) {
+			input = encoder(input);
+		}
+
+		// Stop if no valid number was provided, the number is infinite or NaN.
+		if (!isValidNumber(input)) {
+			return false;
+		}
+
+		// Rounding away decimals might cause a value of -0
+		// when using very small ranges. Remove those cases.
+		if (decimals !== false && parseFloat(input.toFixed(decimals)) === 0) {
+			input = 0;
+		}
+
+		// Formatting is done on absolute numbers,
+		// decorated by an optional negative symbol.
+		if (input < 0) {
+			inputIsNegative = true;
+			input = Math.abs(input);
+		}
+
+		// Reduce the number of decimals to the specified option.
+		if (decimals !== false) {
+			input = toFixed(input, decimals);
+		}
+
+		// Transform the number into a string, so it can be split.
+		input = input.toString();
+
+		// Break the number on the decimal separator.
+		if (input.indexOf('.') !== -1) {
+			inputPieces = input.split('.');
+
+			inputBase = inputPieces[0];
+
+			if (mark) {
+				inputDecimals = mark + inputPieces[1];
+			}
+		} else {
+
+			// If it isn't split, the entire number will do.
+			inputBase = input;
+		}
+
+		// Group numbers in sets of three.
+		if (thousand) {
+			inputBase = strReverse(inputBase).match(/.{1,3}/g);
+			inputBase = strReverse(inputBase.join(strReverse(thousand)));
+		}
+
+		// If the number is negative, prefix with negation symbol.
+		if (inputIsNegative && negativeBefore) {
+			output += negativeBefore;
+		}
+
+		// Prefix the number
+		if (prefix) {
+			output += prefix;
+		}
+
+		// Normal negative option comes after the prefix. Defaults to '-'.
+		if (inputIsNegative && negative) {
+			output += negative;
+		}
+
+		// Append the actual number.
+		output += inputBase;
+		output += inputDecimals;
+
+		// Apply the suffix.
+		if (suffix) {
+			output += suffix;
+		}
+
+		// Run the output through a user-specified post-formatter.
+		if (edit) {
+			output = edit(output, originalInput);
+		}
+
+		// All done.
+		return output;
+	}
+
+	// Accept a sting as input, output decoded number.
+	function formatFrom(decimals, thousand, mark, prefix, suffix, encoder, decoder, negativeBefore, negative, edit, undo, input) {
+
+		var originalInput = input,
+		    inputIsNegative,
+		    output = '';
+
+		// User defined pre-decoder. Result must be a non empty string.
+		if (undo) {
+			input = undo(input);
+		}
+
+		// Test the input. Can't be empty.
+		if (!input || typeof input !== 'string') {
+			return false;
+		}
+
+		// If the string starts with the negativeBefore value: remove it.
+		// Remember is was there, the number is negative.
+		if (negativeBefore && strStartsWith(input, negativeBefore)) {
+			input = input.replace(negativeBefore, '');
+			inputIsNegative = true;
+		}
+
+		// Repeat the same procedure for the prefix.
+		if (prefix && strStartsWith(input, prefix)) {
+			input = input.replace(prefix, '');
+		}
+
+		// And again for negative.
+		if (negative && strStartsWith(input, negative)) {
+			input = input.replace(negative, '');
+			inputIsNegative = true;
+		}
+
+		// Remove the suffix.
+		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice
+		if (suffix && strEndsWith(input, suffix)) {
+			input = input.slice(0, -1 * suffix.length);
+		}
+
+		// Remove the thousand grouping.
+		if (thousand) {
+			input = input.split(thousand).join('');
+		}
+
+		// Set the decimal separator back to period.
+		if (mark) {
+			input = input.replace(mark, '.');
+		}
+
+		// Prepend the negative symbol.
+		if (inputIsNegative) {
+			output += '-';
+		}
+
+		// Add the number
+		output += input;
+
+		// Trim all non-numeric characters (allow '.' and '-');
+		output = output.replace(/[^0-9\.\-.]/g, '');
+
+		// The value contains no parse-able number.
+		if (output === '') {
+			return false;
+		}
+
+		// Covert to number.
+		output = Number(output);
+
+		// Run the user-specified post-decoder.
+		if (decoder) {
+			output = decoder(output);
+		}
+
+		// Check is the output is valid, otherwise: return false.
+		if (!isValidNumber(output)) {
+			return false;
+		}
+
+		return output;
+	}
+
+	// Framework
+
+	// Validate formatting options
+	function validate(inputOptions) {
+
+		var i,
+		    optionName,
+		    optionValue,
+		    filteredOptions = {};
+
+		if (inputOptions['suffix'] === undefined) {
+			inputOptions['suffix'] = inputOptions['postfix'];
+		}
+
+		for (i = 0; i < FormatOptions.length; i += 1) {
+
+			optionName = FormatOptions[i];
+			optionValue = inputOptions[optionName];
+
+			if (optionValue === undefined) {
+
+				// Only default if negativeBefore isn't set.
+				if (optionName === 'negative' && !filteredOptions.negativeBefore) {
+					filteredOptions[optionName] = '-';
+					// Don't set a default for mark when 'thousand' is set.
+				} else if (optionName === 'mark' && filteredOptions.thousand !== '.') {
+					filteredOptions[optionName] = '.';
+				} else {
+					filteredOptions[optionName] = false;
+				}
+
+				// Floating points in JS are stable up to 7 decimals.
+			} else if (optionName === 'decimals') {
+				if (optionValue >= 0 && optionValue < 8) {
+					filteredOptions[optionName] = optionValue;
+				} else {
+					throw new Error(optionName);
+				}
+
+				// These options, when provided, must be functions.
+			} else if (optionName === 'encoder' || optionName === 'decoder' || optionName === 'edit' || optionName === 'undo') {
+				if (typeof optionValue === 'function') {
+					filteredOptions[optionName] = optionValue;
+				} else {
+					throw new Error(optionName);
+				}
+
+				// Other options are strings.
+			} else {
+
+				if (typeof optionValue === 'string') {
+					filteredOptions[optionName] = optionValue;
+				} else {
+					throw new Error(optionName);
+				}
+			}
+		}
+
+		// Some values can't be extracted from a
+		// string if certain combinations are present.
+		throwEqualError(filteredOptions, 'mark', 'thousand');
+		throwEqualError(filteredOptions, 'prefix', 'negative');
+		throwEqualError(filteredOptions, 'prefix', 'negativeBefore');
+
+		return filteredOptions;
+	}
+
+	// Pass all options as function arguments
+	function passAll(options, method, input) {
+		var i,
+		    args = [];
+
+		// Add all options in order of FormatOptions
+		for (i = 0; i < FormatOptions.length; i += 1) {
+			args.push(options[FormatOptions[i]]);
+		}
+
+		// Append the input, then call the method, presenting all
+		// options as arguments.
+		args.push(input);
+		return method.apply('', args);
+	}
+
+	function wNumb(options) {
+
+		if (!(this instanceof wNumb)) {
+			return new wNumb(options);
+		}
+
+		if (typeof options !== "object") {
+			return;
+		}
+
+		options = validate(options);
+
+		// Call 'formatTo' with proper arguments.
+		this.to = function (input) {
+			return passAll(options, formatTo, input);
+		};
+
+		// Call 'formatFrom' with proper arguments.
+		this.from = function (input) {
+			return passAll(options, formatFrom, input);
+		};
+	}
+
+	return wNumb;
 });
 
-},{"../headersystem":59,"./template":58,"empty-element":4,"page":13,"title":21}],58:[function(require,module,exports){
-var yo = require('yo-yo');
-
-module.exports = function () {
-	return yo`<div class="content">
-		<div class="container">
-			<div class="row">
-				<div class="col s12">
-					<p>ver aca las estadisticas</p>
-				</div>
-			</div>
-		</div>	
-	</div>`;
-};
-
-},{"yo-yo":22}],59:[function(require,module,exports){
-var yo = require('yo-yo');
-var empty = require('empty-element');
-
-$(document).ready(function () {
-	$('.button-collapse').sideNav();
-});
-
-var el = yo`<nav class="header grey lighten-3">
-	<div class="container">
-		<div class="row piso-nav-system">
-			<div class="col s12">
-				<div class="nav-wrapper">
-					<div class="container barra-system">
-						<div class="row piso-nav">
-								<div class="col s2">
-							  	<a href="/ragsystem" class="brand-logo">SISTEMA DE GESTION</a>
-							  	<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-							</div>
-							<div class="col s8">
-								<ul class="right hide-on-med-and-down">
-									<li><a href="/estadisticas">ESTADISTICAS</a></li>
-								    <li><a href="/adm_equipos">ADM_EQUIPO</a></li>
-								    <li><a href="/adm_productos">ADM_PRODUCTOS</a></li>
-								</ul>
-							</div>
-							<div class="col s2 offset-s8 m2 offset-m8 l2">
-							   	<a href="#" class="btn btn-large btn-flat dropdown-button" data-activates="drop-user">
-									<i class="small material-icons">perm_identity</i>
-								</a>
-								<ul id="drop-user" class="dropdown-content">
-									<li><a href="#">Salir</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<ul class="side-nav" id="mobile-demo">
-					  	<li><a href="/estadisticas">ESTADISTICAS</a></li>
-					    <li><a href="/adm_equipos">ADM_EQUIPO</a></li>
-					    <li><a href="/adm_productos">ADM_PRODUCTOS</a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
-</nav>`;
-
-module.exports = function header(ctx, next) {
-	var container = document.getElementById('header-container');
-	empty(container).appendChild(el);
-	next();
-};
-
-},{"empty-element":4,"yo-yo":22}],60:[function(require,module,exports){
-var page = require('page');
-var empty = require('empty-element');
-var template = require('./template');
-var title = require('title');
-var header = require('../headersystem');
-
-page('/ragsystem', header, function (ctx, next) {
-	title('Sistema Interno');
-	var main = document.getElementById('main-container');
-	empty(main).appendChild(template());
-});
-
-},{"../headersystem":59,"./template":61,"empty-element":4,"page":13,"title":21}],61:[function(require,module,exports){
-var yo = require('yo-yo');
-
-module.exports = function () {
-	return yo`<div class="content">
-		<div class="container">
-			<div class="row">
-				<div class="col s12">
-					<ul class="collection with-header">
-						<li class="collection-header"><h4>Pedidos</h4></li>
-						<li class="collection-item avatar venta-item">
-							<div class="row">
-								<div class="col s12 m6">
-									<span class="title">Dueño</span>
-									<p>Direccion <br>
-										Fono <br>
-										Detalle
-									</p>
-								</div>
-								<div class="col s12 m6">
-									<form action="#">
-										<div class="row">
-											<div class="col s12 m4">
-												<input type="checkbox" class="filled-in" id="filled-in-box50" />
-												<label for="filled-in-box50">Cocina</label>
-											</div>
-											<div class="col s12 m4">
-												<input type="checkbox" class="filled-in" id="filled-in-box52" />
-												<label for="filled-in-box52">Despacho</label>
-											</div>
-											<div class="col s12 m4">
-												<input type="checkbox" class="filled-in" id="filled-in-box53" />
-												<label for="filled-in-box53">Entregado</label>
-											</div>
-										</div>		
-									</form>
-								</div>
-							</div>
-							<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>	
-	</div>`;
-};
-
-},{"yo-yo":22}],62:[function(require,module,exports){
-var yo = require('yo-yo');
-
-module.exports = function (pic) {
-	return yo`<li class="collection-item avatar">
-		<img src="${pic.adicionalurl}" alt="" class="circle">
-		<span class="title">${pic.adicionalname}  $${pic.adicionalprice}.- ${pic.likes} me gusta</span>
-		<p>${pic.adicionalcontent}</p>
-		<a href="#!" class="secondary-content"><i class="material-icons">edit</i></a>
-	</li>`;
-};
-
-},{"yo-yo":22}],63:[function(require,module,exports){
-var yo = require('yo-yo');
-
-module.exports = function (pic) {
-	return yo`<li class="collection-item avatar">
-		<img src="${pic.ensaladaurl}" alt="" class="circle">
-		<span class="title">${pic.ensaladaname}  $${pic.ensaladaprice}.- ${pic.likes} me gusta</span>
-		<p>${pic.ensaladacontent}</p>
-		<a href="#!" class="secondary-content"><i class="material-icons">edit</i></a>
-	</li>`;
-};
-
-},{"yo-yo":22}],64:[function(require,module,exports){
-var yo = require('yo-yo');
-
-module.exports = function (pic) {
-	return yo`<li class="collection-item avatar">
-		<img src="${pic.pizzaurl}" alt="" class="circle">
-		<span class="title">${pic.pizzaname} / $${pic.pizzaprice}.- / ${pic.likes} me gusta</span>
-		<p class="detalle-item">${pic.pizzacontent}</p>
-		<a href="#!" class="secondary-content edit-item"><i class="material-icons">edit</i></a>
-	</li>`;
-};
-
-},{"yo-yo":22}]},{},[42]);
+},{}]},{},[39]);

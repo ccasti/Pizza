@@ -39,15 +39,22 @@
 
 @media #{$small-and-down} {
 	.vegetal {
-		max-width: 40px;
+		max-width: 30px;
 	}
 
 	.ingName {
-		font-size: 1rem;
+		font-size: 0.95rem;
 		margin: 5px 0 !important;
 	}
 
 	.checkbox {
 		margin: 5px auto;
+	}
+	.precioIng {
+		padding: 0 !important;
+	}
+
+	.contIng {
+		padding: 0 !important;
 	}
 }

@@ -2,7 +2,7 @@ var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
 var title = require('title');
-var header = require('../header');
+var header = require('../headerTest');
 var footer = require('../footer');
 
 page('/', header, footer, function (ctx, next) {
@@ -22,7 +22,7 @@ page('/', header, footer, function (ctx, next) {
 
 		this.getTotal = function() {
 			var total = 0;
-			for(i of this.getCarrito) {
+			for(i of JSON.parse(localStorage.getItem("carrito"))) {
 				total += parseFloat(i.cantidad) * parseFloat(i.price);
 			}
 			return total;
@@ -39,7 +39,7 @@ page('/', header, footer, function (ctx, next) {
 
 		this.iraComprar = function() {
 			if(this.getCarrito.length <= 0) {
-				alert("No tienes productos en tu carrito :-(");
+				alert("No tienes productos en tu carro");
 				return
 			}else{
 				$('#modal9').modal('close');
@@ -50,7 +50,7 @@ page('/', header, footer, function (ctx, next) {
 
 	function Carrito_View() {
 		this.renderCarrito = function() {
-			if(carrito.getCarrito.length <= 0) {
+			if(JSON.parse(localStorage.getItem("carrito")).length <= 0) {
 				templateNoItems = `<div class="row">
 					<div class="col s12 center-align">
 						No tienes productos en tu carro
@@ -86,7 +86,7 @@ page('/', header, footer, function (ctx, next) {
 		}
 
 		this.totalProductos = function() {
-			var total = carrito.getCarrito.length;
+			var total = JSON.parse(localStorage.getItem("carrito")).length;
 			document.getElementById('totalProductos').innerHTML = total;
 		}
 	}
@@ -95,6 +95,10 @@ page('/', header, footer, function (ctx, next) {
 		this.constructor = function() {
 			if(!localStorage.getItem("ingredientes")){
 				localStorage.setItem('ingredientes','[]');
+			}else{
+				if(this.getIngredientes.length > 0) {
+					localStorage.setItem('ingredientes','[]');
+				}
 			}
 		}
 		this.getIngredientes = JSON.parse(localStorage.getItem("ingredientes"));
@@ -118,7 +122,6 @@ page('/', header, footer, function (ctx, next) {
 		comprando.constructor();
 		armar_pizza.constructor();
 		carrito_view.renderCarrito();
-		carrito_view.totalProductos();
 		
 		document.getElementById('productosCarrito').addEventListener("click", function(ev) {
 			ev.preventDefault();

@@ -1,7 +1,8 @@
 var yo = require('yo-yo');
+var aPesos = require('../../utilities/aPesos');
 
 module.exports = function (pic) {
-	return yo`<div class="col s12 m6">
+	return yo`<div class="col s12 m6 contIng">
 		<div class="row cursorHover">
 			<div id="addIngrediente" data-id="${pic.id}" class="col s1 checkbox">
 				<span id="${pic.id}" class=""><i id="addIngrediente" data-id="${pic.id}" class="small material-icons">check_box_outline_blank</i></span>
@@ -13,8 +14,8 @@ module.exports = function (pic) {
 			<div id="addIngrediente" data-id="${pic.id}" class="col s7 m6 nameCont">
 				<p id="addIngrediente" data-id="${pic.id}" class="ingName">${pic.name}</p>
 			</div>
-			<div id="addIngrediente" data-id="${pic.id}" class="col s2">
-				<p id="addIngrediente" data-id="${pic.id}" class="ingName">$${pic.price}.-</p>
+			<div id="addIngrediente" data-id="${pic.id}" class="col s2 precioIng">
+				<p id="addIngrediente" data-id="${pic.id}" class="ingName">${aPesos(pic.price)}.-</p>
 			</div>
 		</div>
 	</div>`

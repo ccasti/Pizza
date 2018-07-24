@@ -34,6 +34,10 @@
 	margin-top: 2rem;
 }
 
+.topOf {
+	margin-top: 2rem;
+}
+
 .dropdown-content li > span {
 	color: #1976d2;
 }
@@ -44,6 +48,14 @@
 
 .ingContenedor {
 	margin-bottom: 0 !important;
+}
+
+.btnOferta {
+	margin: 0 !important;
+}
+
+.itemsOferta {
+	padding: 0;
 }
 
 @media #{$medium-and-down} {
@@ -63,5 +75,9 @@
 
 	.itemsCarta {
 		padding: 0;
+	}
+
+	.topOf {
+		margin-top: 1rem;
 	}
 }

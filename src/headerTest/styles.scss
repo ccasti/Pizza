@@ -1,0 +1,46 @@
+.header {
+	min-height: 60px !important;
+	position: fixed;
+	z-index: 100;
+}
+
+.piso-nav {
+	margin-bottom: 0 !important;
+}
+
+.barra {
+	margin: 0;
+	min-width: 100%;
+}
+
+nav a {
+	color: $color-text !important;
+}
+
+nav ul a {
+	color: $color-text !important;
+	font-size: 0.8rem;
+}
+
+.sp {
+	padding: 0 !important;
+}
+
+.chip-user {
+	margin: 12px 0 !important;
+}
+
+.chip-user:hover {
+	background-color: #42a5f5 !important;
+}
+
+.chip-carro {
+	color: white !important;
+	padding: 0 10px !important;
+	margin: 12px 0 !important;
+}
+
+.carrito {
+	line-height: inherit !important;
+	max-height: 30px !important;
+}

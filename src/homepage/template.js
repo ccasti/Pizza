@@ -5,17 +5,22 @@ module.exports = function () {
 	var el = yo`<div class="col s12 seccion">
 		<div class="row nobottom">
 			<div class="col s12 center-align">
+				<h2 class="tituloHome">PAGINA EN CONSTRUCCION</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 center-align">
+				<p>... En unos días</p>
+			</div>
+		</div>
+		<div class="row nobottom">
+			<div class="col s12 center-align">
 				<h2 class="tituloHome">RAGUSTINO FOOD EXPERIENCE</h2>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col s12 center-align">
-				<p>Es un nuevo concepto de negocio, innovador, diferenciado y acorde a los tiempos actuales. Somos parte del cambio radical que ha experimentado la industria gastronómica desde la expansión sin precedentes de internet y las redes sociales. Somos un DELI GOURMET o un PORTAL WEB DE PEDIDOS GASTRONÓMICOS, pero queremos ir mucho más allá y darle un salto de calidad al ya clásico e irregular servicio de “pedido a domicilio”. Nuestro principal objetivo es entregar una experiencia gastronómica integral, moderna y de excelencia. Para ello contamos con una cocina creativa y versátil, procesos completamente digitalizados para pagos online, rastreo interactivo de reparto y programación de pedidos por horas o días. Cocinamos con pasión y trabajamos con energía porque NOS ENCANTA LO QUE HACEMOS! Queremos crecer e innovar pero por sobre todo queremos hacer la diferencia entregando siempre un servicio de calidad orientado al cliente. Te invitamos a disfrutar hoy de una nueva experiencia gourmet a domicilio. TE ESPERAMOS!!!</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col s12 center-align">
-				<a href="/carta" class="waves-effect waves-light btn blue darken-2"><i class="material-icons left">store</i>Nuestra Carta</a>
+				<p>completamente digital</p>
 			</div>
 		</div>
 		<div class="row">
@@ -66,7 +71,7 @@ module.exports = function () {
 				</div>
 				<div class="row nobottom">
 					<div class="col s12 center-align">
-						<p class="horas">Domingo 13:00 -20:00hrs</p>
+						<p class="horas">Domingo 18:00 - 0:00</p>
 					</div>
 				</div>
 				<div class="row programa">
@@ -83,3 +88,16 @@ module.exports = function () {
 
 	return layout(el);
 }
+
+/*
+<div class="row">
+	<div class="col s12 center-align">
+		<p>Es un nuevo concepto de negocio, innovador, diferenciado y acorde a los tiempos actuales. Somos parte del cambio radical que ha experimentado la industria gastronómica desde la expansión sin precedentes de internet y las redes sociales. Somos un DELI GOURMET o un PORTAL WEB DE PEDIDOS GASTRONÓMICOS, pero queremos ir mucho más allá y darle un salto de calidad al ya clásico e irregular servicio de “pedido a domicilio”. Nuestro principal objetivo es entregar una experiencia gastronómica integral, moderna y de excelencia. Para ello contamos con una cocina creativa y versátil, procesos completamente digitalizados para pagos online, rastreo interactivo de reparto y programación de pedidos por horas o días. Cocinamos con pasión y trabajamos con energía porque NOS ENCANTA LO QUE HACEMOS! Queremos crecer e innovar pero por sobre todo queremos hacer la diferencia entregando siempre un servicio de calidad orientado al cliente. Te invitamos a disfrutar hoy de una nueva experiencia gourmet a domicilio. TE ESPERAMOS!!!</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col s12 center-align">
+		<a href="/carta" class="waves-effect waves-light btn blue darken-2"><i class="material-icons left">store</i>Nuestra Carta</a>
+	</div>
+</div>
+*/

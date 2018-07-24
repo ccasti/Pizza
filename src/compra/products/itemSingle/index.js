@@ -1,4 +1,5 @@
 var yo = require('yo-yo');
+var aPesos = require('../../../utilities/aPesos');
 
 module.exports = function (pic) {
 	return yo`<div class="row itemComprando">
@@ -6,7 +7,7 @@ module.exports = function (pic) {
 			${pic.name}
 		</div>
 		<div class="col s3 right-align">
-			$ ${pic.price}
+			${aPesos(pic.price)}.-
 		</div>
 	</div>`
 }

@@ -107,7 +107,7 @@ app.get('/api/ingredientes', function(req, res) {
 	var ingredientes = [
 		{
 			id: '600001',
-			control: true,
+			control: 1,
 			tipo: 'queso',
 			name: 'Mozzarella',
 			url: 'mozzarella.jpg',
@@ -116,7 +116,7 @@ app.get('/api/ingredientes', function(req, res) {
 		},
 		{
 			id: '600002',
-			control: true,
+			control: 1,
 			tipo: 'queso',
 			name: 'Gruyere',
 			url: 'gruyere.jpg',
@@ -125,7 +125,7 @@ app.get('/api/ingredientes', function(req, res) {
 		},
 		{
 			id: '600003',
-			control: true,
+			control: 1,
 			tipo: 'queso',
 			name: 'Azul',
 			url: 'azul.jpg',
@@ -134,7 +134,7 @@ app.get('/api/ingredientes', function(req, res) {
 		},
 		{
 			id: '600004',
-			control: true,
+			control: 1,
 			tipo: 'queso',
 			name: 'Parmesano',
 			url: 'parmesano.jpg',
@@ -143,7 +143,7 @@ app.get('/api/ingredientes', function(req, res) {
 		},
 		{
 			id: '600005',
-			control: true,
+			control: 1,
 			tipo: 'carne',
 			name: 'Pavo a las Finas Hiervas',
 			url: 'pavo.jpg',
@@ -152,8 +152,8 @@ app.get('/api/ingredientes', function(req, res) {
 		},
 		{
 			id: '600006',
-			control: true,
-			tipo: 'carne',
+			control: 1,
+			tipo: 'mar',
 			name: 'Pollo al Curry',
 			url: 'pollo.jpg',
 			gramo: 150,
@@ -161,8 +161,8 @@ app.get('/api/ingredientes', function(req, res) {
 		},
 		{
 			id: '600007',
-			control: true,
-			tipo: 'carne',
+			control: 1,
+			tipo: 'mar',
 			name: 'Pollo al Grill',
 			url: 'pollo.jpg',
 			gramo: 150,
@@ -170,7 +170,7 @@ app.get('/api/ingredientes', function(req, res) {
 		},
 		{
 			id: '600008',
-			control: true,
+			control: 1,
 			tipo: 'carne',
 			name: 'Pollo al Pesto',
 			url: 'pollo.jpg',
@@ -179,7 +179,7 @@ app.get('/api/ingredientes', function(req, res) {
 		},
 		{
 			id: '600009',
-			control: true,
+			control: 1,
 			tipo: 'carne',
 			name: 'Pollo a la Plancha',
 			url: 'pollo.jpg',
@@ -188,7 +188,7 @@ app.get('/api/ingredientes', function(req, res) {
 		},
 		{
 			id: '600010',
-			control: true,
+			control: 1,
 			tipo: 'carne',
 			name: 'Codero Salteado',
 			url: 'cordero.jpg',
@@ -197,8 +197,8 @@ app.get('/api/ingredientes', function(req, res) {
 		},
 		{
 			id: '600011',
-			control: true,
-			tipo: 'embu',
+			control: 1,
+			tipo: 'embus',
 			name: 'Jamón Pierna',
 			url: 'jamon.jpg',
 			gramo: 150,
@@ -206,8 +206,8 @@ app.get('/api/ingredientes', function(req, res) {
 		},
 		{
 			id: '600012',
-			control: true,
-			tipo: 'embu',
+			control: 1,
+			tipo: 'embus',
 			name: 'Chorizo Ibérico',
 			url: 'chorizo.jpg',
 			gramo: 150,
@@ -215,8 +215,8 @@ app.get('/api/ingredientes', function(req, res) {
 		},
 		{
 			id: '600031',
-			control: false,
-			tipo: 'espec',
+			control: 0,
+			tipo: 'verdu',
 			name: 'Oregano',
 			url: 'oregano.jpg',
 			gramo: 1,
@@ -224,8 +224,8 @@ app.get('/api/ingredientes', function(req, res) {
 		},
 		{
 			id: '600032',
-			control: false,
-			tipo: 'espec',
+			control: 0,
+			tipo: 'verdu',
 			name: 'Pesto Casero de Albahaca y Nueces',
 			url: 'pesto.jpg',
 			gramo: 1,
@@ -233,7 +233,7 @@ app.get('/api/ingredientes', function(req, res) {
 		},
 		{
 			id: '600033',
-			control: false,
+			control: 0,
 			tipo: 'espec',
 			name: 'Romero',
 			url: 'romero.jpg',
@@ -242,7 +242,7 @@ app.get('/api/ingredientes', function(req, res) {
 		},
 		{
 			id: '600034',
-			control: false,
+			control: 0,
 			tipo: 'espec',
 			name: 'Pimienta Blanca',
 			url: 'pblanca.jpg',
@@ -251,7 +251,7 @@ app.get('/api/ingredientes', function(req, res) {
 		},
 		{
 			id: '600035',
-			control: false,
+			control: 0,
 			tipo: 'espec',
 			name: 'Pimienta Negra',
 			url: 'pnegra.jpg',
@@ -267,7 +267,7 @@ app.get('/api/calzones', function(req, res) {
 	var calzones = [
 		{
 			id: '200001',
-			name: 'CALZONE JAMON-PESTO',
+			name: 'Calzone Jamón Pesto',
 			url: 'grissini.jpg',
 			content: 'Pomodoro, mozzarella, jamón, pesto, albhaca',
 			likes: 301,
@@ -276,7 +276,7 @@ app.get('/api/calzones', function(req, res) {
 		},
 		{
 			id: '200002',
-			name: 'CALZONE CHAMPIÑON',
+			name: 'Calzone Champiñon',
 			url: 'minicalzone.jpg',
 			content: 'Pomodoro, mozzarella, jamón, champiñones, oregano',
 			likes: 302,
@@ -285,7 +285,7 @@ app.get('/api/calzones', function(req, res) {
 		},
 		{
 			id: '200003',
-			name: 'CALZONE PIMENTON',
+			name: 'Calzone Pimentón',
 			url: 'focaccia.jpg',
 			content: 'Pomodoro, mozzarella, pimentón asado, zuchinni asado',
 			likes: 303,
@@ -301,7 +301,7 @@ app.get('/api/piadinas', function(req, res) {
 	var piadinas = [
 		{
 			id: '300001',
-			name: 'PIADINA CLASICA',
+			name: 'Piadina Clásica',
 			url: 'grissini.jpg',
 			content: 'Queso crema, jamón, tomate cherry, rúcula',
 			likes: 301,
@@ -310,7 +310,7 @@ app.get('/api/piadinas', function(req, res) {
 		},
 		{
 			id: '300002',
-			name: 'PIADINA CHAMPIÑON',
+			name: 'Piadina Champiñon',
 			url: 'minicalzone.jpg',
 			content: 'Queso crema, jamón, champiñon, rúcula',
 			likes: 302,
@@ -319,7 +319,7 @@ app.get('/api/piadinas', function(req, res) {
 		},
 		{
 			id: '300003',
-			name: 'PIADINA ATUN',
+			name: 'Piadina Atún',
 			url: 'focaccia.jpg',
 			content: 'Mozzarella, atún, cebolla, tomate',
 			likes: 303,
@@ -338,6 +338,7 @@ app.get('/api/packs', function(req, res) {
 			name: 'PACK INDIVIDUAL A',
 			url: 'pack1.png',
 			excep: true,
+			tipo: "single",
 			contents: {
 				opciones: [
 					{
@@ -442,10 +443,120 @@ app.get('/api/packs', function(req, res) {
 			price: 18900
 		},
 		{
+			id: '540000',
+			name: 'PACK INDIVIDUAL A',
+			url: 'pack1.png',
+			excep: true,
+			tipo: "four",
+			contents: {
+				opciones: [
+					{
+						id: '541000',
+						idpack: '540000',
+						tipo: 'Pizza',
+						selec: false,
+						items: [
+							{
+								idpack: '540000',
+								idopt: '541000',
+								iditem: '541001',
+								itemname: 'Margarita',
+								selected: false
+							},
+							{
+								idpack: '540000',
+								idopt: '541000',
+								iditem: '541002',
+								itemname: 'Zucchini Parmesano',
+								selected: false
+							},
+							{
+								idpack: '540000',
+								idopt: '541000',
+								iditem: '541003',
+								itemname: 'Caprese',
+								selected: false
+							},
+							{
+								idpack: '540000',
+								idopt: '541000',
+								iditem: '541004',
+								itemname: 'Pollo al pesto',
+								selected: false
+							}
+						]
+					},
+					{
+						id: '542000',
+						idpack: '540000',
+						tipo: 'Líquido',
+						selec: false,
+						items: [
+							{
+								idpack: '540000',
+								idopt: '542000',
+								iditem: '542001',
+								itemname: 'Opción 1',
+								selected: false
+							},
+							{
+								idpack: '540000',
+								idopt: '542000',
+								iditem: '542002',
+								itemname: 'Opción 2',
+								selected: false
+							},
+							{
+								idpack: '540000',
+								idopt: '542000',
+								iditem: '542003',
+								itemname: 'Opción 3',
+								selected: false
+							},
+							{
+								idpack: '540000',
+								idopt: '542000',
+								iditem: '542004',
+								itemname: 'Opción 4',
+								selected: false
+							}
+						]
+					}
+				]
+			},
+			content: [
+				{
+					optid: '513001',
+					optname: '- Ensalada Ragustino'
+				},
+				{
+					optid: '513002',
+					optname: '- Grissinis'
+				},
+				
+				{
+					optid: '513003',
+					optname: '- Bombones Ferrero Rocher (3 unidades)'
+				},
+				{
+					optid: '513004',
+					optname: '- Cortador de Pizza'
+				},
+				{
+					optid: '513005',
+					optname: '- Tarjeta de Saludo'
+				}
+			],
+			likes: 501,
+			liked: false,
+			price: 18900
+		},
+		{
 			id: '520000',
 			name: 'PACK INDIVIDUAL B',
 			url: 'pack2.png',
 			excep: true,
+			tipo: "six",
 			contents: {
 				opciones: [
 					{
@@ -592,6 +703,7 @@ app.get('/api/packs', function(req, res) {
 			name: 'PACK INDIVIDUAL C',
 			url: 'pack3.png',
 			excep: true,
+			tipo: "eight",
 			contents: {
 				opciones: [
 					{
@@ -937,33 +1049,209 @@ app.get('/api/items', function(req, res) {
 	var items = [
 		{
 			id: '400001',
-			beber: true,
-			name: 'Fanta Individual',
+			name: 'Fanta Normal',
 			content: 'Lata Individual 350ml',
+			tipo: 'beblata',
 			url: 'fantal.png',
 			price: 1750
 		},
 		{
 			id: '400002',
-			beber: true,
-			name: 'Fanta Individual Zero',
+			name: 'Fanta Zero',
 			content: 'Lata Individual 350ml',
+			tipo: 'beblata',
 			url: 'fantalz.png',
 			price: 1750
 		},
 		{
 			id: '400003',
-			beber: true,
-			name: 'Coca Cola Individual',
+			name: 'Coca Cola Normal',
 			content: 'Lata Individual 350ml',
+			tipo: 'bebgra',
 			url: 'cocal.png',
 			price: 1750
 		},
 		{
 			id: '400004',
-			beber: true,
-			name: 'Coca Cola Individual Zero',
+			name: 'Coca Cola Zero',
 			content: 'Lata Individual 350ml',
+			tipo: 'bebgra',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400005',
+			name: 'Coca Cola Normal',
+			content: 'Lata Individual 350ml',
+			tipo: 'bebext',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400006',
+			name: 'Coca Cola Zero',
+			content: 'Lata Individual 350ml',
+			tipo: 'bebext',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400007',
+			name: 'Jugo 1',
+			content: 'Lata Individual 350ml',
+			tipo: 'jugo',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400008',
+			name: 'Jugo 2',
+			content: 'Lata Individual 350ml',
+			tipo: 'jugo',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400009',
+			name: 'Cerveza 1',
+			content: 'Lata Individual 350ml',
+			tipo: 'cerveza',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400010',
+			name: 'Cerveza 2',
+			content: 'Lata Individual 350ml',
+			tipo: 'cerveza',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400011',
+			name: 'Agua 1',
+			content: 'Lata Individual 350ml',
+			tipo: 'agua',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400012',
+			name: 'Agua 2',
+			content: 'Lata Individual 350ml',
+			tipo: 'agua',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400013',
+			name: 'Accesorio 1',
+			content: 'Lata Individual 350ml',
+			tipo: 'acces',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400014',
+			name: 'Accesorio 2',
+			content: 'Lata Individual 350ml',
+			tipo: 'acces',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400015',
+			name: 'Queso 1',
+			content: 'Lata Individual 350ml',
+			tipo: 'queso',
+			url: 'cracor.png',
+			price: 1750
+		},
+		{
+			id: '400016',
+			name: 'Queso 2',
+			content: 'Lata Individual 350ml',
+			tipo: 'queso',
+			url: 'cuchi.png',
+			price: 1750
+		},
+		{
+			id: '400017',
+			name: 'Aceituna 1',
+			content: 'Lata Individual 350ml',
+			tipo: 'aceit',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400018',
+			name: 'Aceituna 2',
+			content: 'Lata Individual 350ml',
+			tipo: 'aceit',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400019',
+			name: 'Fruto Seco 1',
+			content: 'Lata Individual 350ml',
+			tipo: 'secos',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400020',
+			name: 'Fruto Seco 2',
+			content: 'Lata Individual 350ml',
+			tipo: 'secos',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400021',
+			name: 'Papa Frita 1',
+			content: 'Lata Individual 350ml',
+			tipo: 'papas',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400022',
+			name: 'Papa Frita 2',
+			content: 'Lata Individual 350ml',
+			tipo: 'papas',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400023',
+			name: 'Chocolate 1',
+			content: 'Lata Individual 350ml',
+			tipo: 'choco',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400024',
+			name: 'Chocolate 2',
+			content: 'Lata Individual 350ml',
+			tipo: 'choco',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400025',
+			name: 'Galleta 1',
+			content: 'Lata Individual 350ml',
+			tipo: 'galle',
+			url: 'cocalz.png',
+			price: 1750
+		},
+		{
+			id: '400026',
+			name: 'Galleta 2',
+			content: 'Lata Individual 350ml',
+			tipo: 'galle',
 			url: 'cocalz.png',
 			price: 1750
 		}

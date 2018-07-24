@@ -22,8 +22,8 @@ module.exports = function layout (content) {
 		<div id="modal9" class="modal bottom-sheet">
 			<div class="container">
 				<div class="row">
-					<div class="col s12">
-						<div class="modal-content">
+					<div class="col s12 titCarro">
+						<div class="modal-content carritoV">
 							<div class="row itemCarrito">
 								<div class="col s8">
 									<h4 class="tituloCarro">Tu Carro de Compras</h4>
@@ -35,21 +35,21 @@ module.exports = function layout (content) {
 							<ul class="collection">
 								<div class="row itemCarrito">
 									<div class="col s12">
-										<li class="collection-item">
+										<li class="collection-item arregloPad">
 											<div class="row itemCarrito">
-												<div class="col s8 m4">
+												<div class="col s3 m4 titCarro">
 													Nombre
 												</div>
-												<div class="col s4 m2 center-align">
+												<div class="col s3 m2 right-align titCarro">
 													Precio
 												</div>
-												<div class="col s3 offset-s3 m2 center-align">
-													Cantidad
+												<div class="col s2 m2 right-align titCarro">
+													Cant.
 												</div>
-												<div class="col s3 m2 center-align">
+												<div class="col s2 m2 center-align titCarro">
 													Total
 												</div>
-												<div class="col s3 m2 center-align">
+												<div class="col s2 m2 center-align titCarro">
 													Quitar
 												</div>
 											</div>

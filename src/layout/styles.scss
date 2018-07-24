@@ -36,8 +36,8 @@
 	color: #1976d2;
 }
 
-.modal .modal-content {
-	padding-bottom: 0 !important;
+.carritoV {
+	padding: 20px 0 0 0 !important;
 }
 
 .boxIng {
@@ -66,6 +66,14 @@
 
 @media #{$small-and-down} {
 	.tituloCarro {
-		font-size: 1.6rem !important;
-	}	
+		font-size: 1.4rem !important;
+	}
+
+	.titCarro {
+		padding: 0 !important;
+	}
+
+	.arregloPad {
+		padding: 10px 5px 10px 14px !important;
+	}
 }

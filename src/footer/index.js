@@ -13,6 +13,7 @@ var el = yo`<footer class="page-footer grey lighten-2">
                 <ul>
 	                <li><a class="grey-text text-darken-4" href="http://www.facebook.com/ragustinofoodexperience" target="_blank">Facebook</a></li>
 	                <li><a class="grey-text text-darken-4" href="http://www.instagram.com/ragustinofoodexperience" target="_blank">Instagram</a></li>
+                    <li><a class="grey-text text-darken-4" href="/carta">--------</a></li>
 	            </ul>
         	</div>
         </div>

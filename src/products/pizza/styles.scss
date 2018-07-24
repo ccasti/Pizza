@@ -3,23 +3,11 @@
 	margin: 2rem 0 !important;
 }	
 
-@media #{$medium-and-down} {
-    .pizza-card-content {
-    	max-width: 39%;
-    }
-}
-
-@media #{$small-and-down} {
-	.pizza-card-content {
-		max-width: 80%;
-	}
-}
-
 .pizza-text {
 	max-width: 100%;
 	font-size: 1rem !important;
 	color: $color-brand;
-	margin-bottom: 1rem !important;
+	margin-bottom: 0 !important;
 }
 
 .pizza-content-text {
@@ -28,31 +16,30 @@
 	text-align: justify;
 }
 
-.likes-content {
-	margin: 0 0 2rem 0 !important;
-	padding: 0 0 1rem 0 !important;
-}
-
 .card .card-content {
     padding: 0.8rem !important;
-}
-
-.likes {
-	line-height: 2rem;
-	margin-left: 1rem;
-	font-size: 0.8rem;
 }
 
 .card .favorite {
 	display: none;
 }
 
-.card.liked {
-	.favorite {
-		display: block;
-	}
+.botonAgregar {
+	margin-bottom: 1rem !important;
+}
 
-	.favorite_border {
-		display: none;
+.pricePizza {
+	font-size: 1rem;
+}
+
+@media #{$medium-and-down} {
+    .pizza-card-content {
+    	max-width: 42%;
+    }
+}
+
+@media #{$small-and-down} {
+	.pizza-card-content {
+		max-width: 90%;
 	}
 }

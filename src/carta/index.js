@@ -5,13 +5,15 @@ var title = require('title');
 var header = require('../header');
 var footer = require('../footer');
 var request = require('superagent');
+var aPesos = require('../utilities/aPesos');
+var wNumb = require('../utilities/aPesos/wNumb')
 
 page('/carta',
 	header,
 	loadPizzas,
 	loadIngredientes,
-	loadCalzones,
-	loadPiadinas,
+	/*loadCalzones,
+	loadPiadinas,*/
 	loadPacks,
 	loadItems,
 	footer,
@@ -22,8 +24,8 @@ page('/carta',
 
 	empty(main).appendChild(template(
 		ctx.pizzas,
-		ctx.calzones,
-		ctx.piadinas,
+		/*ctx.calzones,
+		ctx.piadinas,*/
 		ctx.ingredientes,
 		ctx.packs,
 		ctx.items
@@ -33,19 +35,23 @@ page('/carta',
 		var catalogo = [];
 		var contChequeo = [];
 		
-		for (i of ctx.pizzas) {
+		for(i of ctx.pizzas) {
 			catalogo.push(i);
 		}
-		for (i of ctx.calzones) {
+		
+		/*for(i of ctx.calzones) {
 			catalogo.push(i);
 		}
-		for (i of ctx.piadinas) {
+		
+		for(i of ctx.piadinas) {
+			catalogo.push(i);
+		}*/
+		
+		for(i of ctx.packs) {
 			catalogo.push(i);
 		}
-		for (i of ctx.packs) {
-			catalogo.push(i);
-		}
-		for (i of ctx.items) {
+		
+		for(i of ctx.items) {
 			catalogo.push(i);
 		}
 
@@ -58,7 +64,7 @@ page('/carta',
 		this.getCarrito = JSON.parse(localStorage.getItem("carrito"));
 
 		this.mantenedorChequeo = function() {
-			if(this.getCarrito.length > 0) {
+			if(JSON.parse(localStorage.getItem("carrito")).length > 0) {
 				for(i of this.getCarrito) {
 					var manChequeo = i;
 					contChequeo.push({ id: manChequeo.id, price: manChequeo.price });
@@ -135,7 +141,7 @@ page('/carta',
 				return
 			}
 
-			for(i of this.getCarrito) {
+			for(i of localStorage.getItem("carrito")) {
 				if(i.id === item) {
 					i.cantidad++;
 					localStorage.setItem("carrito",JSON.stringify(this.getCarrito))
@@ -148,10 +154,47 @@ page('/carta',
 			localStorage.setItem("carrito",JSON.stringify(this.getCarrito));
 		}
 
+		this.agergarOferta = function() {
+			var ventaOferta = {pizname: '', bebname: '', id: '900001', price: '11990'};
+			var pOferta = document.getElementById('pizzaOferta').value;
+			var bOferta = document.getElementById('bebidaOferta').value;
+
+			var opcPizOf = [
+				{id: '101', name: 'Pizza Margherita'},
+				{id: '102', name: 'Pizza Caprese'},
+				{id: '103', name: 'Pizza Pollo al Pesto'},
+				{id: '104', name: 'Pizza Zuchinni Parmesano'}
+			];
+			
+			var opcBebOf = [
+				{id: '201', name: 'Coca Cola Normal'},
+				{id: '202', name: 'Coca Cola Zero'},
+				{id: '203', name: 'Fanta Normal'},
+				{id: '204', name: 'Fanta Zero'},
+				{id: '205', name: 'Sprite Normal'},
+				{id: '206', name: 'Sprite Zero'}
+			];
+
+			for(p of opcPizOf) {
+				if(pOferta === p.id) {
+					ventaOferta.pizname = p.name;
+				}
+			}
+
+			
+			for(b of opcBebOf) {
+				if(bOferta === b.id) {
+					ventaOferta.bebname = b.name;
+				}
+			}
+
+			console.log(ventaOferta);
+		}
+
 		this.agregarCustom = function() {
 			let n = 0;
 			for(i of armar_pizza.getIngredientes) {
-				if(i.control) {
+				if(i.control === 1) {
 					n++;
 				}
 			}
@@ -168,7 +211,7 @@ page('/carta',
 			let itemCustom = { id: '100100', name: 'Pizza a tu gusto', price: armar_pizza.getTotal(), cantidad: 1, custom: true, ingredientes: armar_pizza.getIngredientes }
 			this.getCarrito.push(itemCustom);
 			localStorage.setItem("carrito",JSON.stringify(this.getCarrito));
-			Materialize.toast('Se agregó un producto', 2500, 'rounded')
+			Materialize.toast('Se agregó un producto', 1500, 'rounded')
 			localStorage.setItem('ingredientes','[]');
 			carrito_view.totalProductos();
 			carrito_view.renderCarrito();
@@ -178,7 +221,7 @@ page('/carta',
 
 		this.getTotal = function() {
 			var total = 0;
-			for(i of this.getCarrito) {
+			for(i of JSON.parse(localStorage.getItem("carrito"))) {
 				total += parseFloat(i.cantidad) * parseFloat(i.price);
 			}
 			return total;
@@ -199,8 +242,8 @@ page('/carta',
 		}
 
 		this.iraComprar = function() {
-			if(this.getCarrito.length <= 0) {
-				alert("No tienes productos en tu carrito :-(");
+			if(JSON.parse(localStorage.getItem("carrito")).length <= 0) {
+				alert("No tienes productos en tu carro");
 				return
 			}else{
 				var totalChequeo = 0;
@@ -217,7 +260,7 @@ page('/carta',
 
 	function Carrito_View() {
 		this.renderCarrito = function() {
-			if(carrito.getCarrito.length <= 0) {
+			if(JSON.parse(localStorage.getItem("carrito")).length <= 0) {
 				templateNoItems = `<div class="row">
 					<div class="col s12 center-align">
 						No tienes productos en tu carro
@@ -229,19 +272,19 @@ page('/carta',
 				for(i of carrito.getCarrito) {
 					templateItems += `<li class="collection-item">
 						<div class="row itemCarrito">
-							<div class="col s8 m4">
+							<div class="col s4 m4 titCarro">
 								${i.name}
 							</div>
-							<div class="col s4 m2 center-align">
-								$${i.price}
+							<div class="col s3 m2 center-align titCarro">
+								${aPesos(i.price)}.-
 							</div>
-							<div class="col s3 offset-s3 m2 center-align">
+							<div class="col s1 m2 center-align titCarro">
 								${i.cantidad}
 							</div>
-							<div class="col s3 m2 center-align">
-								${i.cantidad * i.price}
+							<div class="col s3 m2 center-align titCarro">
+								${aPesos(i.cantidad * i.price)}.-
 							</div>
-							<div class="col s3 m2 center-align">
+							<div class="col s1 m2 center-align titCarro">
 								<a href="#"><i class="material-icons iconoBorrar" id="deleteItem" data-id="${i.id}">delete_forever</i></a>
 							</div>
 						</div>
@@ -249,11 +292,11 @@ page('/carta',
 				}
 				document.getElementById('productosCarrito').innerHTML = templateItems;
 			}
-			document.getElementById('totalCarrito').innerHTML = "$ "+carrito.getTotal();
+			document.getElementById('totalCarrito').innerHTML = aPesos(carrito.getTotal())+".-";
 		}
 
 		this.totalProductos = function() {
-			var total = carrito.getCarrito.length;
+			var total = JSON.parse(localStorage.getItem("carrito")).length;
 			document.getElementById('totalProductos').innerHTML = total;
 		}
 	}
@@ -265,7 +308,7 @@ page('/carta',
 			if(!localStorage.getItem("ingredientes")){
 				localStorage.setItem('ingredientes','[]');
 			}else{
-				if(this.getIngredientes.length > 0) {
+				if(JSON.parse(localStorage.getItem("ingredientes")).length > 0) {
 					localStorage.setItem('ingredientes','[]');
 				}
 			}
@@ -287,7 +330,7 @@ page('/carta',
 				if(this.getIngredientes[i].id === item) {
 					this.getIngredientes.splice(i,1);
 					localStorage.setItem("ingredientes",JSON.stringify(this.getIngredientes));
-					Materialize.toast('Se eliminó un ingrediente', 2500, 'rounded')
+					Materialize.toast('Se eliminó un ingrediente', 1500, 'rounded')
 					return
 				}
 			}
@@ -302,7 +345,7 @@ page('/carta',
 			}
 			this.getIngredientes.push(ingrediente);
 			localStorage.setItem("ingredientes",JSON.stringify(this.getIngredientes));
-			Materialize.toast('Se agregó un ingrediente', 2500, 'rounded')
+			Materialize.toast('Se agregó un ingrediente', 1500, 'rounded')
 		}
 
 		this.getTotal = function() {
@@ -323,67 +366,76 @@ page('/carta',
 						${i.name}
 					</div>
 					<div class="col s4">
-						$ ${i.price}.-
+						${aPesos(i.price)}.-
 					</div>
 				</div>`;
 			}
 			document.getElementById('ingCustom').innerHTML = templateIngredientes;
-			document.getElementById('totalIngredientes').innerHTML = "$ "+armar_pizza.getTotal()+".-";
+			document.getElementById('totalIngredientes').innerHTML = aPesos(armar_pizza.getTotal())+".-";
+		}
+	}
+
+	function Comprando() {
+		this.constructor = function() {
+			if(!localStorage.getItem("comprando")){
+				localStorage.setItem('comprando','[]');
+			}
 		}
 	}
 
 	var carrito = new Carrito();
 	var carrito_view = new Carrito_View();
 	var armar_pizza = new Armar_Pizza();
+	var comprando = new Comprando();
 	var custom_view = new Custom_View();
 
 	$(document).ready(function(){
 		$('.collapsible').collapsible();
-		
+		$('select').material_select();
 		carrito.constructor();
 		carrito.mantenedorChequeo();
+		comprando.constructor();
+		armar_pizza.constructor();
 		carrito_view.renderCarrito();
 		carrito_view.totalProductos();
 				
 		document.getElementById('catalogo').addEventListener("click", function(ev) {
 			ev.preventDefault();
+			if(ev.target.id === "addItem") {
+				var id = ev.target.dataset.id;
+				carrito.agregarItem(id);
+				Materialize.toast('Se agregó un producto', 1500, 'rounded')
+				carrito_view.totalProductos();
+				carrito_view.renderCarrito();
+				$('#modal9').modal('open');
+			}
+
 			if(ev.target.id === "itemSelect") {
 				var idPack = ev.target.dataset.idpack;
 				var idOpt = ev.target.dataset.idopt;
 				var idItem = ev.target.dataset.id;
 				carrito.selectOption(idPack, idOpt, idItem);
 			}
-		});
-		
-		document.getElementById('catalogo').addEventListener("click", function(ev) {
-			ev.preventDefault();
-			if(ev.target.id === "addItem"){
-				var id = ev.target.dataset.id;
-				carrito.agregarItem(id);
-				Materialize.toast('Se agregó un producto', 2500, 'rounded')
-				carrito_view.totalProductos();
-				carrito_view.renderCarrito();
-				$('#modal9').modal('open');
-			}
-		});
 
-		document.getElementById('catalogo').addEventListener("click", function(ev) {
-			ev.preventDefault();
-			if(ev.target.id === "addItemPack"){
+			if(ev.target.id === "addItemPack") {
 				var id = ev.target.dataset.id;
 				carrito.agregarItemPack(id);
-				Materialize.toast('Se agregó un producto', 2500, 'rounded')
+				Materialize.toast('Se agregó un producto', 1500, 'rounded')
 				carrito_view.totalProductos();
 				carrito_view.renderCarrito();
 				$('#modal9').modal('open');
 			}
-		});
 
+			if(ev.target.id === "addOferta") {
+				carrito.agergarOferta();
+			}
+		});
+		
 		document.getElementById('productosCarrito').addEventListener("click", function(ev) {
 			ev.preventDefault();
 			if(ev.target.id === "deleteItem") {
 				carrito.eliminarItem(ev.target.dataset.id);
-				Materialize.toast('Se eliminó un producto', 2500, 'rounded')
+				Materialize.toast('Se eliminó un producto', 1500, 'rounded')
 				carrito_view.totalProductos();
 				carrito_view.renderCarrito();
 			}
@@ -414,7 +466,7 @@ page('/carta',
 
 function loadPizzas (ctx, next) {
 	request
-		.get('/api/pizzas')
+		.get('https://www.ragustino.cl/js/Conector.php')///api/pizzas
 		.end(function (err, res) {
 			if (err) return console.log(err);
 
@@ -425,7 +477,7 @@ function loadPizzas (ctx, next) {
 
 function loadIngredientes (ctx, next) {
 	request
-		.get('/api/ingredientes')
+		.get('https://www.ragustino.cl/js/ingredientes.php')///api/ingredientes
 		.end(function (err, res) {
 			if (err) return console.log(err);
 
@@ -434,7 +486,7 @@ function loadIngredientes (ctx, next) {
 		})
 }
 
-function loadCalzones (ctx, next) {
+/*function loadCalzones (ctx, next) {
 	request
 		.get('/api/calzones')
 		.end(function (err, res) {
@@ -454,11 +506,11 @@ function loadPiadinas (ctx, next) {
 			ctx.piadinas = res.body;
 			next();
 		})
-}
+}*/
 
 function loadPacks (ctx, next) {
 	request
-		.get('/api/packs')
+		.get('https://www.ragustino.cl/js/pack')///api/packs
 		.end(function (err, res) {
 			if (err) return console.log(err);
 
@@ -469,7 +521,7 @@ function loadPacks (ctx, next) {
 
 function loadItems (ctx, next) {
 	request
-		.get('/api/items')
+		.get('https://www.ragustino.cl/js/items.php')///api/items
 		.end(function (err, res) {
 			if (err) return console.log(err);
 
