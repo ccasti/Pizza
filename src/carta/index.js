@@ -12,8 +12,7 @@ page('/carta',
 	header,
 	loadPizzas,
 	loadIngredientes,
-	/*loadCalzones,
-	loadPiadinas,*/
+	loadOtros,
 	loadPacks,
 	loadItems,
 	footer,
@@ -24,8 +23,7 @@ page('/carta',
 
 	empty(main).appendChild(template(
 		ctx.pizzas,
-		/*ctx.calzones,
-		ctx.piadinas,*/
+		ctx.otros,
 		ctx.ingredientes,
 		ctx.packs,
 		ctx.items
@@ -39,13 +37,9 @@ page('/carta',
 			catalogo.push(i);
 		}
 		
-		/*for(i of ctx.calzones) {
+		for(i of ctx.otros) {
 			catalogo.push(i);
 		}
-		
-		for(i of ctx.piadinas) {
-			catalogo.push(i);
-		}*/
 		
 		for(i of ctx.packs) {
 			catalogo.push(i);
@@ -155,7 +149,7 @@ page('/carta',
 		}
 
 		this.agergarOferta = function() {
-			var ventaOferta = {pizname: '', bebname: '', id: '900001', price: '11990'};
+			var ventaOferta = {pizname: '', bebname: '', id: '900001', price: '11900'};
 			var pOferta = document.getElementById('pizzaOferta').value;
 			var bOferta = document.getElementById('bebidaOferta').value;
 
@@ -365,7 +359,7 @@ page('/carta',
 					<div class="col s8">
 						${i.name}
 					</div>
-					<div class="col s4">
+					<div class="col s4 sp right-align">
 						${aPesos(i.price)}.-
 					</div>
 				</div>`;
@@ -466,7 +460,7 @@ page('/carta',
 
 function loadPizzas (ctx, next) {
 	request
-		.get('https://www.ragustino.cl/js/Conector.php')///api/pizzas
+		.get('/api/pizzas')//https://www.ragustino.cl/js/Conector.php
 		.end(function (err, res) {
 			if (err) return console.log(err);
 
@@ -477,7 +471,7 @@ function loadPizzas (ctx, next) {
 
 function loadIngredientes (ctx, next) {
 	request
-		.get('https://www.ragustino.cl/js/ingredientes.php')///api/ingredientes
+		.get('/api/ingredientes')//https://www.ragustino.cl/js/ingredientes.php
 		.end(function (err, res) {
 			if (err) return console.log(err);
 
@@ -486,31 +480,20 @@ function loadIngredientes (ctx, next) {
 		})
 }
 
-/*function loadCalzones (ctx, next) {
+function loadOtros (ctx, next) {
 	request
-		.get('/api/calzones')
+		.get('/api/otros')//https://www.ragustino.cl/js/otros.php
 		.end(function (err, res) {
 			if (err) return console.log(err);
 
-			ctx.calzones = res.body;
+			ctx.otros = res.body;
 			next();
 		})
 }
 
-function loadPiadinas (ctx, next) {
-	request
-		.get('/api/piadinas')
-		.end(function (err, res) {
-			if (err) return console.log(err);
-
-			ctx.piadinas = res.body;
-			next();
-		})
-}*/
-
 function loadPacks (ctx, next) {
 	request
-		.get('https://www.ragustino.cl/js/pack')///api/packs
+		.get('/api/packs')//https://www.ragustino.cl/js/pack
 		.end(function (err, res) {
 			if (err) return console.log(err);
 
@@ -521,7 +504,7 @@ function loadPacks (ctx, next) {
 
 function loadItems (ctx, next) {
 	request
-		.get('https://www.ragustino.cl/js/items.php')///api/items
+		.get('/api/items')//https://www.ragustino.cl/js/items.php
 		.end(function (err, res) {
 			if (err) return console.log(err);
 

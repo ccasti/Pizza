@@ -2,6 +2,7 @@ var page = require('page');
 
 require('./homepage');
 require('./carta');
+require('./somos');
 require('./compra');
 /*require('./clients/signup');
 require('./clients/signin');

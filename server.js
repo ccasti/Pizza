@@ -7,7 +7,7 @@ app.set('view engine', 'pug');
 app.use(express.static('public'));
 
 app.get('/', function (req, res) {
-	res.render('index', { title: 'Ragustino' });//el index será el .pug de views
+	res.render('index', { title: 'Ragustino' });
 })
 
 app.get('/signup', function (req, res) {
@@ -19,7 +19,11 @@ app.get('/signin', function (req, res) {
 })
 
 app.get('/carta', function (req, res) {
-	res.render('index', { title: 'Ragustino - Carta' });
+	res.render('index', { title: 'Nuestros Productos' });
+})
+
+app.get('/somos', function (req, res) {
+	res.render('index', { title: 'Nuestra Filosofia' });
 })
 
 app.get('/compra', function (req, res) {
@@ -27,7 +31,7 @@ app.get('/compra', function (req, res) {
 })
 
 app.get('/ragsystem', function (req, res) {
-	res.render('index', { title: 'Sistema Interno' });
+	res.render('index', { title: 'Ragustino - System' });
 })
 
 app.get('/estadisticas', function (req, res) {
@@ -49,8 +53,6 @@ app.get('/api/pizzas', function(req, res) {
 			name: 'Campesina',
 			url: 'campesina.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 101,
-			liked: 0,
 			price: 9000
 		},
 		{
@@ -58,8 +60,6 @@ app.get('/api/pizzas', function(req, res) {
 			name: 'Caprese',
 			url: 'caprese.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 102,
-			liked: 0,
 			price: 8500
 		},
 		{
@@ -67,8 +67,6 @@ app.get('/api/pizzas', function(req, res) {
 			name: 'Caprichosa',
 			url: 'caprichosa.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 103,
-			liked: 0,
 			price: 9000
 		},
 		{
@@ -76,8 +74,6 @@ app.get('/api/pizzas', function(req, res) {
 			name: 'Carnívora',
 			url: 'carnivora.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 104,
-			liked: 0,
 			price: 10000
 		},
 		{
@@ -85,8 +81,6 @@ app.get('/api/pizzas', function(req, res) {
 			name: 'Ibérica',
 			url: 'iberica.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 105,
-			liked: 0,
 			price: 9000
 		},
 		{
@@ -94,8 +88,6 @@ app.get('/api/pizzas', function(req, res) {
 			name: 'Prosciutto',
 			url: 'jamon.png',
 			content: 'Exquisitos vegetales preprados de manera especial con un toque de esto y lo otro y terminada de la mejor manera, todo en base de salsa pomodoro y nuestra masa especial',
-			likes: 106,
-			liked: 1,
 			price: 9000
 		}
 	];
@@ -263,15 +255,14 @@ app.get('/api/ingredientes', function(req, res) {
 	res.send(ingredientes);
 })
 
-app.get('/api/calzones', function(req, res) {
-	var calzones = [
+app.get('/api/otros', function(req, res) {
+	var otros = [
 		{
 			id: '200001',
 			name: 'Calzone Jamón Pesto',
 			url: 'grissini.jpg',
 			content: 'Pomodoro, mozzarella, jamón, pesto, albhaca',
-			likes: 301,
-			liked: false,
+			tipo: 'calzone',
 			price: 9400
 		},
 		{
@@ -279,8 +270,7 @@ app.get('/api/calzones', function(req, res) {
 			name: 'Calzone Champiñon',
 			url: 'minicalzone.jpg',
 			content: 'Pomodoro, mozzarella, jamón, champiñones, oregano',
-			likes: 302,
-			liked: false,
+			tipo: 'calzone',
 			price: 9600
 		},
 		{
@@ -288,24 +278,15 @@ app.get('/api/calzones', function(req, res) {
 			name: 'Calzone Pimentón',
 			url: 'focaccia.jpg',
 			content: 'Pomodoro, mozzarella, pimentón asado, zuchinni asado',
-			likes: 303,
-			liked: false,
+			tipo: 'calzone',
 			price: 8900
-		}
-	];
-
-	res.send(calzones);
-})
-
-app.get('/api/piadinas', function(req, res) {
-	var piadinas = [
+		},
 		{
 			id: '300001',
 			name: 'Piadina Clásica',
 			url: 'grissini.jpg',
 			content: 'Queso crema, jamón, tomate cherry, rúcula',
-			likes: 301,
-			liked: false,
+			tipo: 'piadina',
 			price: 9400
 		},
 		{
@@ -313,8 +294,7 @@ app.get('/api/piadinas', function(req, res) {
 			name: 'Piadina Champiñon',
 			url: 'minicalzone.jpg',
 			content: 'Queso crema, jamón, champiñon, rúcula',
-			likes: 302,
-			liked: false,
+			tipo: 'piadina',
 			price: 5000
 		},
 		{
@@ -322,13 +302,12 @@ app.get('/api/piadinas', function(req, res) {
 			name: 'Piadina Atún',
 			url: 'focaccia.jpg',
 			content: 'Mozzarella, atún, cebolla, tomate',
-			likes: 303,
-			liked: false,
+			tipo: 'piadina',
 			price: 9600
 		}
 	];
 
-	res.send(piadinas);
+	res.send(otros);
 })
 
 app.get('/api/packs', function(req, res) {

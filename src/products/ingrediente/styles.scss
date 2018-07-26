@@ -31,6 +31,10 @@
 	color: #1976d2;
 }
 
+.precioIng {
+	padding: 0 !important;
+}
+
 @media #{$medium-and-down} {
 	.ingName {
 		font-size: 1.1rem;
@@ -50,10 +54,6 @@
 	.checkbox {
 		margin: 5px auto;
 	}
-	.precioIng {
-		padding: 0 !important;
-	}
-
 	.contIng {
 		padding: 0 !important;
 	}

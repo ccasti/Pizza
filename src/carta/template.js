@@ -1,15 +1,15 @@
 var yo = require('yo-yo');
 var layout = require('../layout');
 var pizza = require('../products/pizza');
+var calzon = require('../products/calzon');
+var piadina = require('../products/piadina');
 var ingrediente = require('../products/ingrediente');
-/*var calzon = require('../products/calzon');
-var piadina = require('../products/piadina');*/
 var item = require('../products/item');
 var pack = require('../products/pack');
 var aPesos = require('../utilities/aPesos');
 var wNumb = require('../utilities/aPesos/wNumb')
 
-module.exports = function (pizzas, /*calzones, piadinas, */ingredientes, packs, items) {
+module.exports = function (pizzas, otros, ingredientes, packs, items) {
 	let mixsIng = ingredientes;
 	var quesos = mixsIng.filter(function(obj) {
 		if(obj.tipo === 'queso') {
@@ -213,6 +213,23 @@ module.exports = function (pizzas, /*calzones, piadinas, */ingredientes, packs, 
 		}
 	});
 
+	let mixsOtr = otros;
+	var piadinas = mixsOtr.filter(function(obj) {
+		if(obj.tipo === 'piadina') {
+			return true;
+		}else{
+			return false;
+		}
+	});
+
+	var calzones = mixsOtr.filter(function(obj) {
+		if(obj.tipo === 'calzone') {
+			return true;
+		}else{
+			return false;
+		}
+	});
+
 	var el = yo`<div id="catalogo" class="col s12 seccion">
 		<div class="row">
 			<div class="col s12 center-align topOf">
@@ -287,6 +304,52 @@ module.exports = function (pizzas, /*calzones, piadinas, */ingredientes, packs, 
 								</div>
 							</div>
 						</div>
+					</li>
+					<li>
+					    <div class="collapsible-header grey lighten-2 itemsCarta">
+					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pizzas Calzones</p>
+					    </div>
+					    <div class="collapsible-body">
+					    	<div class="row">
+						   		<div class="col s12 white">
+						   			<div class="row">
+						   				<div class="col s12">
+						   					<p class="menu-text">Pizza Calzones (2 Unidades)</p>
+						   				</div>	
+						   			</div>
+						   			<div class="row">
+						   				<div class="col s12 ajuste-menu-store">
+						   	    			${calzones.map(function (pic) {
+						   						return calzon(pic);
+						   					})}
+						   				</div>
+						   			</div>
+						   		</div>
+						   	</div>
+					    </div>
+					</li>
+					<li>
+					    <div class="collapsible-header grey lighten-2 itemsCarta">
+					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Piadinas</p>
+					    </div>
+					    <div class="collapsible-body">
+					    	<div class="row">
+						   		<div class="col s12 white">
+						   			<div class="row">
+						   				<div class="col s12">
+						   					<p class="menu-text">Piadinas (2 Unidades)</p>
+						   				</div>	
+						   			</div>
+						   			<div class="row">
+						   				<div class="col s12 ajuste-menu-store">
+						   	    			${piadinas.map(function (pic) {
+						   						return piadina(pic);
+						   					})}
+						   				</div>
+						   			</div>
+						   		</div>
+						   	</div>
+					    </div>
 					</li>
 					<li>
 					    <div class="collapsible-header grey lighten-2 itemsCarta">
@@ -542,83 +605,6 @@ module.exports = function (pizzas, /*calzones, piadinas, */ingredientes, packs, 
 					</li>
 					<li>
 					    <div class="collapsible-header grey lighten-2 itemsCarta">
-					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pack Regalo</p>
-					    </div>
-					    <div class="collapsible-body">
-					       	<div class="row">
-						       	<div class="col s12 white">
-						       		<div class="row">
-						       			<div class="col s12 center-align">
-					       					<p class="menu-text">Sorprende a quien tu quieras con nuestros packs preparados con exquisitos productos.</p>
-						           		</div>	
-					           		</div>
-						           	<div class="row">
-						           		<div class="col s12 ajuste-menu-store">
-						       		    	${single.map(function (pic) {
-						        		   		return pack(pic);
-						        		   	})}
-						        		</div>	
-						       		</div>
-						       	</div>
-						    </div>
-					    </div>
-					</li>
-					<li>
-					    <div class="collapsible-header grey lighten-2 itemsCarta">
-					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pack Fiesta</p>
-					    </div>
-					    <div class="collapsible-body">
-					       	<div class="row">
-						       	<div class="col s12 white">
-						       		<div class="row">
-						       			<div class="col s12 center-align">
-					       					<p class="menu-text">No te preocupes de los preparativos, la fiesta la armamos nosotros...</p>
-						           		</div>	
-					           		</div>
-						       		<div class="row">
-						       			<div class="col s12">
-					       					<p class="menu-text">Pack´s para 04 personas.</p>
-						           		</div>	
-					           		</div>
-					           		<div class="row">
-						           		<div class="col s12 ajuste-menu-store">
-						       		    	${four.map(function (pic) {
-						        		   		return pack(pic);
-						        		   	})}
-						        		</div>	
-						       		</div>
-						       		<div class="divider separar"></div>
-						       		<div class="row">
-						       			<div class="col s12">
-					       					<p class="menu-text">Pack´s para 06 personas.</p>
-						           		</div>	
-					           		</div>
-					           		<div class="row">
-						           		<div class="col s12 ajuste-menu-store">
-						       		    	${six.map(function (pic) {
-						        		   		return pack(pic);
-						        		   	})}
-						        		</div>	
-						       		</div>
-						       		<div class="divider separar"></div>
-						       		<div class="row">
-						       			<div class="col s12">
-					       					<p class="menu-text">Pack´s para 08 personas.</p>
-						           		</div>	
-					           		</div>
-					           		<div class="row">
-						           		<div class="col s12 ajuste-menu-store">
-						       		    	${eight.map(function (pic) {
-						        		   		return pack(pic);
-						        		   	})}
-						        		</div>	
-						       		</div>
-						       	</div>
-						    </div>
-					    </div>
-					</li>
-					<li>
-					    <div class="collapsible-header grey lighten-2 itemsCarta">
 					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Accesorios</p>
 					    </div>
 					    <div class="collapsible-body">
@@ -645,48 +631,79 @@ module.exports = function (pizzas, /*calzones, piadinas, */ingredientes, packs, 
 /*
 <li>
     <div class="collapsible-header grey lighten-2 itemsCarta">
-    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pizzas Calzones</p>
+    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pack Regalo</p>
     </div>
     <div class="collapsible-body">
-    	<div class="row">
-	   		<div class="col s12 white">
-	   			<div class="row">
-	   				<div class="col s12">
-	   					<p class="menu-text">Pizza Calzones (2 Unidades)</p>
-	   				</div>	
-	   			</div>
-	   			<div class="row">
-	   				<div class="col s12 ajuste-menu-store">
-	   	    			${calzones.map(function (pic) {
-	   						return calzon(pic);
-	   					})}
-	   				</div>
-	   			</div>
-	   		</div>
-	   	</div>
+       	<div class="row">
+	       	<div class="col s12 white">
+	       		<div class="row">
+	       			<div class="col s12 center-align">
+       					<p class="menu-text">Sorprende a quien tu quieras con nuestros packs preparados con exquisitos productos.</p>
+	           		</div>	
+           		</div>
+	           	<div class="row">
+	           		<div class="col s12 ajuste-menu-store">
+	       		    	${single.map(function (pic) {
+	        		   		return pack(pic);
+	        		   	})}
+	        		</div>	
+	       		</div>
+	       	</div>
+	    </div>
     </div>
 </li>
 <li>
     <div class="collapsible-header grey lighten-2 itemsCarta">
-    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Piadinas</p>
+    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pack Fiesta</p>
     </div>
     <div class="collapsible-body">
-    	<div class="row">
-	   		<div class="col s12 white">
-	   			<div class="row">
-	   				<div class="col s12">
-	   					<p class="menu-text">Piadinas (2 Unidades)</p>
-	   				</div>	
-	   			</div>
-	   			<div class="row">
-	   				<div class="col s12 ajuste-menu-store">
-	   	    			${piadinas.map(function (pic) {
-	   						return piadina(pic);
-	   					})}
-	   				</div>
-	   			</div>
-	   		</div>
-	   	</div>
+       	<div class="row">
+	       	<div class="col s12 white">
+	       		<div class="row">
+	       			<div class="col s12 center-align">
+       					<p class="menu-text">No te preocupes de los preparativos, la fiesta la armamos nosotros...</p>
+	           		</div>	
+           		</div>
+	       		<div class="row">
+	       			<div class="col s12">
+       					<p class="menu-text">Pack´s para 04 personas.</p>
+	           		</div>	
+           		</div>
+           		<div class="row">
+	           		<div class="col s12 ajuste-menu-store">
+	       		    	${four.map(function (pic) {
+	        		   		return pack(pic);
+	        		   	})}
+	        		</div>	
+	       		</div>
+	       		<div class="divider separar"></div>
+	       		<div class="row">
+	       			<div class="col s12">
+       					<p class="menu-text">Pack´s para 06 personas.</p>
+	           		</div>	
+           		</div>
+           		<div class="row">
+	           		<div class="col s12 ajuste-menu-store">
+	       		    	${six.map(function (pic) {
+	        		   		return pack(pic);
+	        		   	})}
+	        		</div>	
+	       		</div>
+	       		<div class="divider separar"></div>
+	       		<div class="row">
+	       			<div class="col s12">
+       					<p class="menu-text">Pack´s para 08 personas.</p>
+	           		</div>	
+           		</div>
+           		<div class="row">
+	           		<div class="col s12 ajuste-menu-store">
+	       		    	${eight.map(function (pic) {
+	        		   		return pack(pic);
+	        		   	})}
+	        		</div>	
+	       		</div>
+	       	</div>
+	    </div>
     </div>
 </li>
 */

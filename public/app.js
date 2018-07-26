@@ -7154,17 +7154,11 @@ var request = require('superagent');
 var aPesos = require('../utilities/aPesos');
 var wNumb = require('../utilities/aPesos/wNumb');
 
-page('/carta', header, loadPizzas, loadIngredientes,
-/*loadCalzones,
-loadPiadinas,*/
-loadPacks, loadItems, footer, function (ctx, next) {
+page('/carta', header, loadPizzas, loadIngredientes, loadOtros, loadPacks, loadItems, footer, function (ctx, next) {
 	title('Ragustino - Carta');
 	var main = document.getElementById('main-container');
 
-	empty(main).appendChild(template(ctx.pizzas,
-	/*ctx.calzones,
- ctx.piadinas,*/
-	ctx.ingredientes, ctx.packs, ctx.items));
+	empty(main).appendChild(template(ctx.pizzas, ctx.otros, ctx.ingredientes, ctx.packs, ctx.items));
 
 	function Carrito() {
 		var catalogo = [];
@@ -7174,13 +7168,9 @@ loadPacks, loadItems, footer, function (ctx, next) {
 			catalogo.push(i);
 		}
 
-		/*for(i of ctx.calzones) {
-  	catalogo.push(i);
-  }
-  
-  for(i of ctx.piadinas) {
-  	catalogo.push(i);
-  }*/
+		for (i of ctx.otros) {
+			catalogo.push(i);
+		}
 
 		for (i of ctx.packs) {
 			catalogo.push(i);
@@ -7290,7 +7280,7 @@ loadPacks, loadItems, footer, function (ctx, next) {
 		};
 
 		this.agergarOferta = function () {
-			var ventaOferta = { pizname: '', bebname: '', id: '900001', price: '11990' };
+			var ventaOferta = { pizname: '', bebname: '', id: '900001', price: '11900' };
 			var pOferta = document.getElementById('pizzaOferta').value;
 			var bOferta = document.getElementById('bebidaOferta').value;
 
@@ -7487,7 +7477,7 @@ loadPacks, loadItems, footer, function (ctx, next) {
 					<div class="col s8">
 						${i.name}
 					</div>
-					<div class="col s4">
+					<div class="col s4 sp right-align">
 						${aPesos(i.price)}.-
 					</div>
 				</div>`;
@@ -7587,7 +7577,7 @@ loadPacks, loadItems, footer, function (ctx, next) {
 });
 
 function loadPizzas(ctx, next) {
-	request.get('https://www.ragustino.cl/js/Conector.php') ///api/pizzas
+	request.get('/api/pizzas') //https://www.ragustino.cl/js/Conector.php
 	.end(function (err, res) {
 		if (err) return console.log(err);
 
@@ -7597,7 +7587,7 @@ function loadPizzas(ctx, next) {
 }
 
 function loadIngredientes(ctx, next) {
-	request.get('https://www.ragustino.cl/js/ingredientes.php') ///api/ingredientes
+	request.get('/api/ingredientes') //https://www.ragustino.cl/js/ingredientes.php
 	.end(function (err, res) {
 		if (err) return console.log(err);
 
@@ -7606,30 +7596,18 @@ function loadIngredientes(ctx, next) {
 	});
 }
 
-/*function loadCalzones (ctx, next) {
-	request
-		.get('/api/calzones')
-		.end(function (err, res) {
-			if (err) return console.log(err);
+function loadOtros(ctx, next) {
+	request.get('/api/otros') //https://www.ragustino.cl/js/otros.php
+	.end(function (err, res) {
+		if (err) return console.log(err);
 
-			ctx.calzones = res.body;
-			next();
-		})
+		ctx.otros = res.body;
+		next();
+	});
 }
 
-function loadPiadinas (ctx, next) {
-	request
-		.get('/api/piadinas')
-		.end(function (err, res) {
-			if (err) return console.log(err);
-
-			ctx.piadinas = res.body;
-			next();
-		})
-}*/
-
 function loadPacks(ctx, next) {
-	request.get('https://www.ragustino.cl/js/pack') ///api/packs
+	request.get('/api/packs') //https://www.ragustino.cl/js/pack
 	.end(function (err, res) {
 		if (err) return console.log(err);
 
@@ -7639,7 +7617,7 @@ function loadPacks(ctx, next) {
 }
 
 function loadItems(ctx, next) {
-	request.get('https://www.ragustino.cl/js/items.php') ///api/items
+	request.get('/api/items') //https://www.ragustino.cl/js/items.php
 	.end(function (err, res) {
 		if (err) return console.log(err);
 
@@ -7648,19 +7626,19 @@ function loadItems(ctx, next) {
 	});
 }
 
-},{"../footer":34,"../header":36,"../utilities/aPesos":48,"../utilities/aPesos/wNumb":49,"./template":25,"empty-element":4,"page":13,"superagent":16,"title":21}],25:[function(require,module,exports){
+},{"../footer":34,"../header":35,"../utilities/aPesos":51,"../utilities/aPesos/wNumb":52,"./template":25,"empty-element":4,"page":13,"superagent":16,"title":21}],25:[function(require,module,exports){
 var yo = require('yo-yo');
 var layout = require('../layout');
 var pizza = require('../products/pizza');
+var calzon = require('../products/calzon');
+var piadina = require('../products/piadina');
 var ingrediente = require('../products/ingrediente');
-/*var calzon = require('../products/calzon');
-var piadina = require('../products/piadina');*/
 var item = require('../products/item');
 var pack = require('../products/pack');
 var aPesos = require('../utilities/aPesos');
 var wNumb = require('../utilities/aPesos/wNumb');
 
-module.exports = function (pizzas, /*calzones, piadinas, */ingredientes, packs, items) {
+module.exports = function (pizzas, otros, ingredientes, packs, items) {
 	let mixsIng = ingredientes;
 	var quesos = mixsIng.filter(function (obj) {
 		if (obj.tipo === 'queso') {
@@ -7864,6 +7842,23 @@ module.exports = function (pizzas, /*calzones, piadinas, */ingredientes, packs, 
 		}
 	});
 
+	let mixsOtr = otros;
+	var piadinas = mixsOtr.filter(function (obj) {
+		if (obj.tipo === 'piadina') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var calzones = mixsOtr.filter(function (obj) {
+		if (obj.tipo === 'calzone') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
 	var el = yo`<div id="catalogo" class="col s12 seccion">
 		<div class="row">
 			<div class="col s12 center-align topOf">
@@ -7938,6 +7933,52 @@ module.exports = function (pizzas, /*calzones, piadinas, */ingredientes, packs, 
 								</div>
 							</div>
 						</div>
+					</li>
+					<li>
+					    <div class="collapsible-header grey lighten-2 itemsCarta">
+					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pizzas Calzones</p>
+					    </div>
+					    <div class="collapsible-body">
+					    	<div class="row">
+						   		<div class="col s12 white">
+						   			<div class="row">
+						   				<div class="col s12">
+						   					<p class="menu-text">Pizza Calzones (2 Unidades)</p>
+						   				</div>	
+						   			</div>
+						   			<div class="row">
+						   				<div class="col s12 ajuste-menu-store">
+						   	    			${calzones.map(function (pic) {
+		return calzon(pic);
+	})}
+						   				</div>
+						   			</div>
+						   		</div>
+						   	</div>
+					    </div>
+					</li>
+					<li>
+					    <div class="collapsible-header grey lighten-2 itemsCarta">
+					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Piadinas</p>
+					    </div>
+					    <div class="collapsible-body">
+					    	<div class="row">
+						   		<div class="col s12 white">
+						   			<div class="row">
+						   				<div class="col s12">
+						   					<p class="menu-text">Piadinas (2 Unidades)</p>
+						   				</div>	
+						   			</div>
+						   			<div class="row">
+						   				<div class="col s12 ajuste-menu-store">
+						   	    			${piadinas.map(function (pic) {
+		return piadina(pic);
+	})}
+						   				</div>
+						   			</div>
+						   		</div>
+						   	</div>
+					    </div>
 					</li>
 					<li>
 					    <div class="collapsible-header grey lighten-2 itemsCarta">
@@ -8193,83 +8234,6 @@ module.exports = function (pizzas, /*calzones, piadinas, */ingredientes, packs, 
 					</li>
 					<li>
 					    <div class="collapsible-header grey lighten-2 itemsCarta">
-					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pack Regalo</p>
-					    </div>
-					    <div class="collapsible-body">
-					       	<div class="row">
-						       	<div class="col s12 white">
-						       		<div class="row">
-						       			<div class="col s12 center-align">
-					       					<p class="menu-text">Sorprende a quien tu quieras con nuestros packs preparados con exquisitos productos.</p>
-						           		</div>	
-					           		</div>
-						           	<div class="row">
-						           		<div class="col s12 ajuste-menu-store">
-						       		    	${single.map(function (pic) {
-		return pack(pic);
-	})}
-						        		</div>	
-						       		</div>
-						       	</div>
-						    </div>
-					    </div>
-					</li>
-					<li>
-					    <div class="collapsible-header grey lighten-2 itemsCarta">
-					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pack Fiesta</p>
-					    </div>
-					    <div class="collapsible-body">
-					       	<div class="row">
-						       	<div class="col s12 white">
-						       		<div class="row">
-						       			<div class="col s12 center-align">
-					       					<p class="menu-text">No te preocupes de los preparativos, la fiesta la armamos nosotros...</p>
-						           		</div>	
-					           		</div>
-						       		<div class="row">
-						       			<div class="col s12">
-					       					<p class="menu-text">Pack´s para 04 personas.</p>
-						           		</div>	
-					           		</div>
-					           		<div class="row">
-						           		<div class="col s12 ajuste-menu-store">
-						       		    	${four.map(function (pic) {
-		return pack(pic);
-	})}
-						        		</div>	
-						       		</div>
-						       		<div class="divider separar"></div>
-						       		<div class="row">
-						       			<div class="col s12">
-					       					<p class="menu-text">Pack´s para 06 personas.</p>
-						           		</div>	
-					           		</div>
-					           		<div class="row">
-						           		<div class="col s12 ajuste-menu-store">
-						       		    	${six.map(function (pic) {
-		return pack(pic);
-	})}
-						        		</div>	
-						       		</div>
-						       		<div class="divider separar"></div>
-						       		<div class="row">
-						       			<div class="col s12">
-					       					<p class="menu-text">Pack´s para 08 personas.</p>
-						           		</div>	
-					           		</div>
-					           		<div class="row">
-						           		<div class="col s12 ajuste-menu-store">
-						       		    	${eight.map(function (pic) {
-		return pack(pic);
-	})}
-						        		</div>	
-						       		</div>
-						       	</div>
-						    </div>
-					    </div>
-					</li>
-					<li>
-					    <div class="collapsible-header grey lighten-2 itemsCarta">
 					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Accesorios</p>
 					    </div>
 					    <div class="collapsible-body">
@@ -8296,53 +8260,84 @@ module.exports = function (pizzas, /*calzones, piadinas, */ingredientes, packs, 
 /*
 <li>
     <div class="collapsible-header grey lighten-2 itemsCarta">
-    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pizzas Calzones</p>
+    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pack Regalo</p>
     </div>
     <div class="collapsible-body">
-    	<div class="row">
-	   		<div class="col s12 white">
-	   			<div class="row">
-	   				<div class="col s12">
-	   					<p class="menu-text">Pizza Calzones (2 Unidades)</p>
-	   				</div>	
-	   			</div>
-	   			<div class="row">
-	   				<div class="col s12 ajuste-menu-store">
-	   	    			${calzones.map(function (pic) {
-	   						return calzon(pic);
-	   					})}
-	   				</div>
-	   			</div>
-	   		</div>
-	   	</div>
+       	<div class="row">
+	       	<div class="col s12 white">
+	       		<div class="row">
+	       			<div class="col s12 center-align">
+       					<p class="menu-text">Sorprende a quien tu quieras con nuestros packs preparados con exquisitos productos.</p>
+	           		</div>	
+           		</div>
+	           	<div class="row">
+	           		<div class="col s12 ajuste-menu-store">
+	       		    	${single.map(function (pic) {
+	        		   		return pack(pic);
+	        		   	})}
+	        		</div>	
+	       		</div>
+	       	</div>
+	    </div>
     </div>
 </li>
 <li>
     <div class="collapsible-header grey lighten-2 itemsCarta">
-    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Piadinas</p>
+    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pack Fiesta</p>
     </div>
     <div class="collapsible-body">
-    	<div class="row">
-	   		<div class="col s12 white">
-	   			<div class="row">
-	   				<div class="col s12">
-	   					<p class="menu-text">Piadinas (2 Unidades)</p>
-	   				</div>	
-	   			</div>
-	   			<div class="row">
-	   				<div class="col s12 ajuste-menu-store">
-	   	    			${piadinas.map(function (pic) {
-	   						return piadina(pic);
-	   					})}
-	   				</div>
-	   			</div>
-	   		</div>
-	   	</div>
+       	<div class="row">
+	       	<div class="col s12 white">
+	       		<div class="row">
+	       			<div class="col s12 center-align">
+       					<p class="menu-text">No te preocupes de los preparativos, la fiesta la armamos nosotros...</p>
+	           		</div>	
+           		</div>
+	       		<div class="row">
+	       			<div class="col s12">
+       					<p class="menu-text">Pack´s para 04 personas.</p>
+	           		</div>	
+           		</div>
+           		<div class="row">
+	           		<div class="col s12 ajuste-menu-store">
+	       		    	${four.map(function (pic) {
+	        		   		return pack(pic);
+	        		   	})}
+	        		</div>	
+	       		</div>
+	       		<div class="divider separar"></div>
+	       		<div class="row">
+	       			<div class="col s12">
+       					<p class="menu-text">Pack´s para 06 personas.</p>
+	           		</div>	
+           		</div>
+           		<div class="row">
+	           		<div class="col s12 ajuste-menu-store">
+	       		    	${six.map(function (pic) {
+	        		   		return pack(pic);
+	        		   	})}
+	        		</div>	
+	       		</div>
+	       		<div class="divider separar"></div>
+	       		<div class="row">
+	       			<div class="col s12">
+       					<p class="menu-text">Pack´s para 08 personas.</p>
+	           		</div>	
+           		</div>
+           		<div class="row">
+	           		<div class="col s12 ajuste-menu-store">
+	       		    	${eight.map(function (pic) {
+	        		   		return pack(pic);
+	        		   	})}
+	        		</div>	
+	       		</div>
+	       	</div>
+	    </div>
     </div>
 </li>
 */
 
-},{"../layout":40,"../products/ingrediente":41,"../products/item":42,"../products/pack":43,"../products/pizza":47,"../utilities/aPesos":48,"../utilities/aPesos/wNumb":49,"yo-yo":22}],26:[function(require,module,exports){
+},{"../layout":39,"../products/calzon":40,"../products/ingrediente":41,"../products/item":42,"../products/pack":43,"../products/piadina":47,"../products/pizza":48,"../utilities/aPesos":51,"../utilities/aPesos/wNumb":52,"yo-yo":22}],26:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -8798,7 +8793,7 @@ function loadCarrito(ctx, next) {
 	next();
 }
 
-},{"../footer":34,"../header":36,"../utilities/aPesos":48,"../utilities/aPesos/wNumb":49,"./template":33,"empty-element":4,"nouislider":11,"page":13,"title":21}],27:[function(require,module,exports){
+},{"../footer":34,"../header":35,"../utilities/aPesos":51,"../utilities/aPesos/wNumb":52,"./template":33,"empty-element":4,"nouislider":11,"page":13,"title":21}],27:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (picC) {
@@ -8826,7 +8821,7 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"../../../utilities/aPesos":48,"./customOp":27,"yo-yo":22}],29:[function(require,module,exports){
+},{"../../../utilities/aPesos":51,"./customOp":27,"yo-yo":22}],29:[function(require,module,exports){
 var yo = require('yo-yo');
 var opcionI = require('./ipOpcion');
 var aPesos = require('../../../utilities/aPesos');
@@ -8847,7 +8842,7 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"../../../utilities/aPesos":48,"./ipOpcion":30,"yo-yo":22}],30:[function(require,module,exports){
+},{"../../../utilities/aPesos":51,"./ipOpcion":30,"yo-yo":22}],30:[function(require,module,exports){
 var yo = require('yo-yo');
 var opcionOk = require('./opcionCheck');
 
@@ -8883,7 +8878,7 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"../../../utilities/aPesos":48,"yo-yo":22}],33:[function(require,module,exports){
+},{"../../../utilities/aPesos":51,"yo-yo":22}],33:[function(require,module,exports){
 var yo = require('yo-yo');
 var layout = require('../layout');
 var itemS = require('./products/itemSingle');
@@ -9185,7 +9180,7 @@ module.exports = function (itemsCarrito) {
 	return layout(el);
 };
 
-},{"../layout":40,"./products/itemCustom":28,"./products/itemPack":29,"./products/itemSingle":32,"yo-yo":22}],34:[function(require,module,exports){
+},{"../layout":39,"./products/itemCustom":28,"./products/itemPack":29,"./products/itemSingle":32,"yo-yo":22}],34:[function(require,module,exports){
 var yo = require('yo-yo');
 var empty = require('empty-element');
 
@@ -9227,26 +9222,33 @@ var el = yo`<nav class="header grey lighten-3">
 	<div class="container">
 		<div class="row piso-nav">
 			<div class="col s12 sp">
-				<div class="hide nav-wrapper">
+				<div class="nav-wrapper">
 					<div id="todoHeader" class="container barra">
 						<div class="row piso-nav">
-							<div class="col s2 m4 l2 sp">
-							  	<a href="/" class="brand-logo">RAGUSTINO</a>
-							  	<a href="/carta" class="hide-on-large-only center-align"><i class="material-icons">store</i></a>
+							<div class="col s2 sp">
+							  	<a href="/" class="brand-logo hide-on-med-and-down">Ragustino Food Experience</a>
+							  	<a href="/" class="hide-on-large-only center-align"><i class="material-icons">home</i></a>
+							</div>
+							<div class="col s2 sp hide-on-large-only center-align">
+								<a href="/carta"><i class="material-icons iconStore">store</i></a>
+							</div>
+							<div class="col s2 hide-on-large-only center-align">
+								<a href="/somos"><i class="material-icons">nature_people</i></a>
 							</div>
 							<div class="col l6 hide-on-med-and-down">
 								<ul class="right">
 									<li><a href="/">INICIO</a></li>
 									<li><a href="/carta">NUESTROS PRODUCTOS</a></li>
+									<li><a href="/somos">NUESTRA FILOSOFIA</a></li>
 								</ul>
 							</div>
-							<div class="col s2 m2 offset-m4 l2 center-align sp">
-								<a href="#" class="btn btn-flat dropdown-button chip-user" data-activates="drop-user"><i class="small material-icons carrito">perm_identity</i></a>
+							<div class="col s2 center-align sp">
+								<a href="#" class="btn btn-flat dropdown-button chip-user center-align" data-activates="drop-user"><i class="small material-icons iconoSign">perm_identity</i></a>
 								<ul id="drop-user" class="dropdown-content">
 									<li><a href="#">Salir</a></li>
 								</ul>
 							</div>
-							<div class="col s3 offset-s5 m2 l2 sp">
+							<div class="col s2 offset-s1 m2 l2 sp center-align">
 								<a class="btn modal-trigger blue darken-2 chip-carro" href="#modal9"><i class="small material-icons left carrito">shopping_cart</i><span id="totalProductos">0</span></a>
 							</div>
 						</div>
@@ -9265,56 +9267,11 @@ module.exports = function header(ctx, next) {
 };
 
 },{"empty-element":4,"yo-yo":22}],36:[function(require,module,exports){
-var yo = require('yo-yo');
-var empty = require('empty-element');
-
-var el = yo`<nav class="header grey lighten-3">
-	<div class="container">
-		<div class="row piso-nav">
-			<div class="col s12 sp">
-				<div class="nav-wrapper">
-					<div id="todoHeader" class="container barra">
-						<div class="row piso-nav">
-							<div class="col s2 m4 l2 sp">
-							  	<a href="/" class="brand-logo">RAGUSTINO</a>
-							  	<a href="/carta" class="hide-on-large-only center-align"><i class="material-icons">store</i></a>
-							</div>
-							<div class="col l6 hide-on-med-and-down">
-								<ul class="right">
-									<li><a href="/">INICIO</a></li>
-									<li><a href="/carta">NUESTROS PRODUCTOS</a></li>
-								</ul>
-							</div>
-							<div class="col s2 m2 offset-m4 l2 center-align sp">
-								<a href="#" class="btn btn-flat dropdown-button chip-user" data-activates="drop-user"><i class="small material-icons carrito">perm_identity</i></a>
-								<ul id="drop-user" class="dropdown-content">
-									<li><a href="#">Salir</a></li>
-								</ul>
-							</div>
-							<div class="col s3 offset-s5 m2 l2 sp">
-								<a class="btn modal-trigger blue darken-2 chip-carro" href="#modal9"><i class="small material-icons left carrito">shopping_cart</i><span id="totalProductos">0</span></a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</nav>`;
-
-module.exports = function header(ctx, next) {
-
-	var container = document.getElementById('header-container');
-	empty(container).appendChild(el);
-	next();
-};
-
-},{"empty-element":4,"yo-yo":22}],37:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
 var title = require('title');
-var header = require('../headerTest');
+var header = require('../header');
 var footer = require('../footer');
 
 page('/', header, footer, function (ctx, next) {
@@ -9452,91 +9409,16 @@ page('/', header, footer, function (ctx, next) {
 	});
 });
 
-},{"../footer":34,"../headerTest":35,"./template":38,"empty-element":4,"page":13,"title":21}],38:[function(require,module,exports){
+},{"../footer":34,"../header":35,"./template":37,"empty-element":4,"page":13,"title":21}],37:[function(require,module,exports){
 var yo = require('yo-yo');
 var layout = require('../layout');
 
 module.exports = function () {
-	var el = yo`<div class="col s12 seccion">
-		<div class="row nobottom">
+	var el = yo`<div class="col s12 seccion sp">
+		<div class="row sp nobottom">
 			<div class="col s12 center-align">
-				<h2 class="tituloHome">PAGINA EN CONSTRUCCION</h2>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col s12 center-align">
-				<p>... En unos días</p>
-			</div>
-		</div>
-		<div class="row nobottom">
-			<div class="col s12 center-align">
-				<h2 class="tituloHome">RAGUSTINO FOOD EXPERIENCE</h2>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col s12 center-align">
-				<p>completamente digital</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col s12 m4">
-				<div class="row nobottom">
-					<div class="col s12 center-align">
-						<p class="programa">En RAGUSTINO FOOD EXPERIENCE puedes agendar fácilmente el DIA y HORA que quieres recibir tu pedido.   Entra a nuestra carta, selecciona tus favoritos y PROGRAMA para el mismo día o cuando quieras, SIN COBROS ADICIONALES</p>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col s12 center-align">
-						<p>Disfruta de la comida más deliciosa, equilibrada y nutritiva a tu puerta sin esperas ni retrasos...</p>
-					</div>
-				</div>
-			</div>
-			<div class="col s12 m4 centroIm">
-				<img class="fotoCentro" src="centroinfo.png" />
-			</div>
-			<div class="col s12 m4 center-align">
-				<div class="row nobottom">
-					<div class="col s12 center-align">
-						<p class="horario"></p>
-					</div>
-				</div>
-				<div class="row nobottom">
-					<div class="col s12 center-align">
-						<p class="horas">HORARIO: RAGUSTINO</p>
-					</div>
-				</div><div class="row nobottom">
-					<div class="col s12 center-align">
-						<p class="horas">Realiza repartos sólo de jueves a domingo:</p>
-					</div>
-				</div>
-				<div class="row nobottom">
-					<div class="col s12 center-align">
-						<p class="horas">Jueves 18:00 - 0:00</p>
-					</div>
-				</div>
-				<div class="row nobottom">
-					<div class="col s12 center-align">
-						<p class="horas">Viernes 18:00 - 1:00</p>
-					</div>
-				</div>
-				<div class="row nobottom">
-					<div class="col s12 center-align">
-						<p class="horas">Sábado 18:00 - 1:00</p>
-					</div>
-				</div>
-				<div class="row nobottom">
-					<div class="col s12 center-align">
-						<p class="horas">Domingo 18:00 - 0:00</p>
-					</div>
-				</div>
-				<div class="row programa">
-					<div class="col s2 offset-s4 l2 offset-l4 face center-align">
-						<a href="http://www.facebook.com/ragustinofoodexperience" target="_blank" class="icon-facebook iconoRedes"></a>
-					</div>
-					<div class="col s2 l2 center-align insta">
-						<a href="http://www.instagram.com/ragustinofoodexperience" target="_blank" class="icon-instagram iconoRedes"></a>
-					</div>
-				</div>
+				<img class="pic-ini hide-on-small-only" src="home.png" />
+				<img class="pic-ini hide-on-med-and-up" src="home-small.png" />
 			</div>
 		</div>
 	</div>`;
@@ -9545,23 +9427,27 @@ module.exports = function () {
 };
 
 /*
-<div class="row">
-	<div class="col s12 center-align">
-		<p>Es un nuevo concepto de negocio, innovador, diferenciado y acorde a los tiempos actuales. Somos parte del cambio radical que ha experimentado la industria gastronómica desde la expansión sin precedentes de internet y las redes sociales. Somos un DELI GOURMET o un PORTAL WEB DE PEDIDOS GASTRONÓMICOS, pero queremos ir mucho más allá y darle un salto de calidad al ya clásico e irregular servicio de “pedido a domicilio”. Nuestro principal objetivo es entregar una experiencia gastronómica integral, moderna y de excelencia. Para ello contamos con una cocina creativa y versátil, procesos completamente digitalizados para pagos online, rastreo interactivo de reparto y programación de pedidos por horas o días. Cocinamos con pasión y trabajamos con energía porque NOS ENCANTA LO QUE HACEMOS! Queremos crecer e innovar pero por sobre todo queremos hacer la diferencia entregando siempre un servicio de calidad orientado al cliente. Te invitamos a disfrutar hoy de una nueva experiencia gourmet a domicilio. TE ESPERAMOS!!!</p>
+<div class="row nobottom">
+	<div class="col s8 offset-s2 center-align">
+		<a href="/carta" class="waves-effect waves-light btn blue darken-2"><i class="material-icons left">store</i>Nuestra Carta</a>
 	</div>
 </div>
-<div class="row">
-	<div class="col s12 center-align">
-		<a href="/carta" class="waves-effect waves-light btn blue darken-2"><i class="material-icons left">store</i>Nuestra Carta</a>
+<div class="row programa">
+	<div class="col s2 offset-s4 m1 offset-m5 face center-align">
+		<a href="http://www.facebook.com/ragustinofoodexperience" target="_blank" class="icon-facebook iconoRedes"></a>
+	</div>
+	<div class="col s2 m1 center-align insta">
+		<a href="http://www.instagram.com/ragustinofoodexperience" target="_blank" class="icon-instagram iconoRedes"></a>
 	</div>
 </div>
 */
 
-},{"../layout":40,"yo-yo":22}],39:[function(require,module,exports){
+},{"../layout":39,"yo-yo":22}],38:[function(require,module,exports){
 var page = require('page');
 
 require('./homepage');
 require('./carta');
+require('./somos');
 require('./compra');
 /*require('./clients/signup');
 require('./clients/signin');
@@ -9572,7 +9458,7 @@ require('./ragsystem/adm_equipo');*/
 
 page();
 
-},{"./carta":24,"./compra":26,"./homepage":37,"page":13}],40:[function(require,module,exports){
+},{"./carta":24,"./compra":26,"./homepage":36,"./somos":49,"page":13}],39:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function layout(content) {
@@ -9647,14 +9533,14 @@ module.exports = function layout(content) {
 		</div>
 		<div id="modal8" class="modal">
 			<div class="modal-content">
-				<h4>Nuestra Pizza a tu gusto</h4>
+				<h4 class="armandoTit center-align">Nuestra Pizza a tu gusto</h4>
 				<div class="row boxIng">
 					<div class="col s12">
 						<div class="row filaIng">
 							<div class="col s8">
 								Base
 							</div>
-							<div class="col s4">
+							<div class="col s4 sp right-align">
 								$ 6990.-
 							</div>
 						</div>
@@ -9663,10 +9549,10 @@ module.exports = function layout(content) {
 					</div>
 					<div class="col s12">
 						<div class="row filaIng">
-							<div class="col s8 totales">
+							<div class="col s6 totales">
 								Total
 							</div>
-							<div class="col s4">
+							<div class="col s6 sp right-align">
 								<h4 class="totales" id="totalIngredientes"></h4>
 							</div>
 						</div>
@@ -9680,7 +9566,28 @@ module.exports = function layout(content) {
 	</div>`;
 };
 
-},{"yo-yo":22}],41:[function(require,module,exports){
+},{"yo-yo":22}],40:[function(require,module,exports){
+var yo = require('yo-yo');
+var aPesos = require('../../utilities/aPesos');
+
+module.exports = function (pic) {
+	return yo`<div class="card pizza-card-content">
+		<div class="card-image waves-effect waves-block waves-light">
+			<img class="activator responsive" src="${pic.url}">
+		</div>
+		<div class="card-content">
+			<span class="pizza-text card-title activator grey-text text-darken-2">${pic.name}</span>
+			<a class="btn-floating right waves-effect waves-light blue darken-2 botonAgregar"><i class="material-icons" id="addItem" data-id="${pic.id}">add</i></a>
+		</div>
+		<div class="card-reveal">
+		    <span class="pizza-text card-title blue-text text-darken-2">${pic.name}<i class="material-icons right">close</i></span>
+		    <p class="pizza-content-text">${pic.content}</p>
+		    <span class="left likes blue-text text-darken-2">Valor: ${aPesos(pic.price)}.-</span>
+		</div>
+	</div>`;
+};
+
+},{"../../utilities/aPesos":51,"yo-yo":22}],41:[function(require,module,exports){
 var yo = require('yo-yo');
 var aPesos = require('../../utilities/aPesos');
 
@@ -9704,7 +9611,7 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"../../utilities/aPesos":48,"yo-yo":22}],42:[function(require,module,exports){
+},{"../../utilities/aPesos":51,"yo-yo":22}],42:[function(require,module,exports){
 var yo = require('yo-yo');
 var aPesos = require('../../utilities/aPesos');
 
@@ -9736,7 +9643,7 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"../../utilities/aPesos":48,"yo-yo":22}],43:[function(require,module,exports){
+},{"../../utilities/aPesos":51,"yo-yo":22}],43:[function(require,module,exports){
 var yo = require('yo-yo');
 var itemopt = require('./item-opt');
 var itemoptt = require('./item-opt-opt');
@@ -9764,7 +9671,7 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"../../utilities/aPesos":48,"./item-opt":46,"./item-opt-opt":44,"yo-yo":22}],44:[function(require,module,exports){
+},{"../../utilities/aPesos":51,"./item-opt":46,"./item-opt-opt":44,"yo-yo":22}],44:[function(require,module,exports){
 var yo = require('yo-yo');
 var option = require('./option');
 
@@ -9799,6 +9706,8 @@ module.exports = function (opt) {
 };
 
 },{"yo-yo":22}],47:[function(require,module,exports){
+arguments[4][40][0].apply(exports,arguments)
+},{"../../utilities/aPesos":51,"dup":40,"yo-yo":22}],48:[function(require,module,exports){
 var yo = require('yo-yo');
 var aPesos = require('../../utilities/aPesos');
 
@@ -9819,7 +9728,142 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"../../utilities/aPesos":48,"yo-yo":22}],48:[function(require,module,exports){
+},{"../../utilities/aPesos":51,"yo-yo":22}],49:[function(require,module,exports){
+var page = require('page');
+var empty = require('empty-element');
+var template = require('./template');
+var title = require('title');
+var header = require('../header');
+var footer = require('../footer');
+
+page('/somos', header, footer, function (ctx, next) {
+	title('Nuestra Filosofia');
+	var main = document.getElementById('main-container');
+
+	empty(main).appendChild(template());
+});
+
+},{"../footer":34,"../header":35,"./template":50,"empty-element":4,"page":13,"title":21}],50:[function(require,module,exports){
+var yo = require('yo-yo');
+var layout = require('../layout');
+
+module.exports = function () {
+	var el = yo`<div class="col s12 seccion">
+		<div class="row nobottom">
+			<div class="col s12 center-align">
+				<h2 class="tituloHome">RAGUSTINO FOOD EXPERIENCE</h2>
+			</div>
+		</div>
+		<div class="row nobottom">
+			<div class="col s12 center-align">
+				<p class="programa">En RAGUSTINO FOOD EXPERIENCE puedes agendar fácilmente el DIA y HORA que quieres recibir tu pedido.   Entra a nuestra carta, selecciona tus favoritos y PROGRAMA para el mismo día o cuando quieras, SIN COBROS ADICIONALES</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 center-align">
+				<p>Disfruta de la comida más deliciosa, equilibrada y nutritiva a tu puerta sin esperas ni retrasos...</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 center-align">
+				<p>Es un nuevo concepto de negocio, innovador, diferenciado y acorde a los tiempos actuales. Somos parte del cambio radical que ha experimentado la industria gastronómica desde la expansión sin precedentes de internet y las redes sociales. Somos un DELI GOURMET o un PORTAL WEB DE PEDIDOS GASTRONÓMICOS, pero queremos ir mucho más allá y darle un salto de calidad al ya clásico e irregular servicio de “pedido a domicilio”. Nuestro principal objetivo es entregar una experiencia gastronómica integral, moderna y de excelencia. Para ello contamos con una cocina creativa y versátil, procesos completamente digitalizados para pagos online, rastreo interactivo de reparto y programación de pedidos por horas o días. Cocinamos con pasión y trabajamos con energía porque NOS ENCANTA LO QUE HACEMOS! Queremos crecer e innovar pero por sobre todo queremos hacer la diferencia entregando siempre un servicio de calidad orientado al cliente. Te invitamos a disfrutar hoy de una nueva experiencia gourmet a domicilio. TE ESPERAMOS!!!</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 center-align">
+				<p>"Nuestras Pizzas son 100% artesanales, siguiendo la receta que aprendimos en Bagnoli, Nápoles.  Fermentamos la masa por más de 24 horas  para conseguir una pizza esponjosa, liviana y fácil de digerir.  Todas son cocinadas en horno de leña con ingredientes frescos y preparados con pasión, cariño y el toque RAGUSTINO."</p>
+			</div>
+		</div>
+		<div class="row nobottom">
+			<div class="col s12 center-align">
+				<h2 class="tituloHome">QUE ES UNA PIADINA?</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 center-align">
+				<p>La piadina es un producto gastronómico de origen italiano, típico de las provincias de la Romaña. Está compuesto por una masa hojaldrada de harina de trigo, manteca o aceite de oliva, sal y agua. Se rellena con vegetales, quesos y jamones y se cocina sobre una piedra o plancha caliente por unos minutos. El resultado es delicioso, saludable y contundente. Ideal para quienes buscan nuevas opciones además de pizzas, sándwiches o creppes. Pide la tuya en exclusiva en RAGUSTINO FOOD EXPERIENCE!</p>
+			</div>
+		</div>
+		<div class="row nobottom">
+			<div class="col s12 center-align">
+				<h2 class="tituloHome">QUE ES UNA FOCACCIA?</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 center-align">
+				<p>Es una pieza de pan aromática y apetitosa de origen italiano muy relacionada a la popular pizza aunque de mayor altura. Se cocina al fuego con romero y aceite de oliva y otros ingredientes. A nosotros nos encantan con aceitunas, un poco de cebolla glaseada y queso mozzarella. Mmmmm … Majestuosas!!!</p>
+			</div>
+		</div>
+		<div class="row nobottom">
+			<div class="col s12 center-align">
+				<h2 class="tituloHome">GRISSINIS</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 center-align">
+				<p>Los grissinis italianos son palitos de pan aromatizados con especias, muy crocantes y de forma fina y alargada. Son el acompañamiento perfecto para ensaladas, jamones, quesos y salsas. Nuestro chef los prepara de albahaca y queso y los acompaña con una salsa sublime. IMPERDIBLES!</p>
+			</div>
+		</div>
+		<div class="row nobottom">
+			<div class="col s12 center-align">
+				<h2 class="tituloHome">ENSALADA RAGUSTINO</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 center-align">
+				<p>La más clásica de nuestras ensaladas y la primera de una serie que verán la luz muy pronto, inaugurando nuestra carta “primavera-verano”. “La RAGUSTINO” se compone de un mix de hojas verdes (espinaca, rúcula, lechuga francesa y escarola), un sutil toque de repollo, tomates cherry, cubitos de pepino, pollo a la plancha, tortilla chips, semillas de sésamo, nueces y aderezo (yoghurt griego, vinagre balsámico, aceite de oliva, mostaza Dijon, sal y pimienta). LOS CLÁSICOS NO PASAN DE MODA!</p>
+			</div>
+		</div>
+		<div class="col s12 m4 offset-m4 center-align">
+			<div class="row nobottom">
+				<div class="col s12 center-align">
+					<p class="horario"></p>
+				</div>
+			</div>
+			<div class="row nobottom">
+				<div class="col s12 center-align">
+					<p class="horas">HORARIO: RAGUSTINO</p>
+				</div>
+			</div><div class="row nobottom">
+				<div class="col s12 center-align">
+					<p class="horas">Realiza repartos sólo de jueves a domingo:</p>
+				</div>
+			</div>
+			<div class="row nobottom">
+				<div class="col s12 center-align">
+					<p class="horas">Jueves 18:00 - 0:00</p>
+				</div>
+			</div>
+			<div class="row nobottom">
+				<div class="col s12 center-align">
+					<p class="horas">Viernes 18:00 - 1:00</p>
+				</div>
+			</div>
+			<div class="row nobottom">
+				<div class="col s12 center-align">
+					<p class="horas">Sábado 18:00 - 1:00</p>
+				</div>
+			</div>
+			<div class="row nobottom">
+				<div class="col s12 center-align">
+					<p class="horas">Domingo 18:00 - 0:00</p>
+				</div>
+			</div>
+			<div class="row programa">
+				<div class="col s2 offset-s4 l2 offset-l4 face center-align">
+					<a href="http://www.facebook.com/ragustinofoodexperience" target="_blank" class="icon-facebook iconoRedes"></a>
+				</div>
+				<div class="col s2 l2 center-align insta">
+					<a href="http://www.instagram.com/ragustinofoodexperience" target="_blank" class="icon-instagram iconoRedes"></a>
+				</div>
+			</div>
+		</div>
+	</div>`;
+
+	return layout(el);
+};
+
+},{"../layout":39,"yo-yo":22}],51:[function(require,module,exports){
 var wNumb = require('./wNumb');
 
 module.exports = function (val) {
@@ -9832,7 +9876,7 @@ module.exports = function (val) {
 	return formatoPesos.to(val);
 };
 
-},{"./wNumb":49}],49:[function(require,module,exports){
+},{"./wNumb":52}],52:[function(require,module,exports){
 (function (factory) {
 
 	if (typeof define === 'function' && define.amd) {
@@ -10182,4 +10226,4 @@ module.exports = function (val) {
 	return wNumb;
 });
 
-},{}]},{},[39]);
+},{}]},{},[38]);
