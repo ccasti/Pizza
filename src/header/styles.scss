@@ -1,11 +1,9 @@
 .header {
 	min-height: 60px !important;
-	position: fixed;
-	z-index: 100;
 }
 
 .piso-nav {
-	margin-bottom: 0 !important;
+	margin: 0 !important;
 }
 
 .barra {
@@ -34,20 +32,20 @@ nav ul a {
 	background-color: #42a5f5 !important;
 }
 
-.chip-carro {
-	color: white !important;
-	padding: 0 10px !important;
-	margin: 12px 0 !important;
-}
-
-.carrito {
-	line-height: inherit !important;
-	max-height: 30px !important;
-	margin-right: 5px !important;
-}
-
 .iconoSign {
 	line-height: inherit !important;
 	max-height: 30px !important;
 	margin-right: 0px !important;
+}
+
+@media #{$small-and-down} {
+	.header {
+		margin: 0 !important;
+		min-width: 100% !important;
+	}
+
+	.smallH {
+		margin: 0 !important;
+		min-width: 100% !important;
+	}
 }

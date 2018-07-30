@@ -51,11 +51,29 @@
 }
 
 .btnOferta {
-	margin: 0 !important;
+	margin: 2rem 0 !important;
 }
 
 .itemsOferta {
 	padding: 0;
+}
+
+.slider .indicators .indicator-item.active {
+	background-color: #1976d2;
+}
+
+.chip-carro {
+	color: white !important;
+	padding: 0 10px !important;
+	margin: 0 !important;
+	position: fixed;
+	z-index: 100;
+}
+
+.carrito {
+	line-height: inherit !important;
+	max-height: 30px !important;
+	margin-right: 5px !important;
 }
 
 @media #{$medium-and-down} {
@@ -79,5 +97,13 @@
 
 	.topOf {
 		margin-top: 1rem;
+	}
+
+	.sliderMas {
+		font-size: 1.2rem !important;
+	}
+
+	.sliderTit {
+		font-size: 1.4rem !important;
 	}
 }

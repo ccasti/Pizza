@@ -43,7 +43,7 @@ module.exports = function layout (content) {
 												<div class="col s3 m2 right-align titCarro">
 													Precio
 												</div>
-												<div class="col s2 m2 right-align titCarro">
+												<div class="col s2 m2 center-align titCarro">
 													Cant.
 												</div>
 												<div class="col s2 m2 center-align titCarro">
@@ -95,6 +95,40 @@ module.exports = function layout (content) {
 								<h4 class="totales" id="totalIngredientes"></h4>
 							</div>
 						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="modal7" class="modal">
+			<div class="modal-content">
+				<h4 class="armandoTit center-align">Elije Pizza y Bebida</h4>
+				<div class="row nobottom">
+					<div class="input-field col s12">
+						<select id="pizzaOferta">
+							<option value="" disabled selected>Elije tu Pizza</option>
+							<option value="101">Margherita</option>
+							<option value="102">Caprese</option>
+							<option value="103">Pollo al Pesto</option>
+							<option value="104">Zuchinni Parmesano</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s12">
+						<select id="bebidaOferta">
+							<option value="" disabled selected>Elije tu Bebida</option>
+							<option value="201">Coca Cola Normal</option>
+							<option value="202">Coca Cola zero</option>
+							<option value="203">Fanta Normal</option>
+							<option value="204">Fanta Zero</option>
+							<option value="205">Sprite Normal</option>
+							<option value="206">Sprite Zero</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s12 offset-s2 btnOferta center-align">
+						<a href="#" id="addOferta" class="waves-effect waves-light btn blue darken-2">Confirmar Compra</a>
 					</div>
 				</div>
 			</div>

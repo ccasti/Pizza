@@ -149,7 +149,7 @@ page('/carta',
 		}
 
 		this.agergarOferta = function() {
-			var ventaOferta = {pizname: '', bebname: '', id: '900001', price: '11900'};
+			var ventaOferta = {name: 'Oferta', cantidad: '1', pizname: '', bebname: '', id: '900001', price: 11900, oferta: 1};
 			var pOferta = document.getElementById('pizzaOferta').value;
 			var bOferta = document.getElementById('bebidaOferta').value;
 
@@ -181,27 +181,32 @@ page('/carta',
 					ventaOferta.bebname = b.name;
 				}
 			}
-
-			console.log(ventaOferta);
+			contChequeo.push({ id: ventaOferta.id, price: ventaOferta.price });
+			$('#modal7').modal('close');
+			this.getCarrito.push(ventaOferta);
+			localStorage.setItem("carrito",JSON.stringify(this.getCarrito));
+			Materialize.toast('Se agregó un producto', 1500, 'rounded')
+			carrito_view.totalProductos();
+			carrito_view.renderCarrito();
+			$('#modal9').modal('open');
 		}
 
 		this.agregarCustom = function() {
 			let n = 0;
 			for(i of armar_pizza.getIngredientes) {
-				if(i.control === 1) {
-					n++;
+				if(i.control == 1) {
+					n += 1;
 				}
 			}
 			if(n < 3) {
-				alert("Para ofrecerte una verdadera experiencia gourmet, debes seleccionar un mínimo de 3 ingredientes, recuerda que las especias no son consideradas ;-)");
+				alert("Para ofrecerte una verdadera experiencia gourmet, debes seleccionar un mínimo de 3 ingredientes, recuerda que las especias no son consideradas.)");
 				return
 			}
 			if(n > 5) {
-				alert("Nuestra masa de fermentación lenta se romperá con más de 5 ingredientes, seleciona un máximo de 5 ingredientes ;-)");
+				alert("Nuestra masa de fermentación lenta se romperá con más de 5 ingredientes, seleciona un máximo de 5 ingredientes.");
 				return
 			}
 			contChequeo.push({ id: '100100', price: armar_pizza.getTotal() });
-			console.log(contChequeo);
 			let itemCustom = { id: '100100', name: 'Pizza a tu gusto', price: armar_pizza.getTotal(), cantidad: 1, custom: true, ingredientes: armar_pizza.getIngredientes }
 			this.getCarrito.push(itemCustom);
 			localStorage.setItem("carrito",JSON.stringify(this.getCarrito));
@@ -210,6 +215,7 @@ page('/carta',
 			carrito_view.totalProductos();
 			carrito_view.renderCarrito();
 			$('#modal9').modal('open');
+			alert("Para optimizar el funcionamiento de la página deberemos refrescarla, no te preocupes que al volver tu pizza estará en tu carro.");
 			setTimeout('document.location.reload()',2000);
 		}
 
@@ -239,6 +245,10 @@ page('/carta',
 			if(JSON.parse(localStorage.getItem("carrito")).length <= 0) {
 				alert("No tienes productos en tu carro");
 				return
+			}
+			var restMonto = this.getTotal();
+			if(restMonto < 10000) {
+				alert("Lo sentimos, el monto mínimo de compra es de $10.000.-");
 			}else{
 				var totalChequeo = 0;
 				for(i of contChequeo) {
@@ -386,6 +396,7 @@ page('/carta',
 	$(document).ready(function(){
 		$('.collapsible').collapsible();
 		$('select').material_select();
+		$('.slider').slider();
 		carrito.constructor();
 		carrito.mantenedorChequeo();
 		comprando.constructor();
@@ -420,8 +431,8 @@ page('/carta',
 				$('#modal9').modal('open');
 			}
 
-			if(ev.target.id === "addOferta") {
-				carrito.agergarOferta();
+			if(ev.target.id === "agPizzaCustom") {
+				carrito.agregarCustom();
 			}
 		});
 		
@@ -446,9 +457,9 @@ page('/carta',
 			}
 		});
 
-		document.getElementById('agPizzaCustom').addEventListener("click", function(ev) {
+		document.getElementById('addOferta').addEventListener("click", function(ev) {
 			ev.preventDefault();
-			carrito.agregarCustom();
+			carrito.agergarOferta();
 		});
 
 		document.getElementById('comprando').addEventListener("click", function(ev) {
@@ -482,7 +493,7 @@ function loadIngredientes (ctx, next) {
 
 function loadOtros (ctx, next) {
 	request
-		.get('/api/otros')//https://www.ragustino.cl/js/otros.php
+		.get('/api/otro')//https://www.ragustino.cl/js/otro.php
 		.end(function (err, res) {
 			if (err) return console.log(err);
 

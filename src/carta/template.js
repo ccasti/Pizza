@@ -231,51 +231,67 @@ module.exports = function (pizzas, otros, ingredientes, packs, items) {
 	});
 
 	var el = yo`<div id="catalogo" class="col s12 seccion">
-		<div class="row">
-			<div class="col s12 center-align topOf">
-				<img class="pic-ini" src="oferta.png" />
+		<div class="row principal2">
+			<div class="col s2 offset-s10 sp center-align">
+				<a class="btn modal-trigger blue darken-2 chip-carro" href="#modal9"><i class="small material-icons left carrito">shopping_cart</i><span id="totalProductos">0</span></a>
 			</div>
-		</div>	
-		<div class="row nobottom">
-			<div class="col s8 offset-s2 m4 offset-m4 center-align">
-				<ul class="collapsible popout" data-collapsible="accordion">
-					<li class="nobottom">
-					    <div class="collapsible-header blue darken-2 itemsOferta">
-					    	<p class="menu-text padding1 white-text center-align">Comprar Oferta</p>
-					    </div>
-					    <div class="collapsible-body padding1">
-					    	<div class="row nobottom">
-						    	<div class="input-field col s12">
-						    		<select id="pizzaOferta">
-						    			<option value="" disabled selected>Elije tu Pizza</option>
-						    			<option value="101">Margherita</option>
-						    			<option value="102">Caprese</option>
-						    			<option value="103">Pollo al Pesto</option>
-						    			<option value="104">Zuchinni Parmesano</option>
-						    		</select>
-						    	</div>
+		</div>
+		<div class="row">
+			<div class="col s12 sp">
+				<div class="slider hide-on-small-only">
+					<ul class="slides">
+						<li>
+							<img src="slider1.png"> <!-- random image -->
+							<div class="caption center-align">
+								<h3 class="black-text">Aprovecha la oferta del mes</h3>
+								<h5 class="light black-text">Costo del delivery incluido</h5>
+								<a class="waves-effect waves-light btn modal-trigger blue darken-2 btnOferta" href="#modal7">Comprar Oferta</a>
 							</div>
-					    	<div class="row">
-						    	<div class="input-field col s12">
-						    		<select id="bebidaOferta">
-						    			<option value="" disabled selected>Elije tu Bebida</option>
-						    			<option value="201">Coca Cola Normal</option>
-						    			<option value="202">Coca Cola zero</option>
-						    			<option value="203">Fanta Normal</option>
-						    			<option value="204">Fanta Zero</option>
-						    			<option value="205">Sprite Normal</option>
-						    			<option value="206">Sprite Zero</option>
-						    		</select>
-						    	</div>
+						</li>
+						<li>
+							<img src="slider2.png"> <!-- random image -->
+							<div class="caption right-align">
+								<h3 class="black-text">Agenda fácilmente el DIA y HORA que quieres recibir tu pedido.</h3>
+								<h5 class="light black-text">PROGRAMA para el mismo día o cuando quieras</h5>
+								<h5 class="light black-text">SIN COBROS ADICIONALES</h5>
 							</div>
-					    	<div class="row">
-						    	<div class="input-field col s12 offset-s2 btnOferta">
-						    		<a href="#" id="addOferta" class="waves-effect waves-light btn blue darken-2">Confirmar</a>
-						    	</div>
+						</li>
+						<li>
+							<img src="slider3.png"> <!-- random image -->
+							<div class="caption center-align">
+								<h3 class="black-text">Disfruta de nuestras exquisitas Pizzas, Calzones y Piadinas</h3>
+								<h5 class="light black-text">y muchas sorpresas más...</h5>
 							</div>
-						</div>
-					</li>
-				</ul>
+						</li>
+					</ul>
+				</div>
+				<div class="slider hide-on-med-and-up">
+					<ul class="slides">
+						<li>
+							<img src="sliders1.png"> <!-- random image -->
+							<div class="caption center-align">
+								<h3 class="black-text sliderTit">Aprovecha la oferta del mes</h3>
+								<h5 class="light black-text sliderMas">Costo del delivery incluido</h5>
+								<a class="waves-effect waves-light btn modal-trigger blue darken-2 btnOferta" href="#modal7">Comprar Oferta</a>
+							</div>
+						</li>
+						<li>
+							<img src="sliders2.png"> <!-- random image -->
+							<div class="caption center-align">
+								<h3 class="black-text sliderTit">Agenda fácilmente el DIA y HORA que quieres recibir tu pedido.</h3>
+								<h5 class="light black-text sliderMas">PROGRAMA para el mismo día o cuando quieras</h5>
+								<h5 class="light black-text sliderMas">SIN COBROS ADICIONALES</h5>
+							</div>
+						</li>
+						<li>
+							<img src="sliders3.png"> <!-- random image -->
+							<div class="caption center-align">
+								<h3 class="black-text sliderTit">Disfruta de nuestras exquisitas Pizzas, Calzones y Piadinas</h3>
+								<h5 class="light black-text sliderMas">y muchas sorpresas más...</h5>
+							</div>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 		<div class="row">
@@ -283,7 +299,7 @@ module.exports = function (pizzas, otros, ingredientes, packs, items) {
 				<ul class="collapsible popout" data-collapsible="accordion">
 					<p class="menu-text pack-text grey-text text-darken-4 center-align">Conoce las recetas que hemos preparado especialmente para ti con productos de primera selección</p>
 					<li>
-					    <div class="collapsible-header grey lighten-2 itemsCarta">
+					    <div id="collapPizzas" class="collapsible-header grey lighten-2 itemsCarta">
 					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pizzas</p>
 					    </div>
 					    <div class="collapsible-body">

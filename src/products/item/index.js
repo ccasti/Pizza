@@ -19,7 +19,7 @@ module.exports = function (pic) {
 					</div>
 				</div>
 			</div>
-			<div class="col s2 contItem">
+			<div class="col s2 contItem right-align">
 				<span class="precioItem">${aPesos(pic.price)}.-</span>
 			</div>
 			<div class="col s2">

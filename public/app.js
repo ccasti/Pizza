@@ -7280,7 +7280,7 @@ page('/carta', header, loadPizzas, loadIngredientes, loadOtros, loadPacks, loadI
 		};
 
 		this.agergarOferta = function () {
-			var ventaOferta = { pizname: '', bebname: '', id: '900001', price: '11900' };
+			var ventaOferta = { name: 'Oferta', cantidad: '1', pizname: '', bebname: '', id: '900001', price: 11900, oferta: 1 };
 			var pOferta = document.getElementById('pizzaOferta').value;
 			var bOferta = document.getElementById('bebidaOferta').value;
 
@@ -7299,27 +7299,32 @@ page('/carta', header, loadPizzas, loadIngredientes, loadOtros, loadPacks, loadI
 					ventaOferta.bebname = b.name;
 				}
 			}
-
-			console.log(ventaOferta);
+			contChequeo.push({ id: ventaOferta.id, price: ventaOferta.price });
+			$('#modal7').modal('close');
+			this.getCarrito.push(ventaOferta);
+			localStorage.setItem("carrito", JSON.stringify(this.getCarrito));
+			Materialize.toast('Se agregó un producto', 1500, 'rounded');
+			carrito_view.totalProductos();
+			carrito_view.renderCarrito();
+			$('#modal9').modal('open');
 		};
 
 		this.agregarCustom = function () {
 			let n = 0;
 			for (i of armar_pizza.getIngredientes) {
-				if (i.control === 1) {
-					n++;
+				if (i.control == 1) {
+					n += 1;
 				}
 			}
 			if (n < 3) {
-				alert("Para ofrecerte una verdadera experiencia gourmet, debes seleccionar un mínimo de 3 ingredientes, recuerda que las especias no son consideradas ;-)");
+				alert("Para ofrecerte una verdadera experiencia gourmet, debes seleccionar un mínimo de 3 ingredientes, recuerda que las especias no son consideradas.)");
 				return;
 			}
 			if (n > 5) {
-				alert("Nuestra masa de fermentación lenta se romperá con más de 5 ingredientes, seleciona un máximo de 5 ingredientes ;-)");
+				alert("Nuestra masa de fermentación lenta se romperá con más de 5 ingredientes, seleciona un máximo de 5 ingredientes.");
 				return;
 			}
 			contChequeo.push({ id: '100100', price: armar_pizza.getTotal() });
-			console.log(contChequeo);
 			let itemCustom = { id: '100100', name: 'Pizza a tu gusto', price: armar_pizza.getTotal(), cantidad: 1, custom: true, ingredientes: armar_pizza.getIngredientes };
 			this.getCarrito.push(itemCustom);
 			localStorage.setItem("carrito", JSON.stringify(this.getCarrito));
@@ -7328,6 +7333,7 @@ page('/carta', header, loadPizzas, loadIngredientes, loadOtros, loadPacks, loadI
 			carrito_view.totalProductos();
 			carrito_view.renderCarrito();
 			$('#modal9').modal('open');
+			alert("Para optimizar el funcionamiento de la página deberemos refrescarla, no te preocupes que al volver tu pizza estará en tu carro.");
 			setTimeout('document.location.reload()', 2000);
 		};
 
@@ -7357,6 +7363,10 @@ page('/carta', header, loadPizzas, loadIngredientes, loadOtros, loadPacks, loadI
 			if (JSON.parse(localStorage.getItem("carrito")).length <= 0) {
 				alert("No tienes productos en tu carro");
 				return;
+			}
+			var restMonto = this.getTotal();
+			if (restMonto < 10000) {
+				alert("Lo sentimos, el monto mínimo de compra es de $10.000.-");
 			} else {
 				var totalChequeo = 0;
 				for (i of contChequeo) {
@@ -7504,6 +7514,7 @@ page('/carta', header, loadPizzas, loadIngredientes, loadOtros, loadPacks, loadI
 	$(document).ready(function () {
 		$('.collapsible').collapsible();
 		$('select').material_select();
+		$('.slider').slider();
 		carrito.constructor();
 		carrito.mantenedorChequeo();
 		comprando.constructor();
@@ -7538,8 +7549,8 @@ page('/carta', header, loadPizzas, loadIngredientes, loadOtros, loadPacks, loadI
 				$('#modal9').modal('open');
 			}
 
-			if (ev.target.id === "addOferta") {
-				carrito.agergarOferta();
+			if (ev.target.id === "agPizzaCustom") {
+				carrito.agregarCustom();
 			}
 		});
 
@@ -7564,9 +7575,9 @@ page('/carta', header, loadPizzas, loadIngredientes, loadOtros, loadPacks, loadI
 			}
 		});
 
-		document.getElementById('agPizzaCustom').addEventListener("click", function (ev) {
+		document.getElementById('addOferta').addEventListener("click", function (ev) {
 			ev.preventDefault();
-			carrito.agregarCustom();
+			carrito.agergarOferta();
 		});
 
 		document.getElementById('comprando').addEventListener("click", function (ev) {
@@ -7597,7 +7608,7 @@ function loadIngredientes(ctx, next) {
 }
 
 function loadOtros(ctx, next) {
-	request.get('/api/otros') //https://www.ragustino.cl/js/otros.php
+	request.get('/api/otro') //https://www.ragustino.cl/js/otro.php
 	.end(function (err, res) {
 		if (err) return console.log(err);
 
@@ -7626,7 +7637,7 @@ function loadItems(ctx, next) {
 	});
 }
 
-},{"../footer":34,"../header":35,"../utilities/aPesos":51,"../utilities/aPesos/wNumb":52,"./template":25,"empty-element":4,"page":13,"superagent":16,"title":21}],25:[function(require,module,exports){
+},{"../footer":35,"../header":36,"../utilities/aPesos":52,"../utilities/aPesos/wNumb":53,"./template":25,"empty-element":4,"page":13,"superagent":16,"title":21}],25:[function(require,module,exports){
 var yo = require('yo-yo');
 var layout = require('../layout');
 var pizza = require('../products/pizza');
@@ -7860,51 +7871,67 @@ module.exports = function (pizzas, otros, ingredientes, packs, items) {
 	});
 
 	var el = yo`<div id="catalogo" class="col s12 seccion">
-		<div class="row">
-			<div class="col s12 center-align topOf">
-				<img class="pic-ini" src="oferta.png" />
+		<div class="row principal2">
+			<div class="col s2 offset-s10 sp center-align">
+				<a class="btn modal-trigger blue darken-2 chip-carro" href="#modal9"><i class="small material-icons left carrito">shopping_cart</i><span id="totalProductos">0</span></a>
 			</div>
-		</div>	
-		<div class="row nobottom">
-			<div class="col s8 offset-s2 m4 offset-m4 center-align">
-				<ul class="collapsible popout" data-collapsible="accordion">
-					<li class="nobottom">
-					    <div class="collapsible-header blue darken-2 itemsOferta">
-					    	<p class="menu-text padding1 white-text center-align">Comprar Oferta</p>
-					    </div>
-					    <div class="collapsible-body padding1">
-					    	<div class="row nobottom">
-						    	<div class="input-field col s12">
-						    		<select id="pizzaOferta">
-						    			<option value="" disabled selected>Elije tu Pizza</option>
-						    			<option value="101">Margherita</option>
-						    			<option value="102">Caprese</option>
-						    			<option value="103">Pollo al Pesto</option>
-						    			<option value="104">Zuchinni Parmesano</option>
-						    		</select>
-						    	</div>
+		</div>
+		<div class="row">
+			<div class="col s12 sp">
+				<div class="slider hide-on-small-only">
+					<ul class="slides">
+						<li>
+							<img src="slider1.png"> <!-- random image -->
+							<div class="caption center-align">
+								<h3 class="black-text">Aprovecha la oferta del mes</h3>
+								<h5 class="light black-text">Costo del delivery incluido</h5>
+								<a class="waves-effect waves-light btn modal-trigger blue darken-2 btnOferta" href="#modal7">Comprar Oferta</a>
 							</div>
-					    	<div class="row">
-						    	<div class="input-field col s12">
-						    		<select id="bebidaOferta">
-						    			<option value="" disabled selected>Elije tu Bebida</option>
-						    			<option value="201">Coca Cola Normal</option>
-						    			<option value="202">Coca Cola zero</option>
-						    			<option value="203">Fanta Normal</option>
-						    			<option value="204">Fanta Zero</option>
-						    			<option value="205">Sprite Normal</option>
-						    			<option value="206">Sprite Zero</option>
-						    		</select>
-						    	</div>
+						</li>
+						<li>
+							<img src="slider2.png"> <!-- random image -->
+							<div class="caption right-align">
+								<h3 class="black-text">Agenda fácilmente el DIA y HORA que quieres recibir tu pedido.</h3>
+								<h5 class="light black-text">PROGRAMA para el mismo día o cuando quieras</h5>
+								<h5 class="light black-text">SIN COBROS ADICIONALES</h5>
 							</div>
-					    	<div class="row">
-						    	<div class="input-field col s12 offset-s2 btnOferta">
-						    		<a href="#" id="addOferta" class="waves-effect waves-light btn blue darken-2">Confirmar</a>
-						    	</div>
+						</li>
+						<li>
+							<img src="slider3.png"> <!-- random image -->
+							<div class="caption center-align">
+								<h3 class="black-text">Disfruta de nuestras exquisitas Pizzas, Calzones y Piadinas</h3>
+								<h5 class="light black-text">y muchas sorpresas más...</h5>
 							</div>
-						</div>
-					</li>
-				</ul>
+						</li>
+					</ul>
+				</div>
+				<div class="slider hide-on-med-and-up">
+					<ul class="slides">
+						<li>
+							<img src="sliders1.png"> <!-- random image -->
+							<div class="caption center-align">
+								<h3 class="black-text sliderTit">Aprovecha la oferta del mes</h3>
+								<h5 class="light black-text sliderMas">Costo del delivery incluido</h5>
+								<a class="waves-effect waves-light btn modal-trigger blue darken-2 btnOferta" href="#modal7">Comprar Oferta</a>
+							</div>
+						</li>
+						<li>
+							<img src="sliders2.png"> <!-- random image -->
+							<div class="caption center-align">
+								<h3 class="black-text sliderTit">Agenda fácilmente el DIA y HORA que quieres recibir tu pedido.</h3>
+								<h5 class="light black-text sliderMas">PROGRAMA para el mismo día o cuando quieras</h5>
+								<h5 class="light black-text sliderMas">SIN COBROS ADICIONALES</h5>
+							</div>
+						</li>
+						<li>
+							<img src="sliders3.png"> <!-- random image -->
+							<div class="caption center-align">
+								<h3 class="black-text sliderTit">Disfruta de nuestras exquisitas Pizzas, Calzones y Piadinas</h3>
+								<h5 class="light black-text sliderMas">y muchas sorpresas más...</h5>
+							</div>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 		<div class="row">
@@ -7912,7 +7939,7 @@ module.exports = function (pizzas, otros, ingredientes, packs, items) {
 				<ul class="collapsible popout" data-collapsible="accordion">
 					<p class="menu-text pack-text grey-text text-darken-4 center-align">Conoce las recetas que hemos preparado especialmente para ti con productos de primera selección</p>
 					<li>
-					    <div class="collapsible-header grey lighten-2 itemsCarta">
+					    <div id="collapPizzas" class="collapsible-header grey lighten-2 itemsCarta">
 					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pizzas</p>
 					    </div>
 					    <div class="collapsible-body">
@@ -8337,13 +8364,14 @@ module.exports = function (pizzas, otros, ingredientes, packs, items) {
 </li>
 */
 
-},{"../layout":39,"../products/calzon":40,"../products/ingrediente":41,"../products/item":42,"../products/pack":43,"../products/piadina":47,"../products/pizza":48,"../utilities/aPesos":51,"../utilities/aPesos/wNumb":52,"yo-yo":22}],26:[function(require,module,exports){
+},{"../layout":40,"../products/calzon":41,"../products/ingrediente":42,"../products/item":43,"../products/pack":44,"../products/piadina":48,"../products/pizza":49,"../utilities/aPesos":52,"../utilities/aPesos/wNumb":53,"yo-yo":22}],26:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
 var title = require('title');
 var header = require('../header');
 var footer = require('../footer');
+var request = require('superagent');
 var noUiSlider = require('nouislider');
 var aPesos = require('../utilities/aPesos');
 var wNumb = require('../utilities/aPesos/wNumb');
@@ -8378,9 +8406,17 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 		this.getDelivey = function () {
 			var delivery = 0;
 			var checkear = carrito.getTotal();
-			if (checkear < 30000) {
-				delivery += 1500;
+			for (i of carrito.getCarrito) {
+				if (i.id === '900001') {
+					var existeOferta = i;
+				}
 			}
+			if (!existeOferta) {
+				if (checkear < 30000) {
+					delivery += 1500;
+				}
+			}
+
 			return parseFloat(delivery);
 		};
 	}
@@ -8459,7 +8495,6 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 			estaCompra.año = año;
 			estaCompra.mes = mes;
 			estaCompra.diam = diaM;
-			console.log(estaCompra);
 		};
 
 		this.programandoHoy = function (año, mes, dia, diaM, hora, minuto) {
@@ -8609,7 +8644,6 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 			estaCompra.diam = diaM;
 			estaCompra.horap = horaP;
 			estaCompra.minutop = minP;
-			console.log(estaCompra);
 		};
 
 		this.setearOtro = function (fechaP, diaP, horaP, minP, año, mes, diaM) {
@@ -8644,7 +8678,6 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 				estaCompra.fechap = fechaP;
 				estaCompra.horap = horaP;
 				estaCompra.minutop = minP;
-				console.log(estaCompra);
 			}
 		};
 
@@ -8655,7 +8688,6 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 				document.getElementById('pagoTran').classList.toggle('hide');
 				document.getElementById('botonEfec').classList.toggle('hide');
 				document.getElementById('tempEfec').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;
-				console.log(estaCompra);
 			}
 
 			if (pago == 2) {
@@ -8664,7 +8696,6 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 				document.getElementById('pagoTran').classList.toggle('hide');
 				document.getElementById('botonRedb').classList.toggle('hide');
 				document.getElementById('tempRedb').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;
-				console.log(estaCompra);
 			}
 
 			if (pago == 3) {
@@ -8673,7 +8704,6 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 				document.getElementById('pagoRedb').classList.toggle('hide');
 				document.getElementById('botonTran').classList.toggle('hide');
 				document.getElementById('tempTran').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;
-				console.log(estaCompra);
 			}
 		};
 
@@ -8702,6 +8732,10 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 			estaCompra.address = address;
 			estaCompra.email = email;
 			estaCompra.fono = fono;
+			estaCompra.repartidor = '';
+			estaCompra.cocina = 0;
+			estaCompra.reparto = 0;
+			estaCompra.ok = 0;
 			document.getElementById('formCompra').classList.toggle('hide');
 			document.getElementById('contFormCompra').innerHTML = `<div class="row">
 				<div class="col s12 center-align">
@@ -8711,8 +8745,35 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 					<p>${fono}</p>
 				</div>	
 			</div>`;
-			document.getElementById('compraFinal').classList.toggle('hide');
-			console.log(estaCompra);
+		};
+
+		this.setearFinal = function (hora, minuto) {
+			if (!estaCompra.año) {
+				alert("Debes programar tu entrega para ahora o después.");
+				return;
+			}
+
+			if (!estaCompra.pago) {
+				alert("Debes seleccionar tu forma de pago");
+				return;
+			}
+
+			if (!estaCompra.client) {
+				alert("Debes ingresar tus datos");
+				return;
+			}
+
+			estaCompra.hora = hora;
+			estaCompra.minuto = minuto;
+			estaCompra.content = [];
+			estaCompra.monto = carrito.getTotal();
+			estaCompra.content.push(JSON.parse(localStorage.getItem("carrito")));
+			var data = estaCompra;
+			request.post('https://www.ragustino.cl/js/Compra.php').send(data).end(function (err, res) {
+				alert("Gracias por tu preferencia, estamos procesando tu compra");
+				localStorage.clear();
+				page.redirect('/');
+			});
 		};
 	}
 
@@ -8727,62 +8788,50 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 		comprando_view.renderCompra();
 		comprando.constructor();
 
-		document.getElementById('paraAhora').addEventListener("click", function (ev) {
+		document.getElementById('finalizando').addEventListener("click", function (ev) {
 			ev.preventDefault();
 			var hoy = new Date();
 			var año = hoy.getFullYear();
 			var mes = hoy.getMonth();
 			var dia = hoy.getDay();
 			var diaM = hoy.getDate();
-			var hora = hoy.getHours();
-			programando_compra.determinarAbierto(año, mes, dia, diaM, hora);
-		});
+			if (ev.target.id === "paraAhora") {
+				var hora = hoy.getHours();
+				programando_compra.determinarAbierto(año, mes, dia, diaM, hora);
+			}
 
-		document.getElementById('masTarde').addEventListener("click", function (ev) {
-			ev.preventDefault();
-			var hoy = new Date();
-			var año = hoy.getFullYear();
-			var mes = hoy.getMonth();
-			var dia = hoy.getDay();
-			var diaM = hoy.getDate();
-			var hora = hoy.getHours();
-			var minuto = hoy.getMinutes();
-			programando_compra.programandoHoy(año, mes, dia, diaM, hora, minuto);
-		});
+			if (ev.target.id === "masTarde") {
+				var hora = hoy.getHours();
+				var minuto = hoy.getMinutes();
+				programando_compra.programandoHoy(año, mes, dia, diaM, hora, minuto);
+			}
 
-		document.getElementById('paraOtro').addEventListener("click", function (ev) {
-			ev.preventDefault();
-			var fechaP = document.getElementById("fechaOtro").value;
-			var diaP = document.getElementById("fechaOtro").value[8] + document.getElementById("fechaOtro").value[9];
-			var horaP = document.getElementById("horaOtro").value;
-			var minP = document.getElementById("minOtro").value;
-			var hoy = new Date();
-			var año = hoy.getFullYear();
-			var mes = hoy.getMonth();
-			var diaM = hoy.getDate();
-			programando_compra.setearOtro(fechaP, diaP, horaP, minP, año, mes, diaM);
-		});
+			if (ev.target.id === "paraOtro") {
+				var fechaP = document.getElementById("fechaOtro").value;
+				var diaP = document.getElementById("fechaOtro").value[8] + document.getElementById("fechaOtro").value[9];
+				var horaP = document.getElementById("horaOtro").value;
+				var minP = document.getElementById("minOtro").value;
+				programando_compra.setearOtro(fechaP, diaP, horaP, minP, año, mes, diaM);
+			}
 
-		document.getElementById('contPagos').addEventListener("click", function (ev) {
-			ev.preventDefault();
 			if (ev.target.id === "botonEfec" || ev.target.id === "botonRedb" || ev.target.id === "botonTran") {
 				var pago = ev.target.dataset.pago;
 				programando_compra.formaPago(pago);
 			}
-		});
 
-		document.getElementById('confDatos').addEventListener("click", function (ev) {
-			ev.preventDefault();
-			var client = document.getElementById("nomCompra").value;
-			var address = document.getElementById("dirCompra").value;
-			var email = document.getElementById("mailCompra").value;
-			var fono = document.getElementById("fonoCompra").value;
-			programando_compra.setearDatos(client, address, email, fono);
-		});
+			if (ev.target.id === "confDatos") {
+				var client = document.getElementById("nomCompra").value;
+				var address = document.getElementById("dirCompra").value;
+				var email = document.getElementById("mailCompra").value;
+				var fono = document.getElementById("fonoCompra").value;
+				programando_compra.setearDatos(client, address, email, fono);
+			}
 
-		document.getElementById('compraFinal').addEventListener("click", function (ev) {
-			ev.preventDefault();
-			console.log("listos pal final");
+			if (ev.target.id === "compraFinal") {
+				var hora = hoy.getHours();
+				var minuto = hoy.getMinutes();
+				programando_compra.setearFinal(hora, minuto);
+			}
 		});
 	});
 });
@@ -8793,7 +8842,7 @@ function loadCarrito(ctx, next) {
 	next();
 }
 
-},{"../footer":34,"../header":35,"../utilities/aPesos":51,"../utilities/aPesos/wNumb":52,"./template":33,"empty-element":4,"nouislider":11,"page":13,"title":21}],27:[function(require,module,exports){
+},{"../footer":35,"../header":36,"../utilities/aPesos":52,"../utilities/aPesos/wNumb":53,"./template":34,"empty-element":4,"nouislider":11,"page":13,"superagent":16,"title":21}],27:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (picC) {
@@ -8821,7 +8870,26 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"../../../utilities/aPesos":51,"./customOp":27,"yo-yo":22}],29:[function(require,module,exports){
+},{"../../../utilities/aPesos":52,"./customOp":27,"yo-yo":22}],29:[function(require,module,exports){
+var yo = require('yo-yo');
+var aPesos = require('../../../utilities/aPesos');
+
+module.exports = function (pic) {
+	return yo`<div class="row itemComprando">
+		<div class="col s9">
+			${pic.name}
+		</div>
+		<div class="col s3 right-align">
+			${aPesos(pic.price)}.-
+		</div>
+		<div class="col s12">
+			<p class="itemPackOk">- ${pic.pizname}</p>
+			<p class="itemPackOk">- ${pic.bebname}</p>
+		</div>
+	</div>`;
+};
+
+},{"../../../utilities/aPesos":52,"yo-yo":22}],30:[function(require,module,exports){
 var yo = require('yo-yo');
 var opcionI = require('./ipOpcion');
 var aPesos = require('../../../utilities/aPesos');
@@ -8842,7 +8910,7 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"../../../utilities/aPesos":51,"./ipOpcion":30,"yo-yo":22}],30:[function(require,module,exports){
+},{"../../../utilities/aPesos":52,"./ipOpcion":31,"yo-yo":22}],31:[function(require,module,exports){
 var yo = require('yo-yo');
 var opcionOk = require('./opcionCheck');
 
@@ -8856,14 +8924,14 @@ module.exports = function (picI) {
 	</div>`;
 };
 
-},{"./opcionCheck":31,"yo-yo":22}],31:[function(require,module,exports){
+},{"./opcionCheck":32,"yo-yo":22}],32:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (picOk) {
 	return yo`<p class="itemPackOk">${picOk.itemname}</p>`;
 };
 
-},{"yo-yo":22}],32:[function(require,module,exports){
+},{"yo-yo":22}],33:[function(require,module,exports){
 var yo = require('yo-yo');
 var aPesos = require('../../../utilities/aPesos');
 
@@ -8878,16 +8946,17 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"../../../utilities/aPesos":51,"yo-yo":22}],33:[function(require,module,exports){
+},{"../../../utilities/aPesos":52,"yo-yo":22}],34:[function(require,module,exports){
 var yo = require('yo-yo');
 var layout = require('../layout');
 var itemS = require('./products/itemSingle');
 var itemP = require('./products/itemPack');
 var itemC = require('./products/itemCustom');
+var itemO = require('./products/itemOferta');
 
 module.exports = function (itemsCarrito) {
 	var singles = itemsCarrito.filter(function (obj) {
-		if (!obj.excep && !obj.custom) {
+		if (!obj.excep && !obj.custom && !obj.oferta) {
 			return true;
 		} else {
 			return false;
@@ -8908,7 +8977,15 @@ module.exports = function (itemsCarrito) {
 		}
 	});
 
-	var el = yo`<div class="col s12 seccion">
+	var ofertas = itemsCarrito.filter(function (obj) {
+		if (obj.oferta) {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	var el = yo`<div id="finalizando" class="col s12 seccion">
 		<div class="row nobottom">
 			<div class="col s12 center-align">
 				<h3 class="compraTit">RAGUSTINO FOOD EXPERIENCE</h3>
@@ -8944,6 +9021,13 @@ module.exports = function (itemsCarrito) {
 	})}
 			</div>
 		</div>
+		<div class="row nobottom">
+			<div class="col s12 m6 offset-m3">
+				${ofertas.map(function (pic) {
+		return itemO(pic);
+	})}
+			</div>
+		</div>
 		<div class="row">
 			<div class="col s12 m6 offset-m3">
 				<div class="row itemComprando">
@@ -8968,7 +9052,7 @@ module.exports = function (itemsCarrito) {
 		</div>
 		<div class="row">
 			<div class="col s12 center-align">
-				<a href="https://www.ragustino.cl" class="waves-effect waves-light btn blue darken-2">Seguir Comprando</a>
+				<a href="/" class="waves-effect waves-light btn blue darken-2">Seguir Comprando</a>
 			</div>
 		</div>
 		<div class="row nobottom">
@@ -9081,12 +9165,50 @@ module.exports = function (itemsCarrito) {
 				</ul>
 			</div>
 		</div>
+		<div id="contFormCompra" class="">
+			<div id="formCompra" class="form">
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="programarCompra">Ingresa tus datos</p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="input-field col s10 offset-s1 m4 offset-m4">
+						<input id="nomCompra" type="text" class="validate formCompra">
+						<label for="nomCompra">Nombre y Apellido</label>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="input-field col s10 offset-s1 m4 offset-m4">
+						<input id="dirCompra" type="text" class="validate formCompra">
+						<label for="dirCompra">Dirección</label>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="input-field col s10 offset-s1 m4 offset-m4">
+						<input id="mailCompra" type="email" class="validate formCompra">
+						<label for="mailCompra">Email</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s10 offset-s1 m4 offset-m4">
+						<input id="fonoCompra" type="tel" class="validate formCompra">
+						<label for="fonoCompra">Teléfono</label>
+					</div>
+				</div>
+				<div class="row">
+					<div id="" class="col s12 center-align">
+						<a href="#" id="confDatos" class="waves-effect waves-light btn blue darken-2">Confirmar Datos</a>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="row nobottom">
 			<div class="col s12 center-align">
 				<p class="programarCompra">Forma de Pago</p>
 			</div>
 		</div>
-		<div id="contPagos" class="row">
+		<div class="row">
 			<div class="col s10 offset-s1 m4 offset-m4">
 				<ul class="collapsible" class="">
 					<li id="pagoEfec">
@@ -9132,47 +9254,9 @@ module.exports = function (itemsCarrito) {
 				</ul>
 			</div>
 		</div>
-		<div id="contFormCompra" class="">
-			<div id="formCompra" class="form">
-				<div class="row nobottom">
-					<div class="col s12 center-align">
-						<p class="programarCompra">Ingresa tus datos</p>
-					</div>
-				</div>
-				<div class="row nobottom">
-					<div class="input-field col s10 offset-s1 m4 offset-m4">
-						<input id="nomCompra" type="text" class="validate formCompra">
-						<label for="nomCompra">Nombre y Apellido</label>
-					</div>
-				</div>
-				<div class="row nobottom">
-					<div class="input-field col s10 offset-s1 m4 offset-m4">
-						<input id="dirCompra" type="text" class="validate formCompra">
-						<label for="dirCompra">Dirección</label>
-					</div>
-				</div>
-				<div class="row nobottom">
-					<div class="input-field col s10 offset-s1 m4 offset-m4">
-						<input id="mailCompra" type="email" class="validate formCompra">
-						<label for="mailCompra">Email</label>
-					</div>
-				</div>
-				<div class="row">
-					<div class="input-field col s10 offset-s1 m4 offset-m4">
-						<input id="fonoCompra" type="tel" class="validate formCompra">
-						<label for="fonoCompra">Teléfono</label>
-					</div>
-				</div>
-				<div class="row">
-					<div id="" class="col s12 center-align">
-						<a href="#" id="confDatos" class="waves-effect waves-light btn blue darken-2">Confirmar</a>
-					</div>
-				</div>
-			</div>
-		</div>
 		<div class="row">
 			<div class="col s12 center-align">
-				<a href="#" id="compraFinal" class="hide waves-effect waves-light btn blue darken-2">Confirmar Compra</a>
+				<a href="#" id="compraFinal" class="waves-effect waves-light btn blue darken-2">Comprar</a>
 			</div>
 		</div>
 	</div>`;
@@ -9180,30 +9264,43 @@ module.exports = function (itemsCarrito) {
 	return layout(el);
 };
 
-},{"../layout":39,"./products/itemCustom":28,"./products/itemPack":29,"./products/itemSingle":32,"yo-yo":22}],34:[function(require,module,exports){
+},{"../layout":40,"./products/itemCustom":28,"./products/itemOferta":29,"./products/itemPack":30,"./products/itemSingle":33,"yo-yo":22}],35:[function(require,module,exports){
 var yo = require('yo-yo');
 var empty = require('empty-element');
 
 var el = yo`<footer class="page-footer grey lighten-2">
     <div class="container">
         <div class="row nobottom">
-		    <div class="col l6 s12">
-                <h5 class="grey-text text-darken-4">RAGUSTINO FOOD EXPERIENCE</h5>
-                <p class="grey-text text-darken-4">Es una empresa perteneciente a SERVICIOS GASTRONÓMICOS GRC LTDA.</p>
+		    <div class="col l6 s12 boxEmp">
+                <h5 class="grey-text text-darken-4 titFooter">RAGUSTINO FOOD EXPERIENCE</h5>
+                <p class="grey-text text-darken-4 descFooter">Es una empresa perteneciente a SERVICIOS GASTRONOMICOS GRC LTDA.</p>
             </div>
-            <div class="col l4 offset-l2 s12">
-                <h5 class="grey-text text-darken-4">Redes Sociales</h5>
-                <ul>
-	                <li><a class="grey-text text-darken-4" href="http://www.facebook.com/ragustinofoodexperience" target="_blank">Facebook</a></li>
-	                <li><a class="grey-text text-darken-4" href="http://www.instagram.com/ragustinofoodexperience" target="_blank">Instagram</a></li>
-                    <li><a class="grey-text text-darken-4" href="/carta">--------</a></li>
-	            </ul>
+            <div class="col s7 m3 center-align">
+                <h5 class="grey-text text-darken-4 titFooter">Horarios Ragustino</h5>
+                <ul class="listFooter">
+                    <li><p class="grey-text text-darken-4 descFooter">Jueves y Domingo de 18:00 a 00:00 hrs.</p></li>
+                    <li><p class="grey-text text-darken-4 descFooter">Viernes y Sábados de 18:00 a 01:00 hrs.</p></li>
+                </ul>
+            </div>
+            <div class="col s5 m3 center-align">
+                <h5 class="grey-text text-darken-4 titFooter">info@ragustino.cl</h5>
+                <ul class="listFooter">
+	                <li><p class="grey-text text-darken-4 descFooter">Whatsapp +56 986574828</p></li>
+                    <li><p class="grey-text text-darken-4 descFooter">Fono Iquique 2 23106944</p></li>
+                </ul>
         	</div>
         </div>
   	</div>
   	<div class="footer-copyright">
         <div class="grey-text text-darken-4 container">
-        	© 2018 Ragustino. Todos los derechos reservados. Diseñado por Casti
+            <div class="row nobottom descFooter">
+                <div class="col s9">
+        	       © 2018 Ragustino. Todos los derechos reservados. Diseñado por Casti
+                </div>
+                <div class="col s3">
+                    <a class="grey-text text-darken-4 descFooter" href="/carta">-------</a>
+                </div>
+            </div>
         </div>
   	</div>
 </footer>`;
@@ -9214,42 +9311,46 @@ module.exports = function footer(ctx, next) {
     next();
 };
 
-},{"empty-element":4,"yo-yo":22}],35:[function(require,module,exports){
+},{"empty-element":4,"yo-yo":22}],36:[function(require,module,exports){
 var yo = require('yo-yo');
 var empty = require('empty-element');
 
+$(document).ready(function () {
+	$(".button-collapse").sideNav({
+		menuWidth: 200,
+		closeOnClick: true
+	});
+});
+
 var el = yo`<nav class="header grey lighten-3">
-	<div class="container">
+	<div class="container smallH">
 		<div class="row piso-nav">
-			<div class="col s12 sp">
+			<div class="col s12 sp carrito">
 				<div class="nav-wrapper">
 					<div id="todoHeader" class="container barra">
 						<div class="row piso-nav">
 							<div class="col s2 sp">
-							  	<a href="/" class="brand-logo hide-on-med-and-down">Ragustino Food Experience</a>
-							  	<a href="/" class="hide-on-large-only center-align"><i class="material-icons">home</i></a>
+							  	<a href="/" class="brand-logo ragus hide-on-med-and-down">Ragustino Food Experience</a>
+							  	<a href="/" class="brand-logo ragus hide-on-large-only">Ragustino</a>
+							  	<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
 							</div>
-							<div class="col s2 sp hide-on-large-only center-align">
-								<a href="/carta"><i class="material-icons iconStore">store</i></a>
-							</div>
-							<div class="col s2 hide-on-large-only center-align">
-								<a href="/somos"><i class="material-icons">nature_people</i></a>
-							</div>
-							<div class="col l6 hide-on-med-and-down">
-								<ul class="right">
+							<div class="col l6">
+								<ul class="right right hide-on-med-and-down">
 									<li><a href="/">INICIO</a></li>
-									<li><a href="/carta">NUESTROS PRODUCTOS</a></li>
-									<li><a href="/somos">NUESTRA FILOSOFIA</a></li>
+									<li><a href="/carta">CARTA</a></li>
+									<li><a href="/somos">NOSOTROS</a></li>
+								</ul>
+								<ul class="side-nav lateral" id="mobile-demo">
+									<li><a href="/">INICIO</a></li>
+									<li><a href="/carta">CARTA</a></li>
+									<li><a href="/somos">NOSOTROS</a></li>
 								</ul>
 							</div>
-							<div class="col s2 center-align sp">
+							<div class="col s2 offset-s6 l2 center-align sp">
 								<a href="#" class="btn btn-flat dropdown-button chip-user center-align" data-activates="drop-user"><i class="small material-icons iconoSign">perm_identity</i></a>
 								<ul id="drop-user" class="dropdown-content">
 									<li><a href="#">Salir</a></li>
 								</ul>
-							</div>
-							<div class="col s2 offset-s1 m2 l2 sp center-align">
-								<a class="btn modal-trigger blue darken-2 chip-carro" href="#modal9"><i class="small material-icons left carrito">shopping_cart</i><span id="totalProductos">0</span></a>
 							</div>
 						</div>
 					</div>
@@ -9266,7 +9367,7 @@ module.exports = function header(ctx, next) {
 	next();
 };
 
-},{"empty-element":4,"yo-yo":22}],36:[function(require,module,exports){
+},{"empty-element":4,"yo-yo":22}],37:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -9286,78 +9387,7 @@ page('/', header, footer, function (ctx, next) {
 				localStorage.setItem('carrito', '[]');
 			}
 		};
-
 		this.getCarrito = JSON.parse(localStorage.getItem("carrito"));
-
-		this.getTotal = function () {
-			var total = 0;
-			for (i of JSON.parse(localStorage.getItem("carrito"))) {
-				total += parseFloat(i.cantidad) * parseFloat(i.price);
-			}
-			return total;
-		};
-
-		this.eliminarItem = function (item) {
-			for (var i in this.getCarrito) {
-				if (this.getCarrito[i].id === item) {
-					this.getCarrito.splice(i, 1);
-				}
-			}
-			localStorage.setItem("carrito", JSON.stringify(this.getCarrito));
-		};
-
-		this.iraComprar = function () {
-			if (this.getCarrito.length <= 0) {
-				alert("No tienes productos en tu carro");
-				return;
-			} else {
-				$('#modal9').modal('close');
-				page.redirect('/compra');
-			}
-		};
-	}
-
-	function Carrito_View() {
-		this.renderCarrito = function () {
-			if (JSON.parse(localStorage.getItem("carrito")).length <= 0) {
-				templateNoItems = `<div class="row">
-					<div class="col s12 center-align">
-						No tienes productos en tu carro
-					</div>
-				</div>`;
-				document.getElementById('productosCarrito').innerHTML = templateNoItems;
-			} else {
-				templateItems = ``;
-				for (i of carrito.getCarrito) {
-					templateItems += `<li class="collection-item">
-						<div class="row itemCarrito">
-							<div class="col s8 m4">
-								${i.name}
-							</div>
-							<div class="col s4 m2 center-align">
-								$${i.price}
-							</div>
-							<div class="col s3 offset-s3 m2 center-align">
-								${i.cantidad}
-							</div>
-							<div class="col s3 m2 center-align">
-								${i.cantidad * i.price}
-							</div>
-							<div class="col s3 m2 center-align">
-								<a href="#"><i class="material-icons iconoBorrar" id="deleteItem" data-id="${i.id}">delete_forever</i></a>
-							</div>
-						</div>
-					</li>`;
-				}
-				document.getElementById('productosCarrito').innerHTML = templateItems;
-			}
-			document.getElementById('totalCarrito').innerHTML = "$ " + carrito.getTotal();
-		};
-
-		this.totalProductos = function () {
-			var total = JSON.parse(localStorage.getItem("carrito")).length;
-			document.getElementById('totalProductos').innerHTML = total;
-		};
 	}
 
 	function Armar_Pizza() {
@@ -9382,7 +9412,6 @@ page('/', header, footer, function (ctx, next) {
 	}
 
 	var carrito = new Carrito();
-	var carrito_view = new Carrito_View();
 	var armar_pizza = new Armar_Pizza();
 	var comprando = new Comprando();
 
@@ -9390,59 +9419,24 @@ page('/', header, footer, function (ctx, next) {
 		carrito.constructor();
 		comprando.constructor();
 		armar_pizza.constructor();
-		carrito_view.renderCarrito();
-
-		document.getElementById('productosCarrito').addEventListener("click", function (ev) {
-			ev.preventDefault();
-			if (ev.target.id === "deleteItem") {
-				carrito.eliminarItem(ev.target.dataset.id);
-				Materialize.toast('Se eliminó un producto', 2500, 'rounded');
-				carrito_view.renderCarrito();
-				carrito_view.totalProductos();
-			}
-		});
-
-		document.getElementById('comprando').addEventListener("click", function (ev) {
-			ev.preventDefault();
-			carrito.iraComprar();
-		});
 	});
 });
 
-},{"../footer":34,"../header":35,"./template":37,"empty-element":4,"page":13,"title":21}],37:[function(require,module,exports){
+},{"../footer":35,"../header":36,"./template":38,"empty-element":4,"page":13,"title":21}],38:[function(require,module,exports){
 var yo = require('yo-yo');
-var layout = require('../layout');
 
 module.exports = function () {
-	var el = yo`<div class="col s12 seccion sp">
+	return yo`<div class="col s12 seccion sp">
 		<div class="row sp nobottom">
-			<div class="col s12 center-align">
+			<div class="col s12 center-align picHomeL">
 				<img class="pic-ini hide-on-small-only" src="home.png" />
 				<img class="pic-ini hide-on-med-and-up" src="home-small.png" />
 			</div>
 		</div>
 	</div>`;
-
-	return layout(el);
 };
 
-/*
-<div class="row nobottom">
-	<div class="col s8 offset-s2 center-align">
-		<a href="/carta" class="waves-effect waves-light btn blue darken-2"><i class="material-icons left">store</i>Nuestra Carta</a>
-	</div>
-</div>
-<div class="row programa">
-	<div class="col s2 offset-s4 m1 offset-m5 face center-align">
-		<a href="http://www.facebook.com/ragustinofoodexperience" target="_blank" class="icon-facebook iconoRedes"></a>
-	</div>
-	<div class="col s2 m1 center-align insta">
-		<a href="http://www.instagram.com/ragustinofoodexperience" target="_blank" class="icon-instagram iconoRedes"></a>
-	</div>
-</div>
-*/
-
-},{"../layout":39,"yo-yo":22}],38:[function(require,module,exports){
+},{"yo-yo":22}],39:[function(require,module,exports){
 var page = require('page');
 
 require('./homepage');
@@ -9452,13 +9446,13 @@ require('./compra');
 /*require('./clients/signup');
 require('./clients/signin');
 require('./ragsystem/homesystem');
-require('./ragsystem/estadisticas');
+/*require('./ragsystem/estadisticas');
 require('./ragsystem/adm_productos');
 require('./ragsystem/adm_equipo');*/
 
 page();
 
-},{"./carta":24,"./compra":26,"./homepage":36,"./somos":49,"page":13}],39:[function(require,module,exports){
+},{"./carta":24,"./compra":26,"./homepage":37,"./somos":50,"page":13}],40:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function layout(content) {
@@ -9504,7 +9498,7 @@ module.exports = function layout(content) {
 												<div class="col s3 m2 right-align titCarro">
 													Precio
 												</div>
-												<div class="col s2 m2 right-align titCarro">
+												<div class="col s2 m2 center-align titCarro">
 													Cant.
 												</div>
 												<div class="col s2 m2 center-align titCarro">
@@ -9560,13 +9554,47 @@ module.exports = function layout(content) {
 				</div>
 			</div>
 		</div>
+		<div id="modal7" class="modal">
+			<div class="modal-content">
+				<h4 class="armandoTit center-align">Elije Pizza y Bebida</h4>
+				<div class="row nobottom">
+					<div class="input-field col s12">
+						<select id="pizzaOferta">
+							<option value="" disabled selected>Elije tu Pizza</option>
+							<option value="101">Margherita</option>
+							<option value="102">Caprese</option>
+							<option value="103">Pollo al Pesto</option>
+							<option value="104">Zuchinni Parmesano</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s12">
+						<select id="bebidaOferta">
+							<option value="" disabled selected>Elije tu Bebida</option>
+							<option value="201">Coca Cola Normal</option>
+							<option value="202">Coca Cola zero</option>
+							<option value="203">Fanta Normal</option>
+							<option value="204">Fanta Zero</option>
+							<option value="205">Sprite Normal</option>
+							<option value="206">Sprite Zero</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s12 offset-s2 btnOferta center-align">
+						<a href="#" id="addOferta" class="waves-effect waves-light btn blue darken-2">Confirmar Compra</a>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div>
 			<img class="pic-ini" src="abajo.png" />
 		</div>
 	</div>`;
 };
 
-},{"yo-yo":22}],40:[function(require,module,exports){
+},{"yo-yo":22}],41:[function(require,module,exports){
 var yo = require('yo-yo');
 var aPesos = require('../../utilities/aPesos');
 
@@ -9587,7 +9615,7 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"../../utilities/aPesos":51,"yo-yo":22}],41:[function(require,module,exports){
+},{"../../utilities/aPesos":52,"yo-yo":22}],42:[function(require,module,exports){
 var yo = require('yo-yo');
 var aPesos = require('../../utilities/aPesos');
 
@@ -9611,7 +9639,7 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"../../utilities/aPesos":51,"yo-yo":22}],42:[function(require,module,exports){
+},{"../../utilities/aPesos":52,"yo-yo":22}],43:[function(require,module,exports){
 var yo = require('yo-yo');
 var aPesos = require('../../utilities/aPesos');
 
@@ -9633,7 +9661,7 @@ module.exports = function (pic) {
 					</div>
 				</div>
 			</div>
-			<div class="col s2 contItem">
+			<div class="col s2 contItem right-align">
 				<span class="precioItem">${aPesos(pic.price)}.-</span>
 			</div>
 			<div class="col s2">
@@ -9643,7 +9671,7 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"../../utilities/aPesos":51,"yo-yo":22}],43:[function(require,module,exports){
+},{"../../utilities/aPesos":52,"yo-yo":22}],44:[function(require,module,exports){
 var yo = require('yo-yo');
 var itemopt = require('./item-opt');
 var itemoptt = require('./item-opt-opt');
@@ -9671,7 +9699,7 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"../../utilities/aPesos":51,"./item-opt":46,"./item-opt-opt":44,"yo-yo":22}],44:[function(require,module,exports){
+},{"../../utilities/aPesos":52,"./item-opt":47,"./item-opt-opt":45,"yo-yo":22}],45:[function(require,module,exports){
 var yo = require('yo-yo');
 var option = require('./option');
 
@@ -9689,14 +9717,14 @@ module.exports = function (optt) {
 	</div>`;
 };
 
-},{"./option":45,"yo-yo":22}],45:[function(require,module,exports){
+},{"./option":46,"yo-yo":22}],46:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (item) {
 	return yo`<li class="itemOpt hover" id="itemSelect" data-idpack="${item.idpack}" data-idopt="${item.idopt}" data-id="${item.iditem}"><a href="#" id="itemSelect" class="opcionElejida" data-idpack="${item.idpack}" data-idopt="${item.idopt}" data-id="${item.iditem}">- ${item.itemname}</a></li>`;
 };
 
-},{"yo-yo":22}],46:[function(require,module,exports){
+},{"yo-yo":22}],47:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function (opt) {
@@ -9705,9 +9733,9 @@ module.exports = function (opt) {
 	</div>`;
 };
 
-},{"yo-yo":22}],47:[function(require,module,exports){
-arguments[4][40][0].apply(exports,arguments)
-},{"../../utilities/aPesos":51,"dup":40,"yo-yo":22}],48:[function(require,module,exports){
+},{"yo-yo":22}],48:[function(require,module,exports){
+arguments[4][41][0].apply(exports,arguments)
+},{"../../utilities/aPesos":52,"dup":41,"yo-yo":22}],49:[function(require,module,exports){
 var yo = require('yo-yo');
 var aPesos = require('../../utilities/aPesos');
 
@@ -9728,7 +9756,7 @@ module.exports = function (pic) {
 	</div>`;
 };
 
-},{"../../utilities/aPesos":51,"yo-yo":22}],49:[function(require,module,exports){
+},{"../../utilities/aPesos":52,"yo-yo":22}],50:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -9743,7 +9771,7 @@ page('/somos', header, footer, function (ctx, next) {
 	empty(main).appendChild(template());
 });
 
-},{"../footer":34,"../header":35,"./template":50,"empty-element":4,"page":13,"title":21}],50:[function(require,module,exports){
+},{"../footer":35,"../header":36,"./template":51,"empty-element":4,"page":13,"title":21}],51:[function(require,module,exports){
 var yo = require('yo-yo');
 var layout = require('../layout');
 
@@ -9762,6 +9790,50 @@ module.exports = function () {
 		<div class="row">
 			<div class="col s12 center-align">
 				<p>Disfruta de la comida más deliciosa, equilibrada y nutritiva a tu puerta sin esperas ni retrasos...</p>
+			</div>
+			<div class="col s12 m4 offset-m4 center-align">
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horario"></p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">HORARIO: RAGUSTINO</p>
+					</div>
+				</div><div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">Realiza repartos sólo de jueves a domingo:</p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">Jueves 18:00 - 0:00</p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">Viernes 18:00 - 1:00</p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">Sábado 18:00 - 1:00</p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">Domingo 18:00 - 0:00</p>
+					</div>
+				</div>
+				<div class="row programa">
+					<div class="col s2 offset-s4 l2 offset-l4 face center-align">
+						<a href="http://www.facebook.com/ragustinofoodexperience" target="_blank" class="icon-facebook iconoRedes"></a>
+					</div>
+					<div class="col s2 l2 center-align insta">
+						<a href="http://www.instagram.com/ragustinofoodexperience" target="_blank" class="icon-instagram iconoRedes"></a>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="row">
@@ -9814,69 +9886,26 @@ module.exports = function () {
 				<p>La más clásica de nuestras ensaladas y la primera de una serie que verán la luz muy pronto, inaugurando nuestra carta “primavera-verano”. “La RAGUSTINO” se compone de un mix de hojas verdes (espinaca, rúcula, lechuga francesa y escarola), un sutil toque de repollo, tomates cherry, cubitos de pepino, pollo a la plancha, tortilla chips, semillas de sésamo, nueces y aderezo (yoghurt griego, vinagre balsámico, aceite de oliva, mostaza Dijon, sal y pimienta). LOS CLÁSICOS NO PASAN DE MODA!</p>
 			</div>
 		</div>
-		<div class="col s12 m4 offset-m4 center-align">
-			<div class="row nobottom">
-				<div class="col s12 center-align">
-					<p class="horario"></p>
-				</div>
-			</div>
-			<div class="row nobottom">
-				<div class="col s12 center-align">
-					<p class="horas">HORARIO: RAGUSTINO</p>
-				</div>
-			</div><div class="row nobottom">
-				<div class="col s12 center-align">
-					<p class="horas">Realiza repartos sólo de jueves a domingo:</p>
-				</div>
-			</div>
-			<div class="row nobottom">
-				<div class="col s12 center-align">
-					<p class="horas">Jueves 18:00 - 0:00</p>
-				</div>
-			</div>
-			<div class="row nobottom">
-				<div class="col s12 center-align">
-					<p class="horas">Viernes 18:00 - 1:00</p>
-				</div>
-			</div>
-			<div class="row nobottom">
-				<div class="col s12 center-align">
-					<p class="horas">Sábado 18:00 - 1:00</p>
-				</div>
-			</div>
-			<div class="row nobottom">
-				<div class="col s12 center-align">
-					<p class="horas">Domingo 18:00 - 0:00</p>
-				</div>
-			</div>
-			<div class="row programa">
-				<div class="col s2 offset-s4 l2 offset-l4 face center-align">
-					<a href="http://www.facebook.com/ragustinofoodexperience" target="_blank" class="icon-facebook iconoRedes"></a>
-				</div>
-				<div class="col s2 l2 center-align insta">
-					<a href="http://www.instagram.com/ragustinofoodexperience" target="_blank" class="icon-instagram iconoRedes"></a>
-				</div>
-			</div>
-		</div>
 	</div>`;
 
 	return layout(el);
 };
 
-},{"../layout":39,"yo-yo":22}],51:[function(require,module,exports){
+},{"../layout":40,"yo-yo":22}],52:[function(require,module,exports){
 var wNumb = require('./wNumb');
 
 module.exports = function (val) {
+	var renderPrecio = parseInt(val);
 	var formatoPesos = wNumb({
 		decimals: 0,
 		thousand: '.',
 		prefix: '$ '
 	});
 
-	return formatoPesos.to(val);
+	return formatoPesos.to(renderPrecio);
 };
 
-},{"./wNumb":52}],52:[function(require,module,exports){
+},{"./wNumb":53}],53:[function(require,module,exports){
 (function (factory) {
 
 	if (typeof define === 'function' && define.amd) {
@@ -10226,4 +10255,4 @@ module.exports = function (val) {
 	return wNumb;
 });
 
-},{}]},{},[38]);
+},{}]},{},[39]);

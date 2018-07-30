@@ -4,6 +4,7 @@ var template = require('./template');
 var title = require('title');
 var header = require('../header');
 var footer = require('../footer');
+var request = require('superagent');
 var noUiSlider = require('nouislider');
 var aPesos = require('../utilities/aPesos');
 var wNumb = require('../utilities/aPesos/wNumb')
@@ -38,9 +39,17 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 		this.getDelivey = function() {
 			var delivery = 0;
 			var checkear = carrito.getTotal();
-			if(checkear < 30000) {
-				delivery += 1500;
+			for(i of carrito.getCarrito) {
+				if(i.id === '900001') {
+					var existeOferta = i;
+				}
 			}
+			if(!existeOferta) {
+				if(checkear < 30000) {
+					delivery += 1500;
+				}
+			}
+			
 			return parseFloat(delivery);
 		}
 	}
@@ -119,7 +128,6 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 			estaCompra.año = año;
 			estaCompra.mes = mes;
 			estaCompra.diam = diaM;
-			console.log(estaCompra);
 		}
 
 		this.programandoHoy = function(año, mes, dia, diaM, hora, minuto) {
@@ -270,7 +278,6 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 			estaCompra.diam = diaM;
 			estaCompra.horap = horaP;
 			estaCompra.minutop = minP;
-			console.log(estaCompra);
 		}
 
 		this.setearOtro = function(fechaP, diaP, horaP, minP, año, mes, diaM) {
@@ -305,7 +312,6 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 				estaCompra.fechap = fechaP;
 				estaCompra.horap = horaP;
 				estaCompra.minutop = minP;
-				console.log(estaCompra);
 			}
 		}
 
@@ -316,7 +322,6 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 				document.getElementById('pagoTran').classList.toggle('hide');
 				document.getElementById('botonEfec').classList.toggle('hide');
 				document.getElementById('tempEfec').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;
-				console.log(estaCompra);
 			}
 
 			if(pago == 2) {
@@ -325,7 +330,6 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 				document.getElementById('pagoTran').classList.toggle('hide');
 				document.getElementById('botonRedb').classList.toggle('hide');
 				document.getElementById('tempRedb').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;
-				console.log(estaCompra);
 			}
 
 			if(pago == 3) {
@@ -334,7 +338,6 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 				document.getElementById('pagoRedb').classList.toggle('hide');
 				document.getElementById('botonTran').classList.toggle('hide');
 				document.getElementById('tempTran').innerHTML = `<i class="medium material-icons blue-text text-darken-2">check</i>`;
-				console.log(estaCompra);
 			}
 		}
 
@@ -363,6 +366,10 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 			estaCompra.address = address;
 			estaCompra.email = email;
 			estaCompra.fono = fono;
+			estaCompra.repartidor = '';
+			estaCompra.cocina = 0;
+			estaCompra.reparto = 0;
+			estaCompra.ok = 0; 
 			document.getElementById('formCompra').classList.toggle('hide');
 			document.getElementById('contFormCompra').innerHTML = `<div class="row">
 				<div class="col s12 center-align">
@@ -372,8 +379,38 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 					<p>${fono}</p>
 				</div>	
 			</div>`;
-			document.getElementById('compraFinal').classList.toggle('hide');
-			console.log(estaCompra);
+		}
+
+		this.setearFinal = function(hora, minuto) {
+			if(!estaCompra.año) {
+				alert("Debes programar tu entrega para ahora o después.");
+				return
+			}
+			
+			if(!estaCompra.pago) {
+				alert("Debes seleccionar tu forma de pago");
+				return	
+			}
+
+			if(!estaCompra.client) {
+				alert("Debes ingresar tus datos");
+				return	
+			}
+
+			estaCompra.hora = hora;
+			estaCompra.minuto = minuto;
+			estaCompra.content = [];
+			estaCompra.monto = carrito.getTotal();
+			estaCompra.content.push(JSON.parse(localStorage.getItem("carrito")));
+			var data = estaCompra;
+			request
+				.post('https://www.ragustino.cl/js/Compra.php')
+				.send(data)
+				.end(function(err, res) {
+					alert("Gracias por tu preferencia, estamos procesando tu compra");
+					localStorage.clear();
+					page.redirect('/');
+				})
 		}
 	}
 
@@ -387,63 +424,52 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 		$('select').material_select();
 		comprando_view.renderCompra();
 		comprando.constructor();
-		
-		document.getElementById('paraAhora').addEventListener("click", function(ev) {
+
+		document.getElementById('finalizando').addEventListener("click", function(ev) {
 			ev.preventDefault();
 			var hoy = new Date();
 			var año = hoy.getFullYear();
 			var mes = hoy.getMonth();
 			var dia = hoy.getDay();
 			var diaM = hoy.getDate();
-			var hora = hoy.getHours();
-			programando_compra.determinarAbierto(año, mes, dia, diaM, hora);
-		});
+			if(ev.target.id === "paraAhora") {
+				var hora = hoy.getHours();
+				programando_compra.determinarAbierto(año, mes, dia, diaM, hora);
+			}
 
-		document.getElementById('masTarde').addEventListener("click", function(ev) {
-			ev.preventDefault();
-			var hoy = new Date();
-			var año = hoy.getFullYear();
-			var mes = hoy.getMonth();
-			var dia = hoy.getDay();
-			var diaM = hoy.getDate();
-			var hora = hoy.getHours();
-			var minuto = hoy.getMinutes();
-			programando_compra.programandoHoy(año, mes, dia, diaM, hora, minuto);
-		});
+			if(ev.target.id === "masTarde") {
+				var hora = hoy.getHours();
+				var minuto = hoy.getMinutes();
+				programando_compra.programandoHoy(año, mes, dia, diaM, hora, minuto);
+			}
 
-		document.getElementById('paraOtro').addEventListener("click", function(ev) {
-			ev.preventDefault();
-			var fechaP = document.getElementById("fechaOtro").value;
-			var diaP = document.getElementById("fechaOtro").value[8] + document.getElementById("fechaOtro").value[9];
-			var horaP = document.getElementById("horaOtro").value;
-			var minP = document.getElementById("minOtro").value;
-			var hoy = new Date();
-			var año = hoy.getFullYear();
-			var mes = hoy.getMonth();
-			var diaM = hoy.getDate();
-			programando_compra.setearOtro(fechaP, diaP, horaP, minP, año, mes, diaM);
-		});
+			if(ev.target.id === "paraOtro") {
+				var fechaP = document.getElementById("fechaOtro").value;
+				var diaP = document.getElementById("fechaOtro").value[8] + document.getElementById("fechaOtro").value[9];
+				var horaP = document.getElementById("horaOtro").value;
+				var minP = document.getElementById("minOtro").value;
+				programando_compra.setearOtro(fechaP, diaP, horaP, minP, año, mes, diaM);
+			}
 
-		document.getElementById('contPagos').addEventListener("click", function(ev) {
-			ev.preventDefault();
 			if(ev.target.id === "botonEfec" || ev.target.id === "botonRedb" || ev.target.id === "botonTran") {
 				var pago = ev.target.dataset.pago;
 				programando_compra.formaPago(pago);
+				
 			}
-		});
 
-		document.getElementById('confDatos').addEventListener("click", function(ev) {
-			ev.preventDefault();
-			var client = document.getElementById("nomCompra").value;
-			var address = document.getElementById("dirCompra").value;
-			var email = document.getElementById("mailCompra").value;
-			var fono = document.getElementById("fonoCompra").value;
-			programando_compra.setearDatos(client, address, email, fono);
-		});
+			if(ev.target.id === "confDatos") {
+				var client = document.getElementById("nomCompra").value;
+				var address = document.getElementById("dirCompra").value;
+				var email = document.getElementById("mailCompra").value;
+				var fono = document.getElementById("fonoCompra").value;
+				programando_compra.setearDatos(client, address, email, fono);
+			}
 
-		document.getElementById('compraFinal').addEventListener("click", function(ev) {
-			ev.preventDefault();
-			console.log("listos pal final");
+			if(ev.target.id === "compraFinal") {
+				var hora = hoy.getHours();
+				var minuto = hoy.getMinutes();
+				programando_compra.setearFinal(hora, minuto);
+			}
 		})
 	});
 });

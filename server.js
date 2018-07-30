@@ -255,7 +255,7 @@ app.get('/api/ingredientes', function(req, res) {
 	res.send(ingredientes);
 })
 
-app.get('/api/otros', function(req, res) {
+app.get('/api/otro', function(req, res) {
 	var otros = [
 		{
 			id: '200001',

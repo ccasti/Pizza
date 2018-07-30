@@ -1,7 +1,7 @@
 @import "node_modules/materialize-css/sass/materialize.scss";
 @import url('https://fonts.googleapis.com/css?family=Oswald');
 
-$color-brand: #e0e0e0;
+$color-brand: #eeeeee;
 $color-secondary: #fff;
 $color-text: #212121;
 
@@ -26,7 +26,6 @@ Body {
 	margin-bottom: 0;
 }
 
-@import "src/headerTest/styles";
 @import "src/header/styles";
 /*@import "src/clients/signup/styles";
 @import "src/clients/signin/styles";*/

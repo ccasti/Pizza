@@ -3,10 +3,11 @@ var layout = require('../layout');
 var itemS = require('./products/itemSingle');
 var itemP = require('./products/itemPack');
 var itemC = require('./products/itemCustom');
+var itemO = require('./products/itemOferta');
 
 module.exports = function (itemsCarrito) {
 	var singles = itemsCarrito.filter(function(obj) {
-		if(!obj.excep && !obj.custom) {
+		if(!obj.excep && !obj.custom && !obj.oferta) {
 			return true;
 		}else{
 			return false;
@@ -27,7 +28,15 @@ module.exports = function (itemsCarrito) {
 		}
 	});
 	
-	var el = yo`<div class="col s12 seccion">
+	var ofertas = itemsCarrito.filter(function(obj) {
+		if(obj.oferta) {
+			return true;
+		}else{
+			return false;
+		}
+	});
+
+	var el = yo`<div id="finalizando" class="col s12 seccion">
 		<div class="row nobottom">
 			<div class="col s12 center-align">
 				<h3 class="compraTit">RAGUSTINO FOOD EXPERIENCE</h3>
@@ -63,6 +72,13 @@ module.exports = function (itemsCarrito) {
 				})}
 			</div>
 		</div>
+		<div class="row nobottom">
+			<div class="col s12 m6 offset-m3">
+				${ofertas.map(function (pic) {
+					return itemO(pic);
+				})}
+			</div>
+		</div>
 		<div class="row">
 			<div class="col s12 m6 offset-m3">
 				<div class="row itemComprando">
@@ -87,7 +103,7 @@ module.exports = function (itemsCarrito) {
 		</div>
 		<div class="row">
 			<div class="col s12 center-align">
-				<a href="https://www.ragustino.cl" class="waves-effect waves-light btn blue darken-2">Seguir Comprando</a>
+				<a href="/" class="waves-effect waves-light btn blue darken-2">Seguir Comprando</a>
 			</div>
 		</div>
 		<div class="row nobottom">
@@ -200,12 +216,50 @@ module.exports = function (itemsCarrito) {
 				</ul>
 			</div>
 		</div>
+		<div id="contFormCompra" class="">
+			<div id="formCompra" class="form">
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="programarCompra">Ingresa tus datos</p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="input-field col s10 offset-s1 m4 offset-m4">
+						<input id="nomCompra" type="text" class="validate formCompra">
+						<label for="nomCompra">Nombre y Apellido</label>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="input-field col s10 offset-s1 m4 offset-m4">
+						<input id="dirCompra" type="text" class="validate formCompra">
+						<label for="dirCompra">Dirección</label>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="input-field col s10 offset-s1 m4 offset-m4">
+						<input id="mailCompra" type="email" class="validate formCompra">
+						<label for="mailCompra">Email</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s10 offset-s1 m4 offset-m4">
+						<input id="fonoCompra" type="tel" class="validate formCompra">
+						<label for="fonoCompra">Teléfono</label>
+					</div>
+				</div>
+				<div class="row">
+					<div id="" class="col s12 center-align">
+						<a href="#" id="confDatos" class="waves-effect waves-light btn blue darken-2">Confirmar Datos</a>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="row nobottom">
 			<div class="col s12 center-align">
 				<p class="programarCompra">Forma de Pago</p>
 			</div>
 		</div>
-		<div id="contPagos" class="row">
+		<div class="row">
 			<div class="col s10 offset-s1 m4 offset-m4">
 				<ul class="collapsible" class="">
 					<li id="pagoEfec">
@@ -251,47 +305,9 @@ module.exports = function (itemsCarrito) {
 				</ul>
 			</div>
 		</div>
-		<div id="contFormCompra" class="">
-			<div id="formCompra" class="form">
-				<div class="row nobottom">
-					<div class="col s12 center-align">
-						<p class="programarCompra">Ingresa tus datos</p>
-					</div>
-				</div>
-				<div class="row nobottom">
-					<div class="input-field col s10 offset-s1 m4 offset-m4">
-						<input id="nomCompra" type="text" class="validate formCompra">
-						<label for="nomCompra">Nombre y Apellido</label>
-					</div>
-				</div>
-				<div class="row nobottom">
-					<div class="input-field col s10 offset-s1 m4 offset-m4">
-						<input id="dirCompra" type="text" class="validate formCompra">
-						<label for="dirCompra">Dirección</label>
-					</div>
-				</div>
-				<div class="row nobottom">
-					<div class="input-field col s10 offset-s1 m4 offset-m4">
-						<input id="mailCompra" type="email" class="validate formCompra">
-						<label for="mailCompra">Email</label>
-					</div>
-				</div>
-				<div class="row">
-					<div class="input-field col s10 offset-s1 m4 offset-m4">
-						<input id="fonoCompra" type="tel" class="validate formCompra">
-						<label for="fonoCompra">Teléfono</label>
-					</div>
-				</div>
-				<div class="row">
-					<div id="" class="col s12 center-align">
-						<a href="#" id="confDatos" class="waves-effect waves-light btn blue darken-2">Confirmar</a>
-					</div>
-				</div>
-			</div>
-		</div>
 		<div class="row">
 			<div class="col s12 center-align">
-				<a href="#" id="compraFinal" class="hide waves-effect waves-light btn blue darken-2">Confirmar Compra</a>
+				<a href="#" id="compraFinal" class="waves-effect waves-light btn blue darken-2">Comprar</a>
 			</div>
 		</div>
 	</div>`;

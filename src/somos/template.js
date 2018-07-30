@@ -17,6 +17,50 @@ module.exports = function () {
 			<div class="col s12 center-align">
 				<p>Disfruta de la comida más deliciosa, equilibrada y nutritiva a tu puerta sin esperas ni retrasos...</p>
 			</div>
+			<div class="col s12 m4 offset-m4 center-align">
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horario"></p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">HORARIO: RAGUSTINO</p>
+					</div>
+				</div><div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">Realiza repartos sólo de jueves a domingo:</p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">Jueves 18:00 - 0:00</p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">Viernes 18:00 - 1:00</p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">Sábado 18:00 - 1:00</p>
+					</div>
+				</div>
+				<div class="row nobottom">
+					<div class="col s12 center-align">
+						<p class="horas">Domingo 18:00 - 0:00</p>
+					</div>
+				</div>
+				<div class="row programa">
+					<div class="col s2 offset-s4 l2 offset-l4 face center-align">
+						<a href="http://www.facebook.com/ragustinofoodexperience" target="_blank" class="icon-facebook iconoRedes"></a>
+					</div>
+					<div class="col s2 l2 center-align insta">
+						<a href="http://www.instagram.com/ragustinofoodexperience" target="_blank" class="icon-instagram iconoRedes"></a>
+					</div>
+				</div>
+			</div>
 		</div>
 		<div class="row">
 			<div class="col s12 center-align">
@@ -66,50 +110,6 @@ module.exports = function () {
 		<div class="row">
 			<div class="col s12 center-align">
 				<p>La más clásica de nuestras ensaladas y la primera de una serie que verán la luz muy pronto, inaugurando nuestra carta “primavera-verano”. “La RAGUSTINO” se compone de un mix de hojas verdes (espinaca, rúcula, lechuga francesa y escarola), un sutil toque de repollo, tomates cherry, cubitos de pepino, pollo a la plancha, tortilla chips, semillas de sésamo, nueces y aderezo (yoghurt griego, vinagre balsámico, aceite de oliva, mostaza Dijon, sal y pimienta). LOS CLÁSICOS NO PASAN DE MODA!</p>
-			</div>
-		</div>
-		<div class="col s12 m4 offset-m4 center-align">
-			<div class="row nobottom">
-				<div class="col s12 center-align">
-					<p class="horario"></p>
-				</div>
-			</div>
-			<div class="row nobottom">
-				<div class="col s12 center-align">
-					<p class="horas">HORARIO: RAGUSTINO</p>
-				</div>
-			</div><div class="row nobottom">
-				<div class="col s12 center-align">
-					<p class="horas">Realiza repartos sólo de jueves a domingo:</p>
-				</div>
-			</div>
-			<div class="row nobottom">
-				<div class="col s12 center-align">
-					<p class="horas">Jueves 18:00 - 0:00</p>
-				</div>
-			</div>
-			<div class="row nobottom">
-				<div class="col s12 center-align">
-					<p class="horas">Viernes 18:00 - 1:00</p>
-				</div>
-			</div>
-			<div class="row nobottom">
-				<div class="col s12 center-align">
-					<p class="horas">Sábado 18:00 - 1:00</p>
-				</div>
-			</div>
-			<div class="row nobottom">
-				<div class="col s12 center-align">
-					<p class="horas">Domingo 18:00 - 0:00</p>
-				</div>
-			</div>
-			<div class="row programa">
-				<div class="col s2 offset-s4 l2 offset-l4 face center-align">
-					<a href="http://www.facebook.com/ragustinofoodexperience" target="_blank" class="icon-facebook iconoRedes"></a>
-				</div>
-				<div class="col s2 l2 center-align insta">
-					<a href="http://www.instagram.com/ragustinofoodexperience" target="_blank" class="icon-instagram iconoRedes"></a>
-				</div>
 			</div>
 		</div>
 	</div>`;

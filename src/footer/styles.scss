@@ -1,3 +1,28 @@
 footer.page-footer {
 	margin-top: 0;
 }
+
+.descFooter {
+	margin: 0 !important;
+}
+
+.listFooter {
+	margin-top: 0 !important;
+}
+
+@media #{$small-and-down} {
+	.titFooter {
+		font-size: 1rem;
+		margin: 0 !important;
+	}
+
+	.descFooter {
+		font-size: 0.8rem;
+		margin: 5px 0 !important;
+
+	}
+
+	.boxEmp {
+		margin-bottom: 20px;
+	}
+}
