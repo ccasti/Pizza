@@ -6,16 +6,9 @@ app.set('view engine', 'pug');
 
 app.use(express.static('public'));
 
+//Rutas
 app.get('/', function (req, res) {
 	res.render('index', { title: 'Ragustino' });
-})
-
-app.get('/signup', function (req, res) {
-	res.render('index', { title: 'Signup' });
-})
-
-app.get('/signin', function (req, res) {
-	res.render('index', { title: 'Signin' });
 })
 
 app.get('/carta', function (req, res) {
@@ -23,7 +16,7 @@ app.get('/carta', function (req, res) {
 })
 
 app.get('/somos', function (req, res) {
-	res.render('index', { title: 'Nuestra Filosofia' });
+	res.render('index', { title: 'Nosotros' });
 })
 
 app.get('/compra', function (req, res) {
@@ -34,18 +27,25 @@ app.get('/ragsystem', function (req, res) {
 	res.render('index', { title: 'Ragustino - System' });
 })
 
-app.get('/estadisticas', function (req, res) {
-	res.render('index', { title: 'Estadisticas' });
+app.get('/ragsystem-admin', function (req, res) {
+	res.render('index', { title: 'Ragustino - Admin' });
 })
 
-/*app.get('/ragsystem/adm_equipo', function (req, res) {
-	res.render('index', { title: 'Adm-Equipo' });
-})*/
-
-app.get('/adm_productos', function (req, res) {
-	res.render('index', { title: 'Adm-Productos' });
+app.get('/ragsystem-cocina', function (req, res) {
+	res.render('index', { title: 'Ragustino - Cocina' });
 })
 
+/*
+app.get('/signup', function (req, res) {
+	res.render('index', { title: 'Signup' });
+})
+
+app.get('/signin', function (req, res) {
+	res.render('index', { title: 'Signin' });
+})
+*/
+
+//Productos
 app.get('/api/pizzas', function(req, res) {
 	var pizzas = [
 		{
@@ -1239,6 +1239,174 @@ app.get('/api/items', function(req, res) {
 	res.send(items);
 })
 
+//Compra
+app.get('/api/Compra', function(req, res) {
+	var compras = [
+		{
+			id_compra: '1',
+			client: 'Juanito Perez',
+			address: 'Calle algo N 2563',
+			email: 'ejemplo@algo.com',
+			fono: '912345678',
+			content: [
+				{
+					id: '200001',
+					cantidad: '2',
+					name: 'Calzone Jamón Pesto',
+					url: 'grissini.jpg',//No se utilizará
+					content: 'Pomodoro, mozzarella, jamón, pesto, albhaca',//No se utilizará
+					tipo: 'calzone',
+					price: '9400'
+				},
+			],
+			monto: '19500',
+			pago: '1',
+			delivery: '1',
+			año: '2018',
+			mes: '6',
+			diam: '29',
+			hora: '21',
+			minuto: '15',
+			repartidor: '',
+			cocina: '0',
+			reparto: '0',
+			ok: '0'
+		},
+		{
+			id_compra: '2',
+			client: 'Pedro Carrasco',
+			address: 'Calle otra N 2389',
+			email: 'ejemplo@algo.com',
+			fono: '912345678',
+			content: [
+				{
+					id: '200001',
+					cantidad: '1',
+					name: 'Calzone Jamón Pesto',
+					url: 'grissini.jpg',//No se utilizará
+					content: 'Pomodoro, mozzarella, jamón, pesto, albhaca',//No se utilizará
+					tipo: 'calzone',
+					price: '9400'
+				},
+				{
+					name: 'Oferta',
+					cantidad: '1',
+					pizname: 'Pizza Elejida',
+					bebname: 'Bebida Elejida',
+					id: '900001',
+					price: '11900',
+					oferta: '1'
+				}
+			],
+			monto: '22800',
+			pago: '2',
+			delivery: '2',
+			año: '2018',
+			mes: '6',
+			diam: '29',
+			hora: '21',
+			minuto: '20',
+			repartidor: '',
+			cocina: '0',
+			reparto: '0',
+			ok: '0',
+			horap: '22',
+			minutop: '30'
+		},
+		{
+			id_compra: '3',
+			client: 'Juanita Perez',
+			address: 'Calle Escondida N 5687',
+			email: 'ejemplo@algo.com',
+			fono: '912345678',
+			content: [
+				{
+					id: '200001',
+					cantidad: '1',
+					name: 'Calzone Jamón Pesto',
+					url: 'grissini.jpg',//No se utilizará
+					content: 'Pomodoro, mozzarella, jamón, pesto, albhaca',//No se utilizará
+					tipo: 'calzone',
+					price: '9400'
+				},
+				{
+					name: 'Oferta',
+					cantidad: '1',
+					pizname: 'Pizza Elejida',
+					bebname: 'Bebida Elejida',
+					id: '900001',
+					price: '11900',
+					oferta: '1'
+				},
+				{
+					id: '100001',
+					cantidad: '1',
+					name: 'Pizza a tu gusto',
+					ingredientes:[
+						{
+							control: '1',//No se utilizará
+							gramo: '100',//No se utilizará
+							id: "600001",
+							name: "Mozzarella",
+							price: '2190',
+							tipo: "queso",
+							url: "mozzarella.jpg"//No se utilizará
+						},
+						{
+							control: '1',//No se utilizará
+							gramo: '150',//No se utilizará
+							id: "600009",
+							name: "Pollo a la Plancha",
+							price: '1890',
+							tipo: "carne",
+							url: "pollo.jpg"//No se utilizará
+						},
+						{
+							control: '0',//No se utilizará
+							gramo: '1',//No se utilizará
+							id: "600031",
+							name: "Oregano",
+							price: '390',
+							tipo: "verdu",
+							url: "oregano.jpg"//No se utilizará
+						},
+						{
+							control: '1',//No se utilizará
+							gramo: '150',//No se utilizará
+							id: "600006",
+							name: "Pollo al Curry",
+							price: '1890',
+							tipo: "carne",
+							url: "pollo.jpg"//No se utilizará
+						}
+					],
+					custom: 'true',
+					price: '9400'
+				}
+			],
+			monto: '30700',
+			pago: '3',
+			delivery: '3',
+			año: '2018',
+			mes: '6',
+			diam: '29',
+			hora: '21',
+			minuto: '20',
+			repartidor: '',
+			cocina: '0',
+			reparto: '0',
+			ok: '0',
+			fechap: '2018/07/2018',
+			horap: '22',
+			minutop: '30'
+		}
+	];
+
+	res.send(compras);
+})
+
+
+//Server
 app.listen(3000, function (err) {
 	if (err) return console.log('Hubo un error'), process.exit(1);
 

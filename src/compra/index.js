@@ -282,7 +282,7 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 
 		this.setearOtro = function(fechaP, diaP, horaP, minP, año, mes, diaM) {
 			if(diaP <= diaM) {
-				alert("Estas seleccionando una fecha en el pasado");
+				alert("Debes programar un día a partir de mañana");
 			}else{
 				if(!fechaP) {
 					alert("Tienes que seleccionar la fecha de entrega");
@@ -402,7 +402,7 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 			estaCompra.content = [];
 			estaCompra.monto = carrito.getTotal();
 			estaCompra.content.push(JSON.parse(localStorage.getItem("carrito")));
-			var data = estaCompra;
+			var data = JSON.stringify(estaCompra);
 			request
 				.post('https://www.ragustino.cl/js/Compra.php')
 				.send(data)
@@ -422,6 +422,15 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 	$(document).ready(function(){
 		$('.collapsible').collapsible();
 		$('select').material_select();
+		$('.datepicker').pickadate({
+			selectMonths: true,
+			selectYears: 1,
+			today: 'Hoy',
+			clear: 'Limpiar',
+			close: 'Ok',
+			closeOnSelect: false,
+			container: undefined,
+		});
 		comprando_view.renderCompra();
 		comprando.constructor();
 
@@ -445,7 +454,7 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 
 			if(ev.target.id === "paraOtro") {
 				var fechaP = document.getElementById("fechaOtro").value;
-				var diaP = document.getElementById("fechaOtro").value[8] + document.getElementById("fechaOtro").value[9];
+				var diaP = document.getElementById("fechaOtro").value[0] + document.getElementById("fechaOtro").value[1];
 				var horaP = document.getElementById("horaOtro").value;
 				var minP = document.getElementById("minOtro").value;
 				programando_compra.setearOtro(fechaP, diaP, horaP, minP, año, mes, diaM);

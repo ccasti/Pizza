@@ -27,8 +27,6 @@ Body {
 }
 
 @import "src/header/styles";
-/*@import "src/clients/signup/styles";
-@import "src/clients/signin/styles";*/
 @import "src/layout/styles";
 @import "src/homepage/styles";
 @import "src/carta/styles";
@@ -37,8 +35,12 @@ Body {
 @import "src/products/ingrediente/styles";
 @import "src/products/pack/styles";
 @import "src/products/item/styles";
-/*@import "src/ragsystem/headersystem/styles";
-@import "src/ragsystem/homesystem/styles";
-@import "src/ragsystem/adm_productos/styles";
-@import "src/ragsystem/estadisticas/styles";*/
 @import "src/footer/styles";
+@import "src/ragsystem/homesystem/styles";
+@import "src/ragsystem/admin/styles";
+
+/*
+@import "src/clients/signup/styles";
+@import "src/clients/signin/styles";
+@import "src/ragsystem/headersystem/styles";
+*/

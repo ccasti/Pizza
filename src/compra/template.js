@@ -161,7 +161,7 @@ module.exports = function (itemsCarrito) {
 							</div>
 							<div class="row nobottom">
 								<div class="col s6 offset-s3">
-									<input id="fechaOtro" class="fechaFinal" type="date" required />
+									<input id="fechaOtro" type="text" class="datepicker fechaFinal">
 								</div>
 							</div>
 							<div id="texto2OtroDia" class="row nobottom">
@@ -225,25 +225,25 @@ module.exports = function (itemsCarrito) {
 				</div>
 				<div class="row nobottom">
 					<div class="input-field col s10 offset-s1 m4 offset-m4">
-						<input id="nomCompra" type="text" class="validate formCompra">
+						<input id="nomCompra" type="text" class="validate formDefault">
 						<label for="nomCompra">Nombre y Apellido</label>
 					</div>
 				</div>
 				<div class="row nobottom">
 					<div class="input-field col s10 offset-s1 m4 offset-m4">
-						<input id="dirCompra" type="text" class="validate formCompra">
+						<input id="dirCompra" type="text" class="validate formDefault">
 						<label for="dirCompra">Dirección</label>
 					</div>
 				</div>
 				<div class="row nobottom">
 					<div class="input-field col s10 offset-s1 m4 offset-m4">
-						<input id="mailCompra" type="email" class="validate formCompra">
+						<input id="mailCompra" type="email" class="validate formDefault">
 						<label for="mailCompra">Email</label>
 					</div>
 				</div>
 				<div class="row">
 					<div class="input-field col s10 offset-s1 m4 offset-m4">
-						<input id="fonoCompra" type="tel" class="validate formCompra">
+						<input id="fonoCompra" type="tel" class="validate formDefault">
 						<label for="fonoCompra">Teléfono</label>
 					</div>
 				</div>
