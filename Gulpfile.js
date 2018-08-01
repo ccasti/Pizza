@@ -18,16 +18,16 @@ gulp.task('sass', function () {
             browsers: ['last 2 versions'],
             cascade: false
         }))
-		/*.pipe(minifyCSS({keepBreaks:false}))*/
-		.pipe(rename('app.css'))
+		.pipe(minifyCSS({keepBreaks:false}))
+		.pipe(rename('appSystemAdmin.css'))
 		.pipe(gulp.dest('public'));
 })
 
-gulp.task('assets', function () {
+/*gulp.task('assets', function () {
   gulp
     .src('assets/*')
     .pipe(gulp.dest('public'));
-})
+})*/
 
 function compile(watch) {//watch es la VARIABLE que indicará si hacemos o no watch, enviando o no el PARAMETRO
 	var bundle = browserify('./src/index.js');
@@ -47,7 +47,7 @@ function compile(watch) {//watch es la VARIABLE que indicará si hacemos o no wa
 			.on('error', function (err) { console.log(err); this.emit('end') })
 			.pipe(source('index.js'))//entry point
 			/*.pipe(uglify())*/
-			.pipe(rename('app.js'))
+			.pipe(rename('appSystemAdmin.js'))
 			.pipe(gulp.dest('public'));
 	}
 
@@ -62,4 +62,4 @@ gulp.task('watch', function () {
 	return compile(true);
 });
 
-gulp.task('default', ['sass', 'assets', 'build']);
+gulp.task('default', ['sass',/* 'assets',*/ 'build']);

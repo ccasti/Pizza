@@ -7,7 +7,7 @@ app.set('view engine', 'pug');
 app.use(express.static('public'));
 
 //Rutas
-app.get('/', function (req, res) {
+/*app.get('/', function (req, res) {
 	res.render('index', { title: 'Ragustino' });
 })
 
@@ -21,11 +21,11 @@ app.get('/somos', function (req, res) {
 
 app.get('/compra', function (req, res) {
 	res.render('index', { title: 'Ragustino - Carro' });
-})
+})*/
 
-app.get('/ragsystem', function (req, res) {
+/*app.get('/ragsystem', function (req, res) {
 	res.render('index', { title: 'Ragustino - System' });
-})
+})*/
 
 app.get('/ragsystem-admin', function (req, res) {
 	res.render('index', { title: 'Ragustino - Admin' });
@@ -46,7 +46,7 @@ app.get('/signin', function (req, res) {
 */
 
 //Productos
-app.get('/api/pizzas', function(req, res) {
+/*app.get('/api/pizzas', function(req, res) {
 	var pizzas = [
 		{
 			id: '100001',
@@ -1237,7 +1237,7 @@ app.get('/api/items', function(req, res) {
 	];
 
 	res.send(items);
-})
+})*/
 
 //Compra
 app.get('/api/Compra', function(req, res) {
@@ -1269,6 +1269,36 @@ app.get('/api/Compra', function(req, res) {
 			minuto: '15',
 			repartidor: '',
 			cocina: '0',
+			reparto: '0',
+			ok: '0'
+		},
+		{
+			id_compra: '4',
+			client: 'Cristian Castillo',
+			address: 'Hochstetter N 385',
+			email: 'ejemplo@otro.com',
+			fono: '912345678',
+			content: [
+				{
+					id: '200002',
+					cantidad: '1',
+					name: 'Otro Producto Individual',
+					url: 'grissini.jpg',//No se utilizará
+					content: 'Pomodoro, mozzarella, jamón, pesto, albhaca',//No se utilizará
+					tipo: 'calzone',
+					price: '9400'
+				},
+			],
+			monto: '10900',
+			pago: '2',
+			delivery: '1',
+			año: '2018',
+			mes: '6',
+			diam: '29',
+			hora: '21',
+			minuto: '15',
+			repartidor: '',
+			cocina: '1',
 			reparto: '0',
 			ok: '0'
 		},
@@ -1307,7 +1337,7 @@ app.get('/api/Compra', function(req, res) {
 			hora: '21',
 			minuto: '20',
 			repartidor: '',
-			cocina: '0',
+			cocina: '1',
 			reparto: '0',
 			ok: '0',
 			horap: '22',
@@ -1393,8 +1423,8 @@ app.get('/api/Compra', function(req, res) {
 			hora: '21',
 			minuto: '20',
 			repartidor: '',
-			cocina: '0',
-			reparto: '0',
+			cocina: '1',
+			reparto: '1',
 			ok: '0',
 			fechap: '2018/07/2018',
 			horap: '22',

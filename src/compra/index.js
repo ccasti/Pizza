@@ -405,7 +405,7 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 			var data = JSON.stringify(estaCompra);
 			request
 				.post('https://www.ragustino.cl/js/Compra.php')
-				.send(data)
+				.send('datos=' +data)
 				.end(function(err, res) {
 					alert("Gracias por tu preferencia, estamos procesando tu compra");
 					localStorage.clear();

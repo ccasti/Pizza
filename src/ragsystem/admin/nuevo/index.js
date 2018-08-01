@@ -87,23 +87,35 @@ module.exports = function (pic) {
 					return oferta(picO);
 				})}
 			</div>
-			<div class="col s12 m3">
+			<div id="admPedido" class="col s12 m3">
 				<div class="row nobottom">
-					<div class="col s10 offset-s1 center-align">
-						<p class="estado">Actualmente en:</p>
-						<p id="estadoAdmin" class="red darken-4 white-text estadoCiclo">ADMIN</p>
-						<p id="estadoCocina" class="blue darken-4 white-text estadoCiclo">COCINA</p>
-						<p id="estadoReparto" class="orange darken-4 white-text estadoCiclo">REPARTO</p>
+					<div class="col s10 offset-s1">
+						<div id="eA${pic.id_compra}" class="row nobottom">
+							<div class="col s12 center-align">
+								<p class="estado">Actualmente en:</p>
+								<p class="red darken-4 white-text estadoCiclo">ADMIN</p>
+								<p class="pasar">Pasar a:</p>
+								<a href="#" id="pasarCocina" class="waves-effect waves-light btn blue darken-2" data-id="${pic.id_compra}">COCINA</a>
+							</div>
+						</div>
+						<div id="eC${pic.id_compra}" class="row nobottom">
+							<div class="col s12 center-align">
+								<p class="estado">Actualmente en:</p>
+								<p class="blue darken-4 white-text estadoCiclo">COCINA</p>
+								<p class="pasar">Pasar a:</p>
+								<a href="#" id="pasarReparto" class="waves-effect waves-light btn blue darken-2" data-id="${pic.id_compra}">REPARTO</a>
+							</div>
+						</div>
+						<div id="eR${pic.id_compra}" class="row nobottom">
+							<div class="col s12 center-align">
+								<p class="estado">Actualmente en:</p>
+								<p class="green darken-4 white-text estadoCiclo">REPARTO</p>
+								<p class="pasar">Pasar a:</p>
+								<a href="#" id="finalFinal" class="waves-effect waves-light btn blue darken-2" data-id="${pic.id_compra}">CERRAR</a>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div class="row nobottom">
-					<div class="col s10 offset-s1 center-align">
-						<p class="pasar">Pasar a:</p>
-						<a href="#" id="pasarCocina" class="waves-effect waves-light btn blue darken-2">COCINA</a>
-						<a href="#" id="pasarReparto" class="waves-effect waves-light btn blue darken-2">REPARTO</a>
-						<a href="#" id="finalFinal" class="waves-effect waves-light btn blue darken-2">CERRAR</a>
-					</div>
-				</div>			
 			</div>
 		</div>
 		<div class="divider separar black"></div>
