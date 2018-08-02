@@ -101,11 +101,11 @@ module.exports = function layout (content) {
 		</div>
 		<div id="modal7" class="modal">
 			<div class="modal-content">
-				<h4 class="armandoTit center-align">Elije Pizza y Bebida</h4>
+				<h4 class="armandoTit center-align">Selecciona Pizza y Bebida</h4>
 				<div class="row nobottom">
 					<div class="input-field col s12">
 						<select id="pizzaOferta">
-							<option value="" disabled selected>Elije tu Pizza</option>
+							<option value="" disabled selected>Selecciona tu Pizza</option>
 							<option value="101">Margherita</option>
 							<option value="102">Caprese</option>
 							<option value="103">Pollo al Pesto</option>
@@ -116,7 +116,7 @@ module.exports = function layout (content) {
 				<div class="row">
 					<div class="input-field col s12">
 						<select id="bebidaOferta">
-							<option value="" disabled selected>Elije tu Bebida</option>
+							<option value="" disabled selected>Selecciona tu Bebida</option>
 							<option value="201">Coca Cola Normal</option>
 							<option value="202">Coca Cola zero</option>
 							<option value="203">Fanta Normal</option>

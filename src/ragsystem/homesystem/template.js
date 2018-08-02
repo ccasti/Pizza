@@ -5,7 +5,7 @@ module.exports = function () {
 		<div class="container">
 			<div class="top row">
 			    <div class="col s12 m6 offset-m3 l4 offset-l4 signin-box">
-		            <form class="signin-form">
+		            <form class="signin-form" method="POST" action="./js/login.php">
 		                <div class="row">
 		                    <div class="col s12">
 		                        <h2 class="center-align">Inicia sesión</h2>
@@ -13,19 +13,19 @@ module.exports = function () {
 		                </div>
 		                <div class="row">
 		                    <div class="col s12 input-field">
-		                        <input id="email" type="email" class="validate formDefault" />
+		                        <input type="email" name="nnombre" value="" class="validate formDefault" />
 		                        <label for="email">Correo Electronico</label>
 		                    </div>
 		                </div>
 		                <div class="row">
 		                    <div class="col s12 input-field">
-		                        <input id="password" type="password" class="validate formDefault">
+		                        <input type="password" name="password" value="" class="validate formDefault">
 		                        <label for="password">Contraseña</label>
 		                    </div>
 		                </div>
 		                <div class="row signin-btn">
 		                    <div class="col s12 center-align">
-		                    	<a id="login" class="waves-effect waves-light btn blue darken-2">Ingresar</a>
+		                    	<input value="Iniciar Sesion" type="submit" />
 		                    </div>
 		                </div>
 		            </form>

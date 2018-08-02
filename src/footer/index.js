@@ -28,10 +28,7 @@ var el = yo`<footer class="page-footer grey lighten-2">
         <div class="grey-text text-darken-4 container">
             <div class="row nobottom descFooter">
                 <div class="col s9">
-        	       © 2018 Ragustino. Todos los derechos reservados. Diseñado por Casti
-                </div>
-                <div class="col s3">
-                    <a class="grey-text text-darken-4 descFooter" href="/carta">-------</a>
+        	       © 2018 Ragustino. Todos los derechos reservados. Desarrollado por Casti
                 </div>
             </div>
         </div>

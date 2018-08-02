@@ -149,7 +149,7 @@ page('/carta',
 		}
 
 		this.agergarOferta = function() {
-			var ventaOferta = {name: 'Oferta', cantidad: '1', pizname: '', bebname: '', id: '900001', price: 11900, oferta: 1};
+			var ventaOferta = {name: 'Oferta', cantidad: '1', pizname: '', bebname: '', id: '900001', price: 11990, oferta: 1};
 			var pOferta = document.getElementById('pizzaOferta').value;
 			var bOferta = document.getElementById('bebidaOferta').value;
 
@@ -207,7 +207,7 @@ page('/carta',
 				return
 			}
 			contChequeo.push({ id: '100100', price: armar_pizza.getTotal() });
-			let itemCustom = { id: '100100', name: 'Pizza a tu gusto', price: armar_pizza.getTotal(), cantidad: 1, custom: true, ingredientes: armar_pizza.getIngredientes }
+			let itemCustom = { id: '100100', name: 'Pizza a tu gusto', price: armar_pizza.getTotal(), cantidad: 1, custom: 1, ingredientes: armar_pizza.getIngredientes }
 			this.getCarrito.push(itemCustom);
 			localStorage.setItem("carrito",JSON.stringify(this.getCarrito));
 			Materialize.toast('Se agregó un producto', 1500, 'rounded')
@@ -471,7 +471,7 @@ page('/carta',
 
 function loadPizzas (ctx, next) {
 	request
-		.get('/api/pizzas')//https://www.ragustino.cl/js/Conector.php
+		.get('https://www.ragustino.cl/js/Conector.php')///api/pizzas
 		.end(function (err, res) {
 			if (err) return console.log(err);
 
@@ -482,7 +482,7 @@ function loadPizzas (ctx, next) {
 
 function loadIngredientes (ctx, next) {
 	request
-		.get('/api/ingredientes')//https://www.ragustino.cl/js/ingredientes.php
+		.get('https://www.ragustino.cl/js/ingredientes.php')///api/ingredientes
 		.end(function (err, res) {
 			if (err) return console.log(err);
 
@@ -493,7 +493,7 @@ function loadIngredientes (ctx, next) {
 
 function loadOtros (ctx, next) {
 	request
-		.get('/api/otro')//https://www.ragustino.cl/js/otro.php
+		.get('https://www.ragustino.cl/js/otro.php')///api/otro
 		.end(function (err, res) {
 			if (err) return console.log(err);
 
@@ -504,7 +504,7 @@ function loadOtros (ctx, next) {
 
 function loadPacks (ctx, next) {
 	request
-		.get('/api/packs')//https://www.ragustino.cl/js/pack
+		.get('https://www.ragustino.cl/js/pack')///api/packs
 		.end(function (err, res) {
 			if (err) return console.log(err);
 
@@ -515,7 +515,7 @@ function loadPacks (ctx, next) {
 
 function loadItems (ctx, next) {
 	request
-		.get('/api/items')//https://www.ragustino.cl/js/items.php
+		.get('https://www.ragustino.cl/js/items.php')///api/items
 		.end(function (err, res) {
 			if (err) return console.log(err);
 

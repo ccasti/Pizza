@@ -12,7 +12,7 @@ module.exports = function (compras) {
 	
 	return yo`<div class="blue lighten-5">
 		<div class="container grey lighten-2">
-			<div class="row">
+			<div id="areaCocina" class="row">
 				<div class="col s12">
 					<div id="horno" class="col s12 grey lighten-2">
 						<h3 class="systemTitulo">Pedidos en Proceso<div id="qCocina" class="chipC chip white-text blue darken-2"></div></h3>

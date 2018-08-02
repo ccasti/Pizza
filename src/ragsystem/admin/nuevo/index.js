@@ -74,6 +74,7 @@ module.exports = function (pic) {
 				<p class="datoVenta">${tipoPago(pic.pago)}</p>
 				${tipoDelivery(pic.delivery)}
 				<p class="datoVenta">Entregar a las ${pic.horap}:${pic.minutop}</p>
+				<p class="datoVenta">Del día ${pic.fechap}</p>
 				<p class="datoVenta">Pedido a las ${pic.hora}:${pic.minuto}</p>
 			</div>
 			<div class="col s12 m5 left-align">
@@ -87,7 +88,7 @@ module.exports = function (pic) {
 					return oferta(picO);
 				})}
 			</div>
-			<div id="admPedido" class="col s12 m3">
+			<div class="col s12 m3">
 				<div class="row nobottom">
 					<div class="col s10 offset-s1">
 						<div id="eA${pic.id_compra}" class="row nobottom">
@@ -112,6 +113,11 @@ module.exports = function (pic) {
 								<p class="green darken-4 white-text estadoCiclo">REPARTO</p>
 								<p class="pasar">Pasar a:</p>
 								<a href="#" id="finalFinal" class="waves-effect waves-light btn blue darken-2" data-id="${pic.id_compra}">CERRAR</a>
+							</div>
+						</div>
+						<div id="seFue${pic.id_compra}" class="hide row nobottom">
+							<div class="col s12 center-align">
+								<i class="medium material-icons blue-text text-darken-2">check</i>
 							</div>
 						</div>
 					</div>

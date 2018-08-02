@@ -47,9 +47,14 @@ module.exports = function (pic) {
 				})}
 			</div>
 			<div id="admPedido" class="col s12 m3">
-				<div class="row nobottom">
+				<div id="cL${pic.id_compra}" class="row nobottom">
 					<div class="col s10 offset-s1 center-align">
 						<a href="#" id="cocinaListo" class="waves-effect waves-light btn blue darken-2" data-id="${pic.id_compra}">Listo !!</a>
+					</div>
+				</div>
+				<div id="cocFue${pic.id_compra}" class="hide row nobottom">
+					<div class="col s12 center-align">
+						<i class="medium material-icons blue-text text-darken-2">check</i>
 					</div>
 				</div>
 			</div>

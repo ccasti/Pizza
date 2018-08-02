@@ -2,14 +2,14 @@ var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
 var title = require('title');
-var request = require('superagent');
+/*var request = require('superagent');*/
 
 page('/ragsystem', function (ctx, next) {
 	title('Ragustino - System');
 	var main = document.getElementById('main-container');
 	empty(main).appendChild(template());
 
-	$(document).ready(function(){
+	/*$(document).ready(function(){
 		document.getElementById('login').addEventListener("click", function(ev) {
 			ev.preventDefault();
 			if ($("#email").hasClass('invalid')) {
@@ -26,5 +26,5 @@ page('/ragsystem', function (ctx, next) {
 					alert("Hubo un error");
 				})
 		})
-	});
+	});*/
 })

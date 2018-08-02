@@ -28,7 +28,7 @@ module.exports = function (compra) {
 
 	return yo`<div class="blue lighten-5">
 		<div class="container grey lighten-2">
-			<div class="row">
+			<div id="admPedido" class="row">
 				<div class="col s12">
 					<ul id="tabs" class="tabs blue darken-2">
 						<li class="tab col s3"><a class="white-text" href="#test1">AHORA<div id="qAhora" class="chipN chip"></div></a></li>
@@ -93,7 +93,7 @@ module.exports = function (compra) {
 						</div>
 					</div>
 				</div>
-			</div>	
+			</div>
 		</div>
 	</div>`;
 }

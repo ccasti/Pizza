@@ -59,20 +59,72 @@ page('/ragsystem-admin', loadCompras, function (ctx, next) {
 			document.getElementById('qHoy').innerHTML = pedidoHoy.length;
 			document.getElementById('qOtro').innerHTML = pedidoOtro.length;
 		}
+
+		this.pasarCocina = function(id) {
+			document.getElementById('eA'+id).classList.toggle('hide');
+			document.getElementById('eC'+id).classList.toggle('hide');
+			request
+				.post('https://www.ragustino.cl/js/AsignarCocina.php')
+				.send('datos=' +id)
+				.end(function(err, res) {
+					alert("Asignado a cocina");
+				})
+		}
+
+		this.pasarReparto = function(id) {
+			document.getElementById('eC'+id).classList.toggle('hide');
+			document.getElementById('eR'+id).classList.toggle('hide');
+			request
+				.post('https://www.ragustino.cl/js/AsignarRepartidor.php')
+				.send('datos=' +id)
+				.end(function(err, res) {
+					alert("Asignado a reparto");
+				})
+		}
+
+		this.terminarCompra = function(id) {
+			document.getElementById('eR'+id).classList.toggle('hide');
+			document.getElementById('seFue'+id).classList.toggle('hide');
+			request
+				.post('https://www.ragustino.cl/js/EliminarTemp.php')
+				.send('datos=' +id)
+				.end(function(err, res) {
+					alert("Compra Finalizada");
+				})
+		}
 	}
 
 	var administrando = new Administrando();
 
 	$(document).ready(function(){
+		setTimeout('document.location.reload()',90000);
 		$('ul.tabs').tabs();
 		administrando.estadoActual();
 		administrando.nElementos();
+
+		document.getElementById('admPedido').addEventListener("click", function(ev) {
+			ev.preventDefault();
+			if(ev.target.id === "pasarCocina") {
+				var id = ev.target.dataset.id;
+				administrando.pasarCocina(id);
+			}
+
+			if(ev.target.id === "pasarReparto") {
+				var id = ev.target.dataset.id;
+				administrando.pasarReparto(id);
+			}
+
+			if(ev.target.id === "finalFinal") {
+				var id = ev.target.dataset.id;
+				administrando.terminarCompra(id);
+			}
+		})
 	});
 })
 
 function loadCompras (ctx, next) {
 	request
-		.get('/api/Compra')//https://www.ragustino.cl/js/...
+		.get('https://www.ragustino.cl/js/MostrarCompra.php')///api/Compra
 		.end(function (err, res) {
 			if (err) return console.log(err);
 

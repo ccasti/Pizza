@@ -7,7 +7,7 @@ app.set('view engine', 'pug');
 app.use(express.static('public'));
 
 //Rutas
-/*app.get('/', function (req, res) {
+app.get('/', function (req, res) {
 	res.render('index', { title: 'Ragustino' });
 })
 
@@ -21,11 +21,11 @@ app.get('/somos', function (req, res) {
 
 app.get('/compra', function (req, res) {
 	res.render('index', { title: 'Ragustino - Carro' });
-})*/
+})
 
 /*app.get('/ragsystem', function (req, res) {
 	res.render('index', { title: 'Ragustino - System' });
-})*/
+})
 
 app.get('/ragsystem-admin', function (req, res) {
 	res.render('index', { title: 'Ragustino - Admin' });
@@ -35,7 +35,7 @@ app.get('/ragsystem-cocina', function (req, res) {
 	res.render('index', { title: 'Ragustino - Cocina' });
 })
 
-/*
+
 app.get('/signup', function (req, res) {
 	res.render('index', { title: 'Signup' });
 })
@@ -46,7 +46,7 @@ app.get('/signin', function (req, res) {
 */
 
 //Productos
-/*app.get('/api/pizzas', function(req, res) {
+app.get('/api/pizzas', function(req, res) {
 	var pizzas = [
 		{
 			id: '100001',
@@ -1237,7 +1237,7 @@ app.get('/api/items', function(req, res) {
 	];
 
 	res.send(items);
-})*/
+})
 
 //Compra
 app.get('/api/Compra', function(req, res) {

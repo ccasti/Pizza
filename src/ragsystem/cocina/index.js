@@ -26,13 +26,23 @@ page('/ragsystem-cocina', loadCompras, function (ctx, next) {
 	var cocinando = new Cocinando();
 
 	$(document).ready(function(){
+		setTimeout('document.location.reload()',90000);
 		cocinando.nElementos();
+
+		document.getElementById('areaCocina').addEventListener("click", function(ev) {
+			ev.preventDefault();
+			if(ev.target.id === "cocinaListo") {
+				var id = ev.target.dataset.id;
+				document.getElementById('cL'+id).classList.toggle('hide');
+				document.getElementById('cocFue'+id).classList.toggle('hide');
+			}
+		})
 	});
 })
 
 function loadCompras (ctx, next) {
 	request
-		.get('/api/Compra')//https://www.ragustino.cl/js/...
+		.get('https://www.ragustino.cl/js/MostrarCompra.php')///api/Compra
 		.end(function (err, res) {
 			if (err) return console.log(err);
 
