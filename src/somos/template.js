@@ -44,12 +44,12 @@ module.exports = function () {
 				</div>
 				<div class="row nobottom">
 					<div class="col s12 center-align">
-						<p class="horas">Sábado 18:00 - 1:00</p>
+						<p class="horas">Sábados 18:00 - 1:00</p>
 					</div>
 				</div>
 				<div class="row nobottom">
 					<div class="col s12 center-align">
-						<p class="horas">Domingo 18:00 - 0:00</p>
+						<p class="horas">Domingos 13:00 - 19:00</p>
 					</div>
 				</div>
 				<div class="row programa">

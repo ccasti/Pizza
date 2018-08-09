@@ -10,6 +10,10 @@ footer.page-footer {
 	margin-top: 0 !important;
 }
 
+.footerS {
+   	width: 80% !important;
+}
+
 @media #{$small-and-down} {
 	.titFooter {
 		font-size: 1rem;
@@ -24,5 +28,9 @@ footer.page-footer {
 
 	.boxEmp {
 		margin-bottom: 20px;
+	}
+
+	.footerS {
+	   	width: 92% !important;
 	}
 }

@@ -56,7 +56,6 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 
 	function Comprando_View() {
 		this.renderCompra = function() {
-			document.getElementById('todoHeader').classList.toggle('hide');
 			if(carrito.getCarrito.length <= 0) {
 				templateNoItemsCompra = `<p>No tienes productos en tu carro</p>`;
 				document.getElementById('pintandoCompra').innerHTML = templateNoItemsCompra;
@@ -77,11 +76,11 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 					<p class="horariosCompra" >Nuestros Horarios</p>
 					<p class="horariosCompra" >Jueves 18:00 - 0:00</p>
 					<p class="horariosCompra" >Viernes 18:00 - 1:00</p>
-					<p class="horariosCompra" >Sábado 18:00 - 1:00</p>
-					<p class="horariosCompra" >Domingo 18:00 - 0:00</p>
+					<p class="horariosCompra" >Sábados 18:00 - 1:00</p>
+					<p class="horariosCompra" >Domingos 13:00 - 19:00</p>
 				</div>`;
 			}else{
-				if(dia === 4 || dia === 0) {
+				if(dia === 4) {
 					if(hora >= 18 && hora <= 23) {
 						programando_compra.tiendaAbierta(año, mes, diaM);
 					}else{
@@ -95,6 +94,14 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 					}else{
 						document.getElementById('paraAhora').classList.toggle('hide');
 						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, hoy atendemos de 18:00 a 01:00 horas</p>`;
+					}
+				}
+				if(dia === 0) {
+					if(hora >= 13 && hora <= 18) {
+						programando_compra.tiendaAbierta(año, mes, diaM);
+					}else{
+						document.getElementById('paraAhora').classList.toggle('hide');
+						document.getElementById('templateParaAhora').innerHTML = `<p class="blue-text text-darken-2">Lo sentimos, hoy atendemos de 13:00 a 19:00 horas</p>`;
 					}
 				}
 			}
@@ -138,8 +145,8 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 					<p class="horariosCompra" >Nuestros Horarios</p>
 					<p class="horariosCompra" >Jueves 18:00 - 0:00</p>
 					<p class="horariosCompra" >Viernes 18:00 - 1:00</p>
-					<p class="horariosCompra" >Sábado 18:00 - 1:00</p>
-					<p class="horariosCompra" >Domingo 18:00 - 0:00</p>
+					<p class="horariosCompra" >Sábados 18:00 - 1:00</p>
+					<p class="horariosCompra" >Domingos 13:00 - 19:00</p>
 				</div>`;
 			}else{
 				if(dia === 5 || dia === 6) {
@@ -185,7 +192,7 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 						sliderMValueElement.innerHTML = val;
 					});
 				}
-				if(dia === 0 || dia === 4) {
+				if(dia === 4) {
 					document.getElementById('masTarde').classList.toggle('hide');
 					document.getElementById('textoMasTarde').classList.toggle('hide');
 					document.getElementById('rangeMasTarde').classList.toggle('hide');
@@ -198,6 +205,49 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 						range: {
 							'min': 18,
 							'max': 23
+						},
+						format: wNumb({
+							decimals: 0
+						})
+					});
+					
+					var sliderHValueElement = document.getElementById('slider-hora-value');
+					sliderH.noUiSlider.on('update', function(val){
+						sliderHValueElement.innerHTML = val;
+					});
+
+					var sliderM = document.getElementById('slider-minutos');
+					noUiSlider.create(sliderM, {
+						start: [ 10 ],
+						connect: [false, true],
+						step: 5,
+						range: {
+							'min': 0,
+							'max': 59
+						},
+						format: wNumb({
+							decimals: 0
+						})
+					});
+					
+					var sliderMValueElement = document.getElementById('slider-minutos-value');
+					sliderM.noUiSlider.on('update', function(val){
+						sliderMValueElement.innerHTML = val;
+					});
+				}
+				if(dia === 0) {
+					document.getElementById('masTarde').classList.toggle('hide');
+					document.getElementById('textoMasTarde').classList.toggle('hide');
+					document.getElementById('rangeMasTarde').classList.toggle('hide');
+					
+					var sliderH = document.getElementById('slider-hora');
+					noUiSlider.create(sliderH, {
+						start: [ 13 ],
+						connect: [false, true],
+						step: 1,
+						range: {
+							'min': 13,
+							'max': 18
 						},
 						format: wNumb({
 							decimals: 0
@@ -400,7 +450,7 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 			estaCompra.hora = hora;
 			estaCompra.minuto = minuto;
 			estaCompra.content = [];
-			estaCompra.monto = carrito.getTotal();
+			estaCompra.monto = carrito.getTotal() + comprando.getDelivey();
 			estaCompra.content.push(JSON.parse(localStorage.getItem("carrito")));
 			var data = JSON.stringify(estaCompra);
 			request

@@ -17,8 +17,8 @@ var el = yo`<nav class="header grey lighten-3">
 					<div id="todoHeader" class="container barra">
 						<div class="row piso-nav">
 							<div class="col s2 sp">
-							  	<a href="/" class="brand-logo ragus hide-on-med-and-down">Ragustino Food Experience</a>
-							  	<a href="/" class="brand-logo ragus hide-on-large-only">Ragustino</a>
+							  	<a href="/" class="brand-logo ragus hide-on-med-and-down">RAGUSTINO</a>
+							  	<a href="/" class="brand-logo ragus hide-on-large-only">RAGUSTINO</a>
 							  	<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
 							</div>
 							<div class="col l6">

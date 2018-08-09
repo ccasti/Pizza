@@ -64,7 +64,7 @@ module.exports = function layout (content) {
 						</div>
 						<div class="modal-footer">
 							<a id="comprando" class="waves-effect waves-light btn blue darken-2">Comprar</a>
-							<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cerrar</a>
+							<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Seguir Comprando</a>
 						</div>
 					</div>
 				</div>
@@ -117,12 +117,12 @@ module.exports = function layout (content) {
 					<div class="input-field col s12">
 						<select id="bebidaOferta">
 							<option value="" disabled selected>Selecciona tu Bebida</option>
-							<option value="201">Coca Cola Normal</option>
-							<option value="202">Coca Cola zero</option>
-							<option value="203">Fanta Normal</option>
-							<option value="204">Fanta Zero</option>
-							<option value="205">Sprite Normal</option>
-							<option value="206">Sprite Zero</option>
+							<option value="201">Coca-Cola 1.5 lt</option>
+							<option value="202">Coca-Cola Zero 1.5 lt</option>
+							<option value="203">Fanta 1.5 lt</option>
+							<option value="204">Fanta Zero 1.5 lt</option>
+							<option value="205">Sprite 1.5 lt</option>
+							<option value="206">Sprite Zero 1.5 lt</option>
 						</select>
 					</div>
 				</div>

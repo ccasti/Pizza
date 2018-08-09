@@ -81,6 +81,18 @@
   content: "\ea92";
 }
 
+.compraHome {
+	color: white !important;
+	padding: 0 10px !important;
+	margin: 0 !important;
+	position: fixed;
+	z-index: 100;
+}
+
+.contComH {
+	min-height: 0 !important;
+}
+
 @media #{$medium-and-down} {
 	.tituloHome {
 		font-size: 1.4rem;

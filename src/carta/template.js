@@ -376,7 +376,7 @@ module.exports = function (pizzas, otros, ingredientes, packs, items) {
 						   		<div class="col s12 white">
 						   			<div class="row principal2">
 						   				<div class="col s12 separar">
-						   					<p class="menu-text grey-text text-darken-4 center-align">Preparada en Masa Napolitana Clásica de Fermentación Lenta, más sanas y livianas para nuestro organismo. Para entregarte una verdadera experiencia gourmet, debes seleccionar entre 3 y 5 ingredientes, las especias no mestarán consideradas.</p>
+						   					<p class="menu-text grey-text text-darken-4 center-align">Preparada en Masa Napolitana Clásica de Fermentación Lenta, más sanas y livianas para nuestro organismo. Para entregarte una verdadera experiencia gourmet, debes seleccionar entre 3 y 5 ingredientes, las especias no estarán consideradas. La base de esta pizza tiene un precio de $6.990.- e incluye nuestra salsa especial y queso mozzarella.</p>
 						   				</div>
 						   			</div>
 						   			<div class="divider"></div>

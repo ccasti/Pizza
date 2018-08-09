@@ -2,7 +2,7 @@ var yo = require('yo-yo');
 var empty = require('empty-element');
 
 var el = yo`<footer class="page-footer grey lighten-2">
-    <div class="container">
+    <div class="container footerS">
         <div class="row nobottom">
 		    <div class="col l6 s12 boxEmp">
                 <h5 class="grey-text text-darken-4 titFooter">RAGUSTINO FOOD EXPERIENCE</h5>
@@ -11,8 +11,9 @@ var el = yo`<footer class="page-footer grey lighten-2">
             <div class="col s7 m3 center-align">
                 <h5 class="grey-text text-darken-4 titFooter">Horarios Ragustino</h5>
                 <ul class="listFooter">
-                    <li><p class="grey-text text-darken-4 descFooter">Jueves y Domingo de 18:00 a 00:00 hrs.</p></li>
+                    <li><p class="grey-text text-darken-4 descFooter">Jueves de 18:00 a 00:00 hrs.</p></li>
                     <li><p class="grey-text text-darken-4 descFooter">Viernes y Sábados de 18:00 a 01:00 hrs.</p></li>
+                    <li><p class="grey-text text-darken-4 descFooter">Domingos de 13:00 a 19:00 hrs.</p></li>
                 </ul>
             </div>
             <div class="col s5 m3 center-align">

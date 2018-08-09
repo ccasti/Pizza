@@ -101,11 +101,6 @@ module.exports = function (itemsCarrito) {
 				</div>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col s12 center-align">
-				<a href="/" class="waves-effect waves-light btn blue darken-2">Seguir Comprando</a>
-			</div>
-		</div>
 		<div class="row nobottom">
 			<div class="col s12 center-align">
 				<p class="programarCompra">Programa la Entrega</p>
@@ -156,7 +151,7 @@ module.exports = function (itemsCarrito) {
 						<div class="collapsible-body">
 							<div id="texto1OtroDia" class="row nobottom">
 								<div class="col s12 center-align">
-									<p class="blue-text text-darken-2">Indicanos la fecha de entrega en formato Día/Mes/Año</p>
+									<p class="blue-text text-darken-2">Indicanos la fecha de entrega. Recuerda que sólo atendemos de Jueves a Domingo</p>
 								</div>
 							</div>
 							<div class="row nobottom">
@@ -166,7 +161,7 @@ module.exports = function (itemsCarrito) {
 							</div>
 							<div id="texto2OtroDia" class="row nobottom">
 								<div class="col s12 center-align">
-									<p class="blue-text text-darken-2">Indicanos la hora de entrega</p>
+									<p class="blue-text text-darken-2">Indicanos la hora de entrega. Chequea nuestros horarios de atención</p>
 								</div>
 							</div>
 							<div class="row nobottom">
@@ -175,6 +170,11 @@ module.exports = function (itemsCarrito) {
 										<div class="input-field col s5 horaFutura">
 											<select id="horaOtro">
 												<option value="" disabled selected>Hora</option>
+												<option value="13">13</option>
+												<option value="14">14</option>
+												<option value="15">15</option>
+												<option value="16">16</option>
+												<option value="17">17</option>
 												<option value="18">18</option>
 												<option value="19">19</option>
 												<option value="20">20</option>
