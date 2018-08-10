@@ -133,6 +133,44 @@ module.exports = function layout (content) {
 				</div>
 			</div>
 		</div>
+		<div id="modal6" class="modal">
+			<div class="modal-content">
+				<h4 class="armandoTit center-align">Selecciona Pizza y Bebida</h4>
+				<div class="row nobottom">
+					<div class="input-field col s12">
+						<select id="pizzaOferta2">
+							<option value="" disabled selected>Selecciona tu Pizza</option>
+							<option value="101">Margherita</option>
+							<option value="102">Caprese</option>
+							<option value="103">Prosciutto</option>
+							<option value="104">Silvestre</option>
+							<option value="105">Capricciosa</option>
+							<option value="106">Campesina</option>
+							<option value="107">Pimentón</option>
+							<option value="108">Pollo al Pesto</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s12">
+						<select id="bebidaOferta2">
+							<option value="" disabled selected>Selecciona tu Bebida</option>
+							<option value="201">Coca-Cola 1.5 lt</option>
+							<option value="202">Coca-Cola Zero 1.5 lt</option>
+							<option value="203">Fanta 1.5 lt</option>
+							<option value="204">Fanta Zero 1.5 lt</option>
+							<option value="205">Sprite 1.5 lt</option>
+							<option value="206">Sprite Zero 1.5 lt</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s12 offset-s2 btnOferta center-align">
+						<a href="#" id="addOferta2" class="waves-effect waves-light btn blue darken-2">Confirmar Compra</a>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div>
 			<img class="pic-ini" src="abajo.png" />
 		</div>

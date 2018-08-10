@@ -40,7 +40,7 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 			var delivery = 0;
 			var checkear = carrito.getTotal();
 			for(i of carrito.getCarrito) {
-				if(i.id === '900001') {
+				if(i.id === '900001' || i.id === '900002') {
 					var existeOferta = i;
 				}
 			}

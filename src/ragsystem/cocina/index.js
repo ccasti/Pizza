@@ -32,9 +32,14 @@ page('/ragsystem-cocina', loadCompras, function (ctx, next) {
 		document.getElementById('areaCocina').addEventListener("click", function(ev) {
 			ev.preventDefault();
 			if(ev.target.id === "cocinaListo") {
-				var id = ev.target.dataset.id;
-				document.getElementById('cL'+id).classList.toggle('hide');
-				document.getElementById('cocFue'+id).classList.toggle('hide');
+				var conf = confirm("Confirma el cierre");
+				if(conf == false) {
+					return
+				}else{
+					var id = ev.target.dataset.id;
+					document.getElementById('cL'+id).classList.toggle('hide');
+					document.getElementById('cocFue'+id).classList.toggle('hide');
+				}
 			}
 		})
 	});

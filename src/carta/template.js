@@ -243,9 +243,17 @@ module.exports = function (pizzas, otros, ingredientes, packs, items) {
 						<li>
 							<img src="slider1.png"> <!-- random image -->
 							<div class="caption center-align">
-								<h3 class="black-text">Aprovecha la oferta del mes</h3>
+								<h3 class="black-text">Aprovecha esta oferta</h3>
 								<h5 class="light black-text">Costo del delivery incluido</h5>
 								<a class="waves-effect waves-light btn modal-trigger blue darken-2 btnOferta" href="#modal7">Comprar Oferta</a>
+							</div>
+						</li>
+						<li>
+							<img src="slider4.png"> <!-- random image -->
+							<div class="caption center-align">
+								<h3 class="black-text">Super Promo Agosto</h3>
+								<h5 class="light black-text">Costo del delivery incluido</h5>
+								<a class="waves-effect waves-light btn modal-trigger blue darken-2 btnOferta" href="#modal6">Comprar Oferta</a>
 							</div>
 						</li>
 						<li>
@@ -270,9 +278,17 @@ module.exports = function (pizzas, otros, ingredientes, packs, items) {
 						<li>
 							<img src="sliders1.png"> <!-- random image -->
 							<div class="caption center-align">
-								<h3 class="black-text sliderTit">Aprovecha la oferta del mes</h3>
+								<h3 class="black-text sliderTit">Aprovecha esta oferta</h3>
 								<h5 class="light black-text sliderMas">Costo del delivery incluido</h5>
 								<a class="waves-effect waves-light btn modal-trigger blue darken-2 btnOferta" href="#modal7">Comprar Oferta</a>
+							</div>
+						</li>
+						<li>
+							<img src="sliders4.png"> <!-- random image -->
+							<div class="caption center-align">
+								<h3 class="black-text sliderTit">Super Promo Agosto</h3>
+								<h5 class="light black-text sliderMas">Costo del delivery incluido</h5>
+								<a class="waves-effect waves-light btn modal-trigger blue darken-2 btnOferta" href="#modal6">Comprar Oferta</a>
 							</div>
 						</li>
 						<li>

@@ -161,12 +161,12 @@ page('/carta',
 			];
 			
 			var opcBebOf = [
-				{id: '201', name: 'Coca Cola Normal'},
-				{id: '202', name: 'Coca Cola Zero'},
-				{id: '203', name: 'Fanta Normal'},
-				{id: '204', name: 'Fanta Zero'},
-				{id: '205', name: 'Sprite Normal'},
-				{id: '206', name: 'Sprite Zero'}
+				{id: '201', name: 'Coca-Cola 1.5 lt'},
+				{id: '202', name: 'Coca-Cola Zero 1.5 lt'},
+				{id: '203', name: 'Fanta 1.5 lt'},
+				{id: '204', name: 'Fanta Zero 1.5 lt'},
+				{id: '205', name: 'Sprite 1.5 lt'},
+				{id: '206', name: 'Sprite Zero 1.5 lt'}
 			];
 
 			for(p of opcPizOf) {
@@ -174,7 +174,6 @@ page('/carta',
 					ventaOferta.pizname = p.name;
 				}
 			}
-
 			
 			for(b of opcBebOf) {
 				if(bOferta === b.id) {
@@ -189,6 +188,54 @@ page('/carta',
 			carrito_view.totalProductos();
 			carrito_view.renderCarrito();
 			$('#modal9').modal('open');
+			console.log(ventaOferta);
+		}
+
+		this.agergarOferta2 = function() {
+			var ventaOferta2 = {name: 'Oferta Agosto c/ Sandwich y Palitos', cantidad: '1', pizname: '', bebname: '', id: '900002', price: 19900, oferta: 1};
+			var pOferta = document.getElementById('pizzaOferta2').value;
+			var bOferta = document.getElementById('bebidaOferta2').value;
+
+			var opcPizOf = [
+				{id: '101', name: 'Pizza Margherita'},
+				{id: '102', name: 'Pizza Caprese'},
+				{id: '103', name: 'Pizza Prosciutto'},
+				{id: '104', name: 'Pizza Silvestre'},
+				{id: '105', name: 'Pizza Capricciosa'},
+				{id: '106', name: 'Pizza Campesina'},
+				{id: '107', name: 'Pizza Pimentón'},
+				{id: '108', name: 'Pizza Pollo al Pesto'}
+			];
+
+			var opcBebOf = [
+				{id: '201', name: 'Coca-Cola 1.5 lt'},
+				{id: '202', name: 'Coca-Cola Zero 1.5 lt'},
+				{id: '203', name: 'Fanta 1.5 lt'},
+				{id: '204', name: 'Fanta Zero 1.5 lt'},
+				{id: '205', name: 'Sprite 1.5 lt'},
+				{id: '206', name: 'Sprite Zero 1.5 lt'}
+			];
+
+			for(p of opcPizOf) {
+				if(pOferta === p.id) {
+					ventaOferta2.pizname = p.name;
+				}
+			}
+
+			for(b of opcBebOf) {
+				if(bOferta === b.id) {
+					ventaOferta2.bebname = b.name;
+				}
+			}
+			contChequeo.push({ id: ventaOferta2.id, price: ventaOferta2.price });
+			$('#modal6').modal('close');
+			this.getCarrito.push(ventaOferta2);
+			localStorage.setItem("carrito",JSON.stringify(this.getCarrito));
+			Materialize.toast('Se agregó un producto', 1500, 'rounded')
+			carrito_view.totalProductos();
+			carrito_view.renderCarrito();
+			$('#modal9').modal('open');
+			console.log(ventaOferta2);
 		}
 
 		this.agregarCustom = function() {
@@ -460,6 +507,11 @@ page('/carta',
 		document.getElementById('addOferta').addEventListener("click", function(ev) {
 			ev.preventDefault();
 			carrito.agergarOferta();
+		});
+
+		document.getElementById('addOferta2').addEventListener("click", function(ev) {
+			ev.preventDefault();
+			carrito.agergarOferta2();
 		});
 
 		document.getElementById('comprando').addEventListener("click", function(ev) {

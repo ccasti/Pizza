@@ -23,12 +23,12 @@ app.get('/compra', function (req, res) {
 	res.render('index', { title: 'Ragustino - Carro' });
 })
 
-/*app.get('/ragsystem', function (req, res) {
-	res.render('index', { title: 'Ragustino - System' });
-})
-
 app.get('/ragsystem-admin', function (req, res) {
 	res.render('index', { title: 'Ragustino - Admin' });
+})
+
+/*app.get('/ragsystem', function (req, res) {
+	res.render('index', { title: 'Ragustino - System' });
 })
 
 app.get('/ragsystem-cocina', function (req, res) {

@@ -105,18 +105,33 @@ page('/ragsystem-admin', loadCompras, function (ctx, next) {
 		document.getElementById('admPedido').addEventListener("click", function(ev) {
 			ev.preventDefault();
 			if(ev.target.id === "pasarCocina") {
-				var id = ev.target.dataset.id;
-				administrando.pasarCocina(id);
+				var conf = confirm("Confirma el envío a cocina");
+				if(conf == false) {
+					return
+				}else{
+					var id = ev.target.dataset.id;
+					administrando.pasarCocina(id);
+				}
 			}
 
 			if(ev.target.id === "pasarReparto") {
-				var id = ev.target.dataset.id;
-				administrando.pasarReparto(id);
+				var conf = confirm("Confirma el envío a reparto");
+				if(conf == false) {
+					return
+				}else{
+					var id = ev.target.dataset.id;
+					administrando.pasarReparto(id);
+				}
 			}
 
 			if(ev.target.id === "finalFinal") {
-				var id = ev.target.dataset.id;
-				administrando.terminarCompra(id);
+				var conf = confirm("Confirma el cierre final");
+				if(conf == false) {
+					return
+				}else{
+					var id = ev.target.dataset.id;
+					administrando.terminarCompra(id);
+				}
 			}
 		})
 	});
