@@ -27,14 +27,13 @@ app.get('/ragsystem-admin', function (req, res) {
 	res.render('index', { title: 'Ragustino - Admin' });
 })
 
-/*app.get('/ragsystem', function (req, res) {
-	res.render('index', { title: 'Ragustino - System' });
-})
-
 app.get('/ragsystem-cocina', function (req, res) {
 	res.render('index', { title: 'Ragustino - Cocina' });
 })
 
+/*app.get('/ragsystem', function (req, res) {
+	res.render('index', { title: 'Ragustino - System' });
+})
 
 app.get('/signup', function (req, res) {
 	res.render('index', { title: 'Signup' });
@@ -259,27 +258,27 @@ app.get('/api/otro', function(req, res) {
 	var otros = [
 		{
 			id: '200001',
-			name: 'Calzone Jamón Pesto',
-			url: 'grissini.jpg',
-			content: 'Pomodoro, mozzarella, jamón, pesto, albhaca',
+			name: 'Pollo',
+			url: 'sandpollo.png',
+			content: 'Pollo, espinacas, rúcula, albahaca, pimientos asados, zucchini asado, cebolla caramelizada y queso mozzarella.',
 			tipo: 'calzone',
-			price: 9400
+			price: 5500
 		},
 		{
 			id: '200002',
-			name: 'Calzone Champiñon',
-			url: 'minicalzone.jpg',
-			content: 'Pomodoro, mozzarella, jamón, champiñones, oregano',
+			name: 'Roast Beef',
+			url: 'sandroast.png',
+			content: 'Roast Beef, espinacas, rúcula, albahaca, pimientos asados, zucchini asado, cebolla caramelizada y queso mozzarella.',
 			tipo: 'calzone',
-			price: 9600
+			price: 5500
 		},
 		{
 			id: '200003',
-			name: 'Calzone Pimentón',
-			url: 'focaccia.jpg',
-			content: 'Pomodoro, mozzarella, pimentón asado, zuchinni asado',
+			name: 'Mixto',
+			url: 'sandmixto.png',
+			content: 'Pollo, Roast Beef, espinacas, rúcula, albahaca, pimientos asados, zucchini asado, cebolla caramelizada y queso mozzarella.',
 			tipo: 'calzone',
-			price: 8900
+			price: 5500
 		},
 		{
 			id: '300001',
@@ -1243,6 +1242,37 @@ app.get('/api/items', function(req, res) {
 app.get('/api/Compra', function(req, res) {
 	var compras = [
 		{
+			id_compra: '10',
+			client: 'Prueba Lasagna',
+			address: 'Ejemplo N 2563',
+			email: 'ejemplo@algo.com',
+			fono: '912345678',
+			content: [
+				{
+					name: 'Oferta Lasagna Domingos',
+					cantidad: '1',
+					bebname: 'Bebida Seleccionada',
+					lasname: 'Lasagna Adicional',
+					qlasag: '3',
+					id: '900003',
+					price: 12900,
+					oferta_ls: 1
+				}
+			],
+			monto: '19500',
+			pago: '1',
+			delivery: '1',
+			año: '2018',
+			mes: '6',
+			diam: '29',
+			hora: '21',
+			minuto: '15',
+			repartidor: '',
+			cocina: '0',
+			reparto: '0',
+			ok: '0'
+		},
+		{
 			id_compra: '1',
 			client: 'Juanito Perez',
 			address: 'Calle algo N 2563',
@@ -1257,7 +1287,7 @@ app.get('/api/Compra', function(req, res) {
 					content: 'Pomodoro, mozzarella, jamón, pesto, albhaca',//No se utilizará
 					tipo: 'calzone',
 					price: '9400'
-				},
+				}
 			],
 			monto: '19500',
 			pago: '1',

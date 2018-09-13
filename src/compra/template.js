@@ -4,10 +4,11 @@ var itemS = require('./products/itemSingle');
 var itemP = require('./products/itemPack');
 var itemC = require('./products/itemCustom');
 var itemO = require('./products/itemOferta');
+var itemOL = require('./products/itemOfertaLas');
 
 module.exports = function (itemsCarrito) {
 	var singles = itemsCarrito.filter(function(obj) {
-		if(!obj.excep && !obj.custom && !obj.oferta) {
+		if(!obj.excep && !obj.custom && !obj.oferta && !obj.oferta_ls) {
 			return true;
 		}else{
 			return false;
@@ -30,6 +31,14 @@ module.exports = function (itemsCarrito) {
 	
 	var ofertas = itemsCarrito.filter(function(obj) {
 		if(obj.oferta) {
+			return true;
+		}else{
+			return false;
+		}
+	});
+
+	var ofertasLas = itemsCarrito.filter(function(obj) {
+		if(obj.oferta_ls) {
 			return true;
 		}else{
 			return false;
@@ -76,6 +85,13 @@ module.exports = function (itemsCarrito) {
 			<div class="col s12 m6 offset-m3">
 				${ofertas.map(function (pic) {
 					return itemO(pic);
+				})}
+			</div>
+		</div>
+		<div class="row nobottom">
+			<div class="col s12 m6 offset-m3">
+				${ofertasLas.map(function (pic) {
+					return itemOL(pic);
 				})}
 			</div>
 		</div>

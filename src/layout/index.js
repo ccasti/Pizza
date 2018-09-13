@@ -143,11 +143,13 @@ module.exports = function layout (content) {
 							<option value="101">Margherita</option>
 							<option value="102">Caprese</option>
 							<option value="103">Prosciutto</option>
-							<option value="104">Silvestre</option>
-							<option value="105">Capricciosa</option>
-							<option value="106">Campesina</option>
+							<option value="104">Capricciosa</option>
+							<option value="105">Campesina</option>
+							<option value="106">Pollo al Pesto</option>
 							<option value="107">Pimentón</option>
-							<option value="108">Pollo al Pesto</option>
+							<option value="108">Carnívora</option>
+							<option value="109">Zuchinni Parmesano</option>
+							<option value="109">Ibérica</option>
 						</select>
 					</div>
 				</div>
@@ -167,6 +169,71 @@ module.exports = function layout (content) {
 				<div class="row">
 					<div class="input-field col s12 offset-s2 btnOferta center-align">
 						<a href="#" id="addOferta2" class="waves-effect waves-light btn blue darken-2">Confirmar Compra</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="modal5" class="modal">
+			<div class="modal-content">
+				<h4 class="armandoTit center-align">Selecciona tus opciones</h4>
+				<div class="row nobottom">
+					<div class="input-field col s12">
+						<select id="clasicoOferta3">
+							<option value="" disabled selected>Selecciona tu clásico</option>
+							<option value="101">2 Lasagna</option>
+							<option value="102">2 Gnocchi</option>
+							<option value="103">1 Lasagna y 1 Gnocchi</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s12">
+						<select id="bebidaOferta3">
+							<option value="" disabled selected>Selecciona tu Bebida</option>
+							<option value="201">Coca-Cola 1.5 lt</option>
+							<option value="202">Coca-Cola Zero 1.5 lt</option>
+							<option value="203">Fanta 1.5 lt</option>
+							<option value="204">Fanta Zero 1.5 lt</option>
+							<option value="205">Sprite 1.5 lt</option>
+							<option value="206">Sprite Zero 1.5 lt</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s7">
+						<p class="lasagna">Lasagna Adicional:</p>
+					</div>
+					<div class="input-field col s5 qLasagnaAdic">
+						<select id="qLasagnaAdic">
+							<option value="0" selected>Ninguna</option>
+							<option value="1">1 ($5.500)</option>
+							<option value="2">2 ($11.000)</option>
+							<option value="3">3 ($16.500)</option>
+							<option value="4">4 ($22.000)</option>
+							<option value="5">5 ($27.500)</option>
+							<option value="6">6 ($33.000)</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s7">
+						<p class="lasagna">Gnocchi Adicional:</p>
+					</div>
+					<div class="input-field col s5 qLasagnaAdic">
+						<select id="qGnocchiAdic">
+							<option value="0" selected>Ninguna</option>
+							<option value="1">1 ($5.500)</option>
+							<option value="2">2 ($11.000)</option>
+							<option value="3">3 ($16.500)</option>
+							<option value="4">4 ($22.000)</option>
+							<option value="5">5 ($27.500)</option>
+							<option value="6">6 ($33.000)</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s12 offset-s2 btnOferta center-align">
+						<a href="#" id="addOferta3" class="waves-effect waves-light btn blue darken-2">Confirmar Compra</a>
 					</div>
 				</div>
 			</div>

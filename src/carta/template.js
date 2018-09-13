@@ -257,18 +257,19 @@ module.exports = function (pizzas, otros, ingredientes, packs, items) {
 							</div>
 						</li>
 						<li>
+							<img src="slider5.png"> <!-- random image -->
+							<div class="caption center-align">
+								<h3 class="black-text">Oferta Día Domingo</h3>
+								<h5 class="light black-text">Costo del delivery incluido</h5>
+								<a class="waves-effect waves-light btn modal-trigger blue darken-2 btnOferta" href="#modal5">Comprar Oferta</a>
+							</div>
+						</li>
+						<li>
 							<img src="slider2.png"> <!-- random image -->
 							<div class="caption right-align">
 								<h3 class="black-text">Agenda fácilmente el DIA y HORA que quieres recibir tu pedido.</h3>
 								<h5 class="light black-text">PROGRAMA para el mismo día o cuando quieras</h5>
 								<h5 class="light black-text">SIN COBROS ADICIONALES</h5>
-							</div>
-						</li>
-						<li>
-							<img src="slider3.png"> <!-- random image -->
-							<div class="caption center-align">
-								<h3 class="black-text">Disfruta de nuestras exquisitas Pizzas, Calzones y Piadinas</h3>
-								<h5 class="light black-text">y muchas sorpresas más...</h5>
 							</div>
 						</li>
 					</ul>
@@ -278,17 +279,19 @@ module.exports = function (pizzas, otros, ingredientes, packs, items) {
 						<li>
 							<img src="sliders1.png"> <!-- random image -->
 							<div class="caption center-align">
-								<h3 class="black-text sliderTit">Aprovecha esta oferta</h3>
-								<h5 class="light black-text sliderMas">Costo del delivery incluido</h5>
 								<a class="waves-effect waves-light btn modal-trigger blue darken-2 btnOferta" href="#modal7">Comprar Oferta</a>
 							</div>
 						</li>
 						<li>
 							<img src="sliders4.png"> <!-- random image -->
 							<div class="caption center-align">
-								<h3 class="black-text sliderTit">Super Promo Agosto</h3>
-								<h5 class="light black-text sliderMas">Costo del delivery incluido</h5>
 								<a class="waves-effect waves-light btn modal-trigger blue darken-2 btnOferta" href="#modal6">Comprar Oferta</a>
+							</div>
+						</li>
+						<li>
+							<img src="sliders5.png"> <!-- random image -->
+							<div class="caption center-align">
+								<a class="waves-effect waves-light btn modal-trigger blue darken-2 btnOferta" href="#modal5">Comprar Oferta</a>
 							</div>
 						</li>
 						<li>
@@ -297,13 +300,6 @@ module.exports = function (pizzas, otros, ingredientes, packs, items) {
 								<h3 class="black-text sliderTit">Agenda fácilmente el DIA y HORA que quieres recibir tu pedido.</h3>
 								<h5 class="light black-text sliderMas">PROGRAMA para el mismo día o cuando quieras</h5>
 								<h5 class="light black-text sliderMas">SIN COBROS ADICIONALES</h5>
-							</div>
-						</li>
-						<li>
-							<img src="sliders3.png"> <!-- random image -->
-							<div class="caption center-align">
-								<h3 class="black-text sliderTit">Disfruta de nuestras exquisitas Pizzas, Calzones y Piadinas</h3>
-								<h5 class="light black-text sliderMas">y muchas sorpresas más...</h5>
 							</div>
 						</li>
 					</ul>
@@ -339,14 +335,14 @@ module.exports = function (pizzas, otros, ingredientes, packs, items) {
 					</li>
 					<li>
 					    <div class="collapsible-header grey lighten-2 itemsCarta">
-					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Pizzas Calzones</p>
+					    	<p class="menu-text padding1 grey-text text-darken-4 center-align">Sandwich Rústicos</p>
 					    </div>
 					    <div class="collapsible-body">
 					    	<div class="row">
 						   		<div class="col s12 white">
 						   			<div class="row">
 						   				<div class="col s12">
-						   					<p class="menu-text">Pizza Calzones (2 Unidades)</p>
+						   					<p class="menu-text center-align">Preparado en pan artesanal con semillas de sesamo y cocinado en horno a leña. Todos vienen con espinacas, rúcula, albahaca, pimientos asados, zucchini asado, cebolla caramelizada y queso mozzarella. Pruebalos en nuestras 3 variedades: POLLO, ROAST BEEF o MIXTO.</p>
 						   				</div>	
 						   			</div>
 						   			<div class="row">

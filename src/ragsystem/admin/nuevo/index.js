@@ -3,10 +3,11 @@ var aPesos = require('../../../utilities/aPesos');
 var single = require('../compras/single')
 var custom = require('../compras/custom')
 var oferta = require('../compras/oferta')
+var ofertaLas = require('../compras/ofertaLas')
 
 module.exports = function (pic) {
 	var singles = pic.content.filter(function(obj) {
-		if(!obj.custom && !obj.oferta) {
+		if(!obj.custom && !obj.oferta && !obj.oferta_ls) {
 			return true;
 		}else{
 			return false;
@@ -23,6 +24,14 @@ module.exports = function (pic) {
 	
 	var ofertas = pic.content.filter(function(obj) {
 		if(obj.oferta) {
+			return true;
+		}else{
+			return false;
+		}
+	});
+
+	var ofertasLas = pic.content.filter(function(obj) {
+		if(obj.oferta_ls) {
 			return true;
 		}else{
 			return false;
@@ -86,6 +95,9 @@ module.exports = function (pic) {
 				})}
 				${ofertas.map(function (picO) {
 					return oferta(picO);
+				})}
+				${ofertasLas.map(function (picOL) {
+					return ofertaLas(picOL);
 				})}
 			</div>
 			<div class="col s12 m3">

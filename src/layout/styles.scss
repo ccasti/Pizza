@@ -52,6 +52,16 @@
 	font-weight: bold;
 }
 
+.lasagna {
+	margin: 0 !important;
+	padding: 10px 0 0 0;
+}
+
+.qLasagnaAdic {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
 @media #{$medium-and-down} {
 	.principal {
 		margin: 0 0 !important;

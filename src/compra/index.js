@@ -40,13 +40,13 @@ page('/compra', header, loadCarrito, footer, function (ctx, next) {
 			var delivery = 0;
 			var checkear = carrito.getTotal();
 			for(i of carrito.getCarrito) {
-				if(i.id === '900001' || i.id === '900002') {
+				if(i.id === '900001' || i.id === '900002' || i.id === '900003') {
 					var existeOferta = i;
 				}
 			}
 			if(!existeOferta) {
 				if(checkear < 30000) {
-					delivery += 1500;
+					delivery += 1900;
 				}
 			}
 			
